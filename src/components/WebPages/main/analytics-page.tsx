@@ -275,10 +275,10 @@ export default function ElectionAnalytics() {
             icon={<InfoCircleOutlined style={{ color: "#1890ff" }} />}
             onClick={() => showModal(record)}
           />
-          <Button
+          {/* <Button
             type="text"
             icon={<MessageOutlined style={{ color: "#52c41a" }} />}
-          />
+          /> */}
         </Space>
       ),
     },
@@ -435,6 +435,7 @@ export default function ElectionAnalytics() {
                 alignItems: "center",
                 gap: "8px",
                 marginBottom: "16px",
+                justifyContent: "space-between",
               }}
             >
               <Title level={4} style={{ margin: 0 }}>
@@ -442,13 +443,15 @@ export default function ElectionAnalytics() {
               </Title>
               <ExportOutlined />
             </div>
-            <Table
-              columns={columns}
-              dataSource={pollingStations}
-              scroll={{ x: 1200, y: 200 }}
-              pagination={false}
-              size="middle"
-            />
+            <div className="custom-table">
+              <Table
+                columns={columns}
+                dataSource={pollingStations}
+                scroll={{ x: 1200, y: 200 }}
+                pagination={false}
+                size="middle"
+              />
+            </div>
           </Card>
         </Col>
       </Row>
@@ -458,11 +461,7 @@ export default function ElectionAnalytics() {
         title="Polling Station Details"
         open={isModalVisible}
         onCancel={handleModalClose}
-        footer={[
-          <Button key="close" onClick={handleModalClose}>
-            Close
-          </Button>,
-        ]}
+        footer={null}
         width={800}
       >
         {selectedStation && (
