@@ -24,3 +24,49 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+.color-primary {
+  color: #1ba0d9;
+}
+
+.btn-primary {
+  background-color: #1ba0d9;
+  color: white;
+}
+
+.ant-layout-sider-trigger {
+  background: #1ba0d9 !important;
+}
+
+.ant-menu-item-selected {
+  background-color: #1ba0d9 !important;
+  color: white !important;
+  font-weight: 500 !important;
+  border-radius: 0px 30px 30px 0px !important;
+}
+
+.ant-menu-item-selected .ant-menu-item-icon {
+  color: white !important;
+}
+
+.ant-menu-item:hover {
+  color: #1ba0d9 !important;
+  border-radius: 0px 30px 30px 0px !important;
+}
+.ant-menu-item {
+  padding: 24px ;
+}
+
+.ant-menu-item:hover {
+  color: #1ba0d9 !important;
+}
+.ant-menu-item-selected:hover {
+  color: white !important;
+}
+
+/* .ant-menu-submenu-active {
+  color: #1BA0D9 !important;
+} */
+.ant-menu-submenu-selected > .ant-menu-submenu-title {
+  color: #1ba0d9 !important;
+}
