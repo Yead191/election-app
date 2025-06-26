@@ -20,6 +20,18 @@ const layout = ({ children }: { children: ReactNode }) => {
       .join(" ");
   };
 
+  // Check if the string looks like an ID (Mongo _id or numeric)
+  const isIdSegment = (str: string) =>
+    /^[a-f\d]{24}$/i.test(str) || /^\d+$/.test(str);
+
+  const pathSegments = pathname?.split("/").filter(Boolean) || [];
+
+  let targetSlug = pathSegments[pathSegments.length - 1];
+
+  if (isIdSegment(targetSlug)) {
+    targetSlug = pathSegments[pathSegments.length - 2]; // fallback to previous segment
+  }
+
   return (
     <div className="flex   md:p-0 bg-[#F1F1F9] min-h-screen">
       <div className="w-[260px]">
@@ -43,7 +55,8 @@ const layout = ({ children }: { children: ReactNode }) => {
               level={3}
               style={{ margin: 0, fontSize: 24, fontWeight: 500 }}
             >
-              {formatPathName(pathname.split("/")[1])}
+              {/* {formatPathName(pathname.split("/")[1])} */}
+              {formatPathName(targetSlug)}
             </Title>
             <Space
               style={{
@@ -67,7 +80,9 @@ const layout = ({ children }: { children: ReactNode }) => {
               </Link>
               <Link href={"/admin-profile"} className="flex items-center gap-2">
                 <Avatar src="/assets/user1.jpg?height=40&width=40" size={40} />
-                <span className="leading-6 font-semibold text-black">Admin Yead</span>
+                <span className="leading-6 font-semibold text-black">
+                  Admin Yead
+                </span>
               </Link>
             </Space>
           </div>

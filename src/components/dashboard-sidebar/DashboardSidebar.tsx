@@ -132,6 +132,7 @@ export default function DashboardSidebar({
         label: "Logout",
         onClick: async () => {
           toast.success("Logged out successfully");
+          router.push("/auth/login");
         },
       },
     });

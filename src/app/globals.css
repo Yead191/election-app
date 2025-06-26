@@ -43,6 +43,7 @@ body {
   color: white !important;
   font-weight: 500 !important;
   border-radius: 0px 30px 30px 0px !important;
+
 }
 
 .ant-menu-item-selected .ant-menu-item-icon {
@@ -74,7 +75,7 @@ body {
 /* Target all table bodies' scrollbars */
 /* Target the table's scrollable body with high specificity */
 div.custom-table .ant-table-body::-webkit-scrollbar {
-  width: 6px !important;
+  width: 4px !important;
 }
 
 div.custom-table .ant-table-body::-webkit-scrollbar-track {
@@ -83,12 +84,12 @@ div.custom-table .ant-table-body::-webkit-scrollbar-track {
 }
 
 div.custom-table .ant-table-body::-webkit-scrollbar-thumb {
-  background: #1BA0D9 !important;
+  background: #1ba0d9 !important;
   border-radius: 8px !important;
 }
 
 div.custom-table .ant-table-body::-webkit-scrollbar-thumb:hover {
-  background: #1BA0D9 !important;
+  background: #1ba0d9 !important;
 }
 
 .ant-table-body {

@@ -1,0 +1,240 @@
+"use client";
+
+import Link from "next/link";
+import {
+  Bar,
+  BarChart,
+  Cell,
+  Pie,
+  PieChart,
+  ResponsiveContainer,
+  XAxis,
+  YAxis,
+  Tooltip,
+} from "recharts";
+import { Card, Button, Row, Col, Typography } from "antd";
+import { ExportOutlined, EyeOutlined } from "@ant-design/icons";
+import PollingStationTable from "./PollingStationTable";
+import { limitedPollingStations } from "@/data/polling-stations";
+
+const { Title, Text } = Typography;
+
+// Demo data for voting results
+const votingData = [
+  {
+    party: "CRM",
+    votes: 280000,
+    color: "#22c55e",
+    fullName: "Cameroon Renaissance Movement",
+  },
+  {
+    party: "CPDM",
+    votes: 370000,
+    color: "#a855f7",
+    fullName: "Cameroon People's Democratic Movement",
+  },
+  {
+    party: "APC",
+    votes: 320000,
+    color: "#ef4444",
+    fullName: "Alliance for Progress and Change",
+  },
+  {
+    party: "APT/ATP",
+    votes: 290000,
+    color: "#f59e0b",
+    fullName: "Alliance for Progress and Transformation",
+  },
+  {
+    party: "SDF",
+    votes: 260000,
+    color: "#1e40af",
+    fullName: "Social Democratic Front",
+  },
+  {
+    party: "UDC",
+    votes: 240000,
+    color: "#7c3aed",
+    fullName: "Union of Democratic Forces",
+  },
+  {
+    party: "PMSC",
+    votes: 80000,
+    color: "#dc2626",
+    fullName: "Progressive Movement for Social Change",
+  },
+];
+
+// Calculate total votes and percentages
+const totalVotes = votingData.reduce((sum, item) => sum + item.votes, 0);
+const pieData = votingData.map((item) => ({
+  ...item,
+  percentage: Math.round((item.votes / totalVotes) * 100),
+}));
+
+export default function ElectionAnalytics() {
+  return (
+    <div>
+      {/* Voting Results Section */}
+      <Row gutter={[24, 24]}>
+        {/* Bar Chart */}
+        <Col xs={24} lg={16}>
+          <Card style={{ height: "400px" }}>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                marginBottom: "16px",
+              }}
+            >
+              <Title level={4} style={{ margin: 0 }}>
+                Voting Result
+              </Title>
+              <div
+                style={{ display: "flex", alignItems: "center", gap: "8px" }}
+              >
+                <div
+                  style={{
+                    width: "8px",
+                    height: "8px",
+                    backgroundColor: "#1890ff",
+                    borderRadius: "50%",
+                  }}
+                ></div>
+                <Text style={{ color: "#1890ff" }}>
+                  Total Voter {totalVotes.toLocaleString()}
+                </Text>
+              </div>
+            </div>
+            <ResponsiveContainer width="100%" height={320}>
+              <BarChart data={votingData}>
+                <XAxis dataKey="party" />
+                <YAxis />
+                <Tooltip
+                  formatter={(value) => [value.toLocaleString(), "Votes"]}
+                />
+                <Bar dataKey="votes" radius={[4, 4, 0, 0]}>
+                  {votingData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.color} />
+                  ))}
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          </Card>
+        </Col>
+
+        {/* Pie Chart */}
+        <Col xs={24} lg={8}>
+          <Card style={{ height: "400px" }}>
+            <ResponsiveContainer width="100%" height={180}>
+              <PieChart>
+                <Pie
+                  data={pieData}
+                  cx="50%"
+                  cy="50%"
+                  innerRadius={50}
+                  outerRadius={80}
+                  paddingAngle={2}
+                  dataKey="votes"
+                >
+                  {pieData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.color} />
+                  ))}
+                </Pie>
+                <Tooltip
+                  formatter={(value) => [value.toLocaleString(), "Votes"]}
+                />
+              </PieChart>
+            </ResponsiveContainer>
+
+            {/* Legend */}
+            <div
+              style={{
+                marginTop: "8px",
+                maxHeight: "180px",
+                overflowY: "auto",
+              }}
+            >
+              {pieData.map((item) => (
+                <div
+                  key={item.party}
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    marginBottom: "6px",
+                    fontSize: "12px",
+                  }}
+                >
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "6px",
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: "10px",
+                        height: "10px",
+                        backgroundColor: item.color,
+                        borderRadius: "50%",
+                      }}
+                    ></div>
+                    <Text style={{ fontSize: "12px" }}>{item.party}</Text>
+                  </div>
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "6px",
+                    }}
+                  >
+                    <Text type="secondary" style={{ fontSize: "11px" }}>
+                      {item.votes.toLocaleString()}
+                    </Text>
+                    <Text strong style={{ fontSize: "12px" }}>
+                      {item.percentage}%
+                    </Text>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </Card>
+        </Col>
+      </Row>
+
+      {/* Polling Station Status */}
+      <Row style={{ marginTop: "24px" }}>
+        <Col span={24}>
+          <Card>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                marginBottom: "16px",
+              }}
+            >
+              <Title
+                level={4}
+                style={{ margin: 0, fontSize: 20, fontWeight: 500 }}
+              >
+                Pooling Station Status
+              </Title>
+              <Link href="/analytics/pooling-station-status">
+                <ExportOutlined style={{ fontSize: "18px", color: "black" }} />
+              </Link>
+            </div>
+            <PollingStationTable
+              dataSource={limitedPollingStations}
+              pagination={false}
+              scroll={{ x: 700, y: 200 }}
+            />
+          </Card>
+        </Col>
+      </Row>
+    </div>
+  );
+}

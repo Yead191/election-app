@@ -20,11 +20,11 @@ const VerifyOtp = () => {
 
   const onFinish = async (values: any) => {
     console.log(values);
-    toast.success("Password reset successfully");;
+    toast.success("Password reset successfully");
     router.push("/auth/reset-password");
   };
   const handleResendEmail = () => {
-    toast.success("Another code sent to your email!")
+    toast.success("Another code sent to your email!");
   };
 
   return (
@@ -73,7 +73,7 @@ const VerifyOtp = () => {
               }}
             >
               <Form.Item
-                className="flex items-center justify-center mx-auto w-full"
+                className="flex items-center justify-center mx-auto w-full gap-7"
                 name="otp"
                 rules={[
                   { required: true, message: "Please input otp code here!" },
@@ -82,7 +82,7 @@ const VerifyOtp = () => {
                 <Input.OTP
                   style={{
                     width: "100%",
-                    height: 50,
+                    height: 48,
                   }}
                   className=""
                   variant="filled"

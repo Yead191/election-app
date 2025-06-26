@@ -8,7 +8,7 @@ export default function layout({ children }: { children: React.ReactNode }) {
         justifyContent: "center",
         alignItems: "center",
         height: "100vh",
-        backgroundImage: "url(/assets/people.jpg)",
+        backgroundImage: "url(/assets/bg-auth.jpg)",
         backgroundSize: "cover",
       }}
     >
