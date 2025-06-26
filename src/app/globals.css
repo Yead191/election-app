@@ -43,7 +43,6 @@ body {
   color: white !important;
   font-weight: 500 !important;
   border-radius: 0px 30px 30px 0px !important;
-
 }
 
 .ant-menu-item-selected .ant-menu-item-icon {
@@ -99,4 +98,23 @@ div.custom-table .ant-table-body::-webkit-scrollbar-thumb:hover {
 div.custom-table .ant-table-body {
   scrollbar-color: auto !important;
   scrollbar-width: auto !important;
+}
+
+::-webkit-scrollbar {
+  width: 4px; /* You can change width here */
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1; /* Optional: background behind scrollbar thumb */
+}
+
+::-webkit-scrollbar-thumb {
+  background: #1ba0d9 !important; /* Your custom color */
+  border-radius: 4px;
+}
+
+/* Firefox scrollbar styling */
+* {
+  scrollbar-width: none; /* "auto" | "thin" | "none" */
+  scrollbar-color: #1ba0d9 #f1f1f1; /* thumb color | track color */
 }

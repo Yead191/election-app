@@ -14,10 +14,12 @@ import {
   Table,
   Image,
   Descriptions,
+  Divider,
 } from "antd";
 import { ArrowLeftOutlined, UserOutlined } from "@ant-design/icons";
 import { poolingData } from "@/data/pooling-data";
 import { allPollingStations } from "@/data/polling-stations";
+import { toast } from "sonner";
 
 const { Title, Text } = Typography;
 const { TextArea } = Input;
@@ -137,177 +139,212 @@ export default function PoolingDetailsPage() {
 
   return (
     <div>
-      <Row style={{ marginBottom: "24px" }}>
-        <Col span={24}>
-          <Card>
-            {/* Header */}
+      <div className="grid grid-cols-12 gap-4 mb-6">
+        <Card className="col-span-4">
+          <Link href="/polling-data" className="mb-6">
+            <Button icon={<ArrowLeftOutlined />} type="text" size="large" />
+          </Link>
+          <Col>
             <div
               style={{
                 display: "flex",
-                justifyContent: "space-between",
                 alignItems: "center",
+                gap: "16px",
                 marginBottom: "24px",
               }}
             >
-              <Link href="/polling-data">
-                <Button icon={<ArrowLeftOutlined />} type="text" size="large" />
-              </Link>
-              <Button color="danger" variant="text" style={{ fontWeight: 500 }}>
-                Scan
-              </Button>
-            </div>
-
-            {/* User Profile Section */}
-            <Row gutter={[24, 24]}>
-              {/* Left - User Details */}
-              <Col xs={24} lg={8}>
-                <div
+              <Avatar size={114} src={"/images/asad.jpg"} />
+              <div>
+                <Title
+                  level={4}
                   style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "16px",
-                    marginBottom: "24px",
+                    margin: 0,
+                    color: "#0A3A22",
+                    fontWeight: 400,
+                    fontSize: "20px",
+                    lineHeight: "20px",
                   }}
                 >
-                  <Avatar size={114} src={"/images/asad.jpg"} />
-                  <div>
-                    <Title
-                      level={4}
-                      style={{
-                        margin: 0,
-                        color: "#0A3A22",
-                        fontWeight: 400,
-                        fontSize: "20px",
-                        lineHeight: "20px",
-                      }}
-                    >
-                      {poolingEntry.agent}
-                    </Title>
-                    <Text className="text-[12px] font-medium leading-5" type="secondary">{poolingEntry.agentEmail}</Text>
-                  </div>
-                </div>
-
-                <Descriptions
-                  column={1}
-                  size="small"
-                  style={{ marginBottom: "24px" }}
+                  {poolingEntry.agent}
+                </Title>
+                <Text
+                  className="text-[12px] font-medium leading-5"
+                  type="secondary"
                 >
-                  <Descriptions.Item
-                    label="Post Code"
-                    labelStyle={{ color: "#52c41a" }}
-                  >
-                    <Text strong>{poolingEntry.postCode}</Text>
-                  </Descriptions.Item>
-                  <Descriptions.Item label="Name">
-                    <Text strong>{poolingEntry.arlaName}</Text>
-                  </Descriptions.Item>
-                  <Descriptions.Item label="Pooling Address">
-                    {poolingEntry.address}
-                  </Descriptions.Item>
-                  <Descriptions.Item label="Sending Time">
-                    <Text style={{ color: "#52c41a" }}>
-                      {poolingEntry.sendingTime}
-                    </Text>
-                  </Descriptions.Item>
-                  <Descriptions.Item label="">
-                    <Text style={{ color: "#52c41a" }}>
-                      {poolingEntry.reportStatus}
-                    </Text>
-                  </Descriptions.Item>
-                </Descriptions>
+                  {poolingEntry.agentEmail}
+                </Text>
+              </div>
+            </div>
 
-                {/* Additional Details */}
-                <div
-                  style={{ fontSize: "12px", color: "#666", lineHeight: 1.8 }}
-                >
-                  <div>
-                    <strong>Name:</strong> {poolingEntry.agent}
-                  </div>
-                  <div>
-                    <strong>ID:</strong> 234545
-                  </div>
-                  <div>
-                    <strong>Email:</strong> {poolingEntry.agentEmail}
-                  </div>
-                  <div>
-                    <strong>Phone number:</strong> {poolingEntry.agentPhone}
-                  </div>
-                  <div>
-                    <strong>NID No.:</strong> 1018246951240002
-                  </div>
-                  <div>
-                    <strong>Date of birth:</strong> 17 dec, 2024
-                  </div>
-                  <div>
-                    <strong>Gender:</strong> Male
-                  </div>
-                  <div>
-                    <strong>Religion:</strong> Islam
-                  </div>
-                  <div>
-                    <strong>Address:</strong>
-                  </div>
-                  <div style={{ paddingLeft: "16px" }}>
-                    2907 Station Road, Lokyatihamonil-hotel
-                    <br />
-                    -3374 South Africa
-                  </div>
-                </div>
-              </Col>
+            {/* Additional Details */}
+            <div style={{ fontSize: "12px", color: "#4E4E4E", lineHeight: 2, fontWeight: 400 }}>
+              <div>
+                <strong style={{ color: "#999999", fontSize: "14px" }}>
+                  Name
+                </strong>
+                <br />
+                Bessie Cooper
+              </div>
 
-              {/* Right - Images */}
-              <Col xs={24} lg={16}>
-                {/* Main Image */}
-                <div style={{ marginBottom: "16px" }}>
-                  <Image
-                    src={
-                      poolingEntry.images[selectedImageIndex] ||
-                      "/placeholder.svg"
-                    }
-                    alt="Vote document"
-                    width="100%"
-                    height={400}
-                    style={{ objectFit: "cover", borderRadius: "8px" }}
-                  />
-                </div>
+              <div style={{ marginTop: "12px" }}>
+                <strong style={{ color: "#999999", fontSize: "14px" }}>
+                  ID
+                </strong>
+                <br />
+                23456
+              </div>
 
-                {/* Image Thumbnails */}
-                <div
-                  style={{ display: "flex", gap: "8px", marginBottom: "16px" }}
-                >
-                  {poolingEntry.images.map((img, index) => (
-                    <Image
-                      key={index}
-                      src={img || "/placeholder.svg"}
-                      alt={`thumbnail-${index}`}
-                      width={60}
-                      height={60}
-                      style={{
-                        objectFit: "cover",
-                        borderRadius: "4px",
-                        cursor: "pointer",
-                        border:
-                          selectedImageIndex === index
-                            ? "2px solid #1677ff"
-                            : "1px solid #d9d9d9",
-                      }}
-                      preview={false}
-                      onClick={() => setSelectedImageIndex(index)}
-                    />
-                  ))}
-                </div>
+              <div style={{ marginTop: "12px" }}>
+                <strong style={{ color: "#999999", fontSize: "14px" }}>
+                  Email
+                </strong>
+                <br />
+                mahmud@gmail.com
+              </div>
 
-                {/* Short Note */}
-                <TextArea
-                  placeholder="Short Note"
-                  value={shortNote}
-                  onChange={(e) => setShortNote(e.target.value)}
-                  rows={4}
-                  style={{ marginBottom: "16px" }}
+              <div style={{ marginTop: "12px" }}>
+                <strong style={{ color: "#999999", fontSize: "14px" }}>
+                  Phone number
+                </strong>
+                <br />
+                084 572 1953
+              </div>
+
+              <div style={{ marginTop: "12px" }}>
+                <strong style={{ color: "#999999", fontSize: "14px" }}>
+                  NID No.
+                </strong>
+                <br />
+                1511924651562612
+              </div>
+
+              <div style={{ marginTop: "12px" }}>
+                <strong style={{ color: "#999999", fontSize: "14px" }}>
+                  Date of birth
+                </strong>
+                <br />
+                17 dec, 2024
+              </div>
+
+              <div style={{ marginTop: "12px" }}>
+                <strong style={{ color: "#999999", fontSize: "14px" }}>
+                  Gender
+                </strong>
+                <br />
+                <span style={{ fontWeight: "bold" }}>Male</span>
+              </div>
+
+              <div style={{ marginTop: "12px" }}>
+                <strong style={{ color: "#999999", fontSize: "14px" }}>
+                  Address
+                </strong>
+                <br />
+                2007 Station Road, Ladysmith,KwaZulu-Natal
+                <br />
+                -3373 South Africa
+              </div>
+            </div>
+          </Col>
+        </Card>
+        <Card className="col-span-8">
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "end",
+              alignItems: "center",
+              marginBottom: "24px",
+            }}
+          >
+            <Button
+              onClick={() => toast.info("Feature coming soon...")}
+              color="danger"
+              variant="text"
+              style={{ fontWeight: 500 }}
+            >
+              Scan
+            </Button>
+          </div>
+          <Descriptions
+            column={1}
+            size="small"
+            style={{ marginBottom: "24px" }}
+          >
+            <Descriptions.Item
+              label="Post Code"
+              labelStyle={{ color: "#929292" }}
+            >
+              <Text style={{ color: "#188A50" }} strong>
+                {poolingEntry.postCode}
+              </Text>
+            </Descriptions.Item>
+            <Descriptions.Item label="Name">
+              <Text style={{ color: "#188A50" }} strong>
+                {poolingEntry.arlaName}
+              </Text>
+            </Descriptions.Item>
+            <Descriptions.Item label="Pooling Address">
+              <Text style={{ color: "#188A50" }}>{poolingEntry.address}</Text>
+            </Descriptions.Item>
+            <Descriptions.Item label="Sending Time">
+              <Text style={{ color: "#188A50" }}>
+                {poolingEntry.sendingTime}
+              </Text>
+            </Descriptions.Item>
+            <Descriptions.Item label="Title">
+              <Text strong>{poolingEntry.reportStatus}</Text>
+            </Descriptions.Item>
+          </Descriptions>
+          <Divider />
+
+          <Col>
+            {/* Main Image */}
+            <div style={{ marginBottom: "16px" }}>
+              <Image
+                src={
+                  poolingEntry.images[selectedImageIndex] || "/placeholder.svg"
+                }
+                alt="Vote document"
+                width="100%"
+                height={400}
+                style={{ objectFit: "cover", borderRadius: "8px" }}
+              />
+            </div>
+
+            {/* Image Thumbnails */}
+            <div style={{ display: "flex", gap: "8px", marginBottom: "16px" }}>
+              {poolingEntry.images.map((img, index) => (
+                <Image
+                  key={index}
+                  src={img || "/placeholder.svg"}
+                  alt={`thumbnail-${index}`}
+                  width={60}
+                  height={60}
+                  style={{
+                    objectFit: "cover",
+                    borderRadius: "4px",
+                    cursor: "pointer",
+                    border:
+                      selectedImageIndex === index
+                        ? "2px solid #1677ff"
+                        : "1px solid #d9d9d9",
+                  }}
+                  preview={false}
+                  onClick={() => setSelectedImageIndex(index)}
                 />
+              ))}
+            </div>
 
-                {/* Publish Button */}
-                {/* <div style={{ textAlign: "right" }}>
+            {/* Short Note */}
+            <TextArea
+              placeholder="Short Note"
+              value={shortNote}
+              onChange={(e) => setShortNote(e.target.value)}
+              rows={4}
+              style={{ marginBottom: "16px" }}
+            />
+
+            {/* Publish Button */}
+            {/* <div style={{ textAlign: "right" }}>
                   <Button
                     type="primary"
                     style={{
@@ -318,11 +355,9 @@ export default function PoolingDetailsPage() {
                     Publish
                   </Button>
                 </div> */}
-              </Col>
-            </Row>
-          </Card>
-        </Col>
-      </Row>
+          </Col>
+        </Card>
+      </div>
 
       {/* Scan Result Section */}
       <Row>
@@ -343,6 +378,7 @@ export default function PoolingDetailsPage() {
                 Scan Result
               </Title>
               <Button
+                onClick={() => toast.info("Feature coming soon...")}
                 type="primary"
                 style={{ backgroundColor: "#18953D", borderColor: "#52c41a" }}
               >

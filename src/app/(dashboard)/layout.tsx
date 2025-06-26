@@ -39,7 +39,7 @@ const layout = ({ children }: { children: ReactNode }) => {
       </div>
       <div className="w-full flex-1  ">
         {/* Header */}
-        <div className="">
+        <div className="h-[84px]">
           <div
             style={{
               display: "flex",
@@ -47,6 +47,10 @@ const layout = ({ children }: { children: ReactNode }) => {
               alignItems: "center",
               background: "#fff",
               padding: "22px 24px",
+              position: "fixed",
+              zIndex: 10,
+              width: "86.5%",
+              // maxWidth: "1800px",
               //   boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
               //   marginTop: "-2px",
             }}
