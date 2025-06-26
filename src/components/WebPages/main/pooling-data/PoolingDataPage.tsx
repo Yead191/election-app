@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
@@ -96,6 +96,10 @@ export default function PoolingDataPage() {
 
     setFilteredData(filtered);
   };
+
+  useEffect(() => {
+    handleSearch(searchText);
+  }, [searchText, selectedArea]);
 
   const handleAreaChange = (value: string) => {
     setSelectedArea(value);
@@ -282,9 +286,34 @@ export default function PoolingDataPage() {
                       marginRight: 16,
                     }}
                   />
-                  <AutoComplete
+
+                  <Input
+                    placeholder="Search by name, email, or designation"
+                    allowClear
+                    style={{
+                      width: 350,
+                      padding: "6px 12px 6px 6px",
+                      borderRadius: "30px",
+                      marginRight: 16,
+                    }}
+                    prefix={
+                      <SearchOutlined
+                        style={{
+                          fontSize: "16px",
+                          borderRadius: "50%",
+                          padding: "6px",
+                          backgroundColor: "#D2EBC5",
+                        }}
+                      />
+                    }
+                    value={searchText}
+                    onChange={(e) => {
+                      setSearchText(e.target.value);
+                    }}
+                  />
+                  {/* <AutoComplete
                     className="shadow-2xl"
-                    style={{ width: 350, marginTop: "-12px" }}
+                    style={{ width: 330, marginTop: "-12px", marginRight: 24 }}
                     options={searchOptions}
                     onSelect={handleSearchSelect}
                     onSearch={handleSearch}
@@ -304,11 +333,11 @@ export default function PoolingDataPage() {
                       }
                       style={{
                         width: 335,
-                        padding: "6px 8px",
+                        padding: "6px 12px",
                         borderRadius: "30px",
                       }}
                     />
-                  </AutoComplete>
+                  </AutoComplete> */}
                   <DatePicker
                     placeholder="Date"
                     suffixIcon={<CalendarOutlined />}
@@ -339,19 +368,21 @@ export default function PoolingDataPage() {
             </div>
 
             {/* Data Table */}
-            <Table
-              columns={columns}
-              dataSource={filteredData}
-              scroll={{ x: 700, y: 510 }}
-              pagination={{
-                pageSize: 10,
-                showSizeChanger: true,
-                showQuickJumper: true,
-                showTotal: (total, range) =>
-                  `${range[0]}-${range[1]} of ${total} submissions`,
-              }}
-              size="middle"
-            />
+            <div className="overflow-hidden">
+              <Table
+                columns={columns}
+                dataSource={filteredData}
+                scroll={{ y: 510 }}
+                pagination={{
+                  pageSize: 10,
+                  showSizeChanger: true,
+                  showQuickJumper: true,
+                  showTotal: (total, range) =>
+                    `${range[0]}-${range[1]} of ${total} submissions`,
+                }}
+                size="middle"
+              />
+            </div>
           </Card>
         </Col>
       </Row>

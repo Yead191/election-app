@@ -74,30 +74,21 @@ body {
 /* Target all table bodies' scrollbars */
 /* Target the table's scrollable body with high specificity */
 div.custom-table .ant-table-body::-webkit-scrollbar {
-  width: 4px !important;
+  width: 4px;
 }
 
 div.custom-table .ant-table-body::-webkit-scrollbar-track {
-  background: #f1f1f1 !important;
-  border-radius: 4px !important;
+  background: #f1f1f1;
+  border-radius: 4px;
 }
 
 div.custom-table .ant-table-body::-webkit-scrollbar-thumb {
-  background: #1ba0d9 !important;
-  border-radius: 8px !important;
+  background: #1ba0d9;
+  border-radius: 8px;
 }
 
 div.custom-table .ant-table-body::-webkit-scrollbar-thumb:hover {
-  background: #1ba0d9 !important;
-}
-
-.ant-table-body {
-  scrollbar-color: auto !important; /* Reset to default */
-  scrollbar-width: auto !important; /* Reset to default */
-}
-div.custom-table .ant-table-body {
-  scrollbar-color: auto !important;
-  scrollbar-width: auto !important;
+  background: #1ba0d9;
 }
 
 ::-webkit-scrollbar {
@@ -117,4 +108,10 @@ div.custom-table .ant-table-body {
 * {
   scrollbar-width: none; /* "auto" | "thin" | "none" */
   scrollbar-color: #1ba0d9 #f1f1f1; /* thumb color | track color */
+}
+
+/* Custom autocomplete input */
+.ant-table-expanded-row-fixed .ant-card-body {
+  width: 100% !important;
+  overflow-x: hidden !important;
 }

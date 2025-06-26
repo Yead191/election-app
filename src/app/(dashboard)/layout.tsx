@@ -47,9 +47,9 @@ const layout = ({ children }: { children: ReactNode }) => {
               alignItems: "center",
               background: "#fff",
               padding: "22px 24px",
-              position: "fixed",
-              zIndex: 10,
-              width: "86.5%",
+              // position: "fixed",
+              // zIndex: 10,
+              // width: "86.5%",
               // maxWidth: "1800px",
               //   boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
               //   marginTop: "-2px",
@@ -91,7 +91,7 @@ const layout = ({ children }: { children: ReactNode }) => {
             </Space>
           </div>
         </div>
-        <section className="p-6">{children}</section>
+        <section className="p-6 flex-1">{children}</section>
       </div>
     </div>
   );

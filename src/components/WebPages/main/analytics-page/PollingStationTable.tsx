@@ -153,7 +153,7 @@ export default function PollingStationTable({
 
   return (
     <>
-      <div className="custom-table">
+      <div className=" ">
         <Table
           columns={columns}
           dataSource={dataSource}
