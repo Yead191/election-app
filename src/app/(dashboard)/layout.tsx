@@ -33,65 +33,58 @@ const layout = ({ children }: { children: ReactNode }) => {
   }
 
   return (
-    <div className="flex   md:p-0 bg-[#F1F1F9] min-h-screen">
+    <div className="flex bg-[#F1F1F9] min-h-screen">
+      {/* Sidebar */}
       <div className="w-[260px]">
         <DashboardSidebar collapsed={collapsed} onCollapse={setCollapsed} />
       </div>
-      <div className="w-full flex-1  ">
-        {/* Header */}
-        <div className="h-[84px]">
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              background: "#fff",
-              padding: "22px 24px",
-              // position: "fixed",
-              // zIndex: 10,
-              // width: "86.5%",
-              // maxWidth: "1800px",
-              //   boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
-              //   marginTop: "-2px",
-            }}
-          >
-            <Title
-              level={3}
-              style={{ margin: 0, fontSize: 24, fontWeight: 500 }}
-            >
-              {/* {formatPathName(pathname.split("/")[1])} */}
-              {formatPathName(targetSlug)}
-            </Title>
-            <Space
-              style={{
-                gap: "30px",
-              }}
-              size="middle"
-            >
-              <Link href={"/notification"}>
-                <Badge dot>
-                  <BellOutlined
-                    style={{
-                      fontSize: "18px",
-                      color: "#666",
-                      backgroundColor: "#F1F1F9",
-                      padding: "8px",
-                      borderRadius: "50%",
-                      boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
-                    }}
-                  />
-                </Badge>
-              </Link>
-              <Link href={"/admin-profile"} className="flex items-center gap-2">
-                <Avatar src="/assets/user1.jpg?height=40&width=40" size={40} />
-                <span className="leading-6 font-semibold text-black">
-                  Admin Yead
-                </span>
-              </Link>
-            </Space>
-          </div>
+
+      {/* Right Content Area */}
+      <div className="flex-1 relative">
+        {/* Header inside content area */}
+        <div
+          style={{
+            position: "fixed",
+            left: "260px",
+            right: 0,
+            height: "84px",
+            background: "white",
+            padding: "22px 24px",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            zIndex: 10,
+          }}
+        >
+          <Title level={3} style={{ margin: 0, fontSize: 24, fontWeight: 500 }}>
+            {formatPathName(targetSlug)}
+          </Title>
+          <Space style={{ gap: "30px" }} size="middle">
+            <Link href={"/notification"}>
+              <Badge dot>
+                <BellOutlined
+                  style={{
+                    fontSize: "18px",
+                    color: "#666",
+                    backgroundColor: "#F1F1F9",
+                    padding: "8px",
+                    borderRadius: "50%",
+                    boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+                  }}
+                />
+              </Badge>
+            </Link>
+            <Link href={"/admin-profile"} className="flex items-center gap-2">
+              <Avatar src="/assets/user1.jpg?height=40&width=40" size={40} />
+              <span className="leading-6 font-semibold text-black">
+                Admin Yead
+              </span>
+            </Link>
+          </Space>
         </div>
-        <section className="p-6 flex-1">{children}</section>
+
+        {/* Page content below fixed header */}
+        <div className="mt-[84px] p-6">{children}</div>
       </div>
     </div>
   );

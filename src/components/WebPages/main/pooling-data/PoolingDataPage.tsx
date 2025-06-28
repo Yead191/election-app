@@ -302,7 +302,7 @@ export default function PoolingDataPage() {
                           fontSize: "16px",
                           borderRadius: "50%",
                           padding: "6px",
-                          backgroundColor: "#D2EBC5",
+                          backgroundColor: "#B7DBC9",
                         }}
                       />
                     }

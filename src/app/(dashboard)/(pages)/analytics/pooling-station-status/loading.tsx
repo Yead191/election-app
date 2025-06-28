@@ -1,7 +1,10 @@
-import React from 'react'
+import Spinner from "@/components/Spinner/Spinner";
+import React from "react";
 
 export default function loading() {
   return (
-    <div>loading pooling data</div>
-  )
+    <div>
+      <Spinner />
+    </div>
+  );
 }
