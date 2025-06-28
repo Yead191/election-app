@@ -218,6 +218,7 @@ export default function PoolingDataPage() {
     {
       title: "Action",
       key: "action",
+      align: "right" as const,
       width: 100,
       render: (_: any, record: any) => (
         <Space>
@@ -232,6 +233,7 @@ export default function PoolingDataPage() {
             Scan
           </Button>
           <Button
+            style={{ fontSize: 20 }}
             type="text"
             icon={<InfoCircleOutlined style={{ color: "#1677ff" }} />}
             onClick={() => {

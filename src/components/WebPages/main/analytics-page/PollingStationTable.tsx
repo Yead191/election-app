@@ -137,11 +137,14 @@ export default function PollingStationTable({
     {
       title: "Action",
       key: "action",
-      align: "center" as const,
+      align: "right" as const,
       width: 120,
       render: (_: any, record: any) => (
         <Space>
           <Button
+            style={{
+              fontSize: 20,
+            }}
             type="text"
             icon={<InfoCircleOutlined style={{ color: "#1677ff" }} />}
             onClick={() => showModal(record)}

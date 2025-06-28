@@ -164,6 +164,7 @@ export default function AgentsListPage() {
     {
       title: "Action",
       key: "action",
+      align: "right" as const,
       render: (text: any, record: any) => (
         <Space>
           <Button
@@ -172,7 +173,7 @@ export default function AgentsListPage() {
             onClick={() =>
               router.push(`/agents-list/agent-profile/${record.key}`)
             }
-            style={{ color: "#1890ff" }}
+            style={{ color: "#1890ff", fontSize: 20 }}
           />
           <Tooltip
             title={record?.status === "active" ? "Deactivate" : "Activate"}
@@ -190,6 +191,7 @@ export default function AgentsListPage() {
               size="small"
               style={{
                 color: record.status === "active" ? "#ff4d4f" : "#52c41a",
+                fontSize: 20,
               }}
             />
           </Tooltip>

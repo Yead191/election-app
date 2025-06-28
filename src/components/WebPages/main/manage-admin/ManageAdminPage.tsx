@@ -240,13 +240,14 @@ export default function ManageAdminPage() {
     {
       title: "Action",
       key: "action",
+      align: "right" as const,
       render: (_: any, record: any) => (
         <Space className="flex justify-end ">
           <Button
             type="text"
             icon={<EditOutlined />}
             onClick={() => handleEdit(record)}
-            style={{ color: "#1890ff" }}
+            style={{ color: "#1890ff", fontSize: 20 }}
           />
           <Button
             type="text"
@@ -256,13 +257,14 @@ export default function ManageAdminPage() {
             onClick={() => handleStatusToggle(record)}
             style={{
               color: record.status === "inactive" ? "#ff4d4f" : "#52c41a",
+              fontSize: 20,
             }}
           />
           <Button
             type="text"
             icon={<DeleteOutlined />}
             onClick={() => handleDelete(record)}
-            style={{ color: "#ff4d4f" }}
+            style={{ color: "#ff4d4f", fontSize: 20 }}
           />
         </Space>
       ),
@@ -272,7 +274,7 @@ export default function ManageAdminPage() {
   return (
     <div
       style={{
-        padding: "24px",
+        padding: "16px 24px",
         backgroundColor: "white",
         borderRadius: "8px",
       }}

@@ -12,7 +12,7 @@ const VoterPage = () => {
 
   return (
     <div
-      style={{ padding: 24, height: "80vh", maxWidth: 581, color: "#636363" }}
+      style={{ padding: 24, height: "85vh", maxWidth: 581, color: "#636363" }}
     >
       <h2
         style={{
