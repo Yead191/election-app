@@ -389,7 +389,7 @@ export default function PoolingDetailsPage() {
             <Table
               columns={scanResultColumns}
               dataSource={allPollingStations.slice(0, 5)}
-              scroll={{ x: 700, y: 510 }}
+              // scroll={{ x: 700, y: 510 }}
               pagination={false}
               size="small"
             />

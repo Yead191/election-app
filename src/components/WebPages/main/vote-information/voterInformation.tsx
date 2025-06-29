@@ -1,13 +1,22 @@
 "use client";
 import React from "react";
 import { Form, Input, Button } from "antd";
+import { toast } from "sonner";
 
 const VoterPage = () => {
   const [form] = Form.useForm();
 
   const onFinish = (values: any) => {
-    console.log("Form values:", values);
+    // console.log("Form values:", values);
     // Handle form submission here
+    const voterAmount = parseInt(values.voterAmount);
+    console.log(voterAmount);
+    if (voterAmount > 0) {
+      console.log("Voter amount is valid.");
+      toast.success("Voter amount added!");
+    } else {
+      console.log("Voter amount is invalid.");
+    }
   };
 
   return (
@@ -16,8 +25,8 @@ const VoterPage = () => {
     >
       <h2
         style={{
-          fontSize: 16,
-          fontWeight: 500,
+          fontSize: 20,
+          fontWeight: 600,
           marginBottom: 8,
         }}
         className="leading-5"
@@ -37,7 +46,7 @@ const VoterPage = () => {
             { required: true, message: "Please input the voter amount!" },
           ]}
         >
-          <Input style={{height:48}} placeholder="Enter voter amount" />
+          <Input style={{ height: 48 }} inputMode="numeric" type="number" placeholder="Enter voter amount" />
         </Form.Item>
         <Form.Item>
           <Button

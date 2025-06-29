@@ -13,7 +13,7 @@ const SignInForm = () => {
   const onFinish = async (values: any) => {
     console.log(values);
     toast.success("Login Successful");
-    router.push("/");
+    router.push("/analytics");
   };
 
   return (

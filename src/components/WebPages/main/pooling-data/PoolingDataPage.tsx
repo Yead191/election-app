@@ -370,11 +370,11 @@ export default function PoolingDataPage() {
             </div>
 
             {/* Data Table */}
-            <div className="overflow-hidden">
+            <div className="overflow-hidden max-w-[99%]">
               <Table
                 columns={columns}
                 dataSource={filteredData}
-                scroll={{ y: 510 }}
+                // scroll={{ y: 510 }}
                 pagination={{
                   pageSize: 10,
                   showSizeChanger: true,

@@ -1,13 +1,14 @@
 "use client";
 
-import { useState } from "react";
-import { Table, Button, Space, Typography } from "antd";
+import { use, useState } from "react";
+import { Table, Button, Space, Typography, ConfigProvider } from "antd";
 import { InfoCircleOutlined } from "@ant-design/icons";
 import StationInfoModal from "./StationInfoModal";
 
 const { Text } = Typography;
 
 import type { TablePaginationConfig } from "antd/es/table";
+import { usePathname } from "next/navigation";
 
 interface PollingStationTableProps {
   dataSource: any[];
@@ -18,11 +19,12 @@ interface PollingStationTableProps {
 export default function PollingStationTable({
   dataSource,
   pagination = false,
-  scroll = { x: 1200, y: 200 },
+  scroll = { x: 1200, y: 1100 },
 }: PollingStationTableProps) {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedStation, setSelectedStation] = useState(null);
-
+  const pathname = usePathname();
+// console.log(pathname);
   const showModal = (station: any) => {
     setSelectedStation(station);
     setIsModalVisible(true);
@@ -156,14 +158,24 @@ export default function PollingStationTable({
 
   return (
     <>
-      <div className=" ">
+      <div className="max-w-[99%] ">
+        {/* <ConfigProvider
+          theme={{
+            components: {
+              Table: {
+                stickyScrollBarBg: "rgb(201,38,38)",
+              },
+            },
+          }}
+        > */}
         <Table
           columns={columns}
           dataSource={dataSource}
-          scroll={scroll}
+          scroll={pathname === "/pooling-station-status" ? undefined : scroll}
           pagination={pagination}
           size="middle"
         />
+        {/* </ConfigProvider> */}
       </div>
       <StationInfoModal
         visible={isModalVisible}

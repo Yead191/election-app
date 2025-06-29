@@ -188,8 +188,8 @@ export default function PoolingStationStatusPage() {
                         "linear-gradient(135deg, #E1E3EB, #DDE0EA, #CEE9FF)",
                       //   backgroundColor:
                       //   "linear-gradient(to right, #E1E3EB, #DDE0EA, #CEE9FF)",
-                    //   height: "40px",
-                    marginRight: 16
+                      //   height: "40px",
+                      marginRight: 16,
                     }}
                   />
                   <AutoComplete

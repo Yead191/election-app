@@ -106,12 +106,9 @@ div.custom-table .ant-table-body::-webkit-scrollbar-thumb:hover {
 
 /* Firefox scrollbar styling */
 * {
-  scrollbar-width: none; /* "auto" | "thin" | "none" */
+  scrollbar-width: thin; /* "auto" | "thin" | "none" */
   scrollbar-color: #1ba0d9 #f1f1f1; /* thumb color | track color */
 }
 
 /* Custom autocomplete input */
-.ant-table-expanded-row-fixed .ant-card-body {
-  width: 100% !important;
-  overflow-x: hidden !important;
-}
+

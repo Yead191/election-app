@@ -11,6 +11,7 @@ import {
   Select,
   Space,
   message,
+  Tooltip,
 } from "antd";
 import {
   SearchOutlined,
@@ -25,6 +26,8 @@ import {
   EyeInvisibleOutlined,
 } from "@ant-design/icons";
 import { toast } from "sonner";
+import { BsPencilSquare } from "react-icons/bs";
+import { FaRegTrashAlt } from "react-icons/fa";
 
 const { Option } = Select;
 
@@ -146,7 +149,7 @@ export default function ManageAdminPage() {
         admin.key === record.key ? { ...admin, status: newStatus } : admin
       )
     );
-    message.success(`Admin status updated to ${newStatus}`);
+    toast.success(`Admin status updated to ${newStatus}`);
   };
 
   const handleDelete = (record: any) => {
@@ -243,28 +246,36 @@ export default function ManageAdminPage() {
       align: "right" as const,
       render: (_: any, record: any) => (
         <Space className="flex justify-end ">
+          <Tooltip title="Edit">
+            <Button
+              type="text"
+              icon={<BsPencilSquare />}
+              onClick={() => handleEdit(record)}
+              style={{ color: "#999999", fontSize: 20 }}
+            />
+          </Tooltip>
+          <Tooltip title={record.status === "active" ? "Lock" : "Unlock"}>
+            <Button
+              type="text"
+              icon={
+                record.status === "active" ? (
+                  <UnlockOutlined style={{ color: "#999999" }} />
+                ) : (
+                  <LockOutlined />
+                )
+              }
+              onClick={() => handleStatusToggle(record)}
+              style={{
+                color: record.status === "inactive" ? "#ff4d4f" : "#52c41a",
+                fontSize: 20,
+              }}
+            />
+          </Tooltip>
           <Button
             type="text"
-            icon={<EditOutlined />}
-            onClick={() => handleEdit(record)}
-            style={{ color: "#1890ff", fontSize: 20 }}
-          />
-          <Button
-            type="text"
-            icon={
-              record.status === "active" ? <LockOutlined /> : <UnlockOutlined />
-            }
-            onClick={() => handleStatusToggle(record)}
-            style={{
-              color: record.status === "inactive" ? "#ff4d4f" : "#52c41a",
-              fontSize: 20,
-            }}
-          />
-          <Button
-            type="text"
-            icon={<DeleteOutlined />}
+            icon={<FaRegTrashAlt />}
             onClick={() => handleDelete(record)}
-            style={{ color: "#ff4d4f", fontSize: 20 }}
+            style={{ color: "#999999", fontSize: 20 }}
           />
         </Space>
       ),
@@ -376,7 +387,7 @@ export default function ManageAdminPage() {
         <Table
           columns={columns}
           dataSource={filteredAdmins}
-          pagination={false}
+          pagination={{}}
           size="middle"
           style={{ backgroundColor: "white" }}
         />

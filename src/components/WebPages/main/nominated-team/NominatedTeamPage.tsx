@@ -1,7 +1,16 @@
 "use client";
 
 import { useState } from "react";
-import { Table, Button, Input, Modal, Form, message, Upload } from "antd";
+import {
+  Table,
+  Button,
+  Input,
+  Modal,
+  Form,
+  message,
+  Upload,
+  Tooltip,
+} from "antd";
 import {
   SearchOutlined,
   PlusOutlined,
@@ -9,6 +18,8 @@ import {
   DeleteOutlined,
   UploadOutlined,
 } from "@ant-design/icons";
+import { BsPencilSquare } from "react-icons/bs";
+import { FaRegTrashAlt } from "react-icons/fa";
 
 const mockTeams = [
   {
@@ -208,18 +219,22 @@ export default function NominatedTeamPage() {
             justifyContent: "end",
           }}
         >
-          <Button
-            type="text"
-            icon={<EditOutlined />}
-            onClick={() => handleEdit(record)}
-            style={{ color: "#1890ff", fontSize: "24px" }}
-          />
-          <Button
-            type="text"
-            icon={<DeleteOutlined size={32} />}
-            onClick={() => handleDelete(record)}
-            style={{ color: "#ff4d4f", fontSize: "20px" }}
-          />
+          <Tooltip title="Edit">
+            <Button
+              type="text"
+              icon={<BsPencilSquare />}
+              onClick={() => handleEdit(record)}
+              style={{ color: "#999999", fontSize: "20px" }}
+            />
+          </Tooltip>
+          <Tooltip title="Delete">
+            <Button
+              type="text"
+              icon={<FaRegTrashAlt />}
+              onClick={() => handleDelete(record)}
+              style={{ color: "#999999", fontSize: "20px" }}
+            />
+          </Tooltip>
         </div>
       ),
     },
