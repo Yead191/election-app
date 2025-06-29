@@ -20,8 +20,6 @@ import {
   LockOutlined,
   CalendarOutlined,
   PlusOutlined,
-  EditOutlined,
-  DeleteOutlined,
   EyeOutlined,
   EyeInvisibleOutlined,
 } from "@ant-design/icons";
@@ -43,30 +41,30 @@ const mockAdmins = [
   {
     key: "2",
     sNo: "2450",
-    adminName: "Admin Asadujjaman",
+    adminName: "Admin Sarah Johnson",
     email: "sara.cruz@example.com",
-    adminType: "Admin",
+    adminType: "Super Admin",
     status: "active",
   },
   {
     key: "3",
-    sNo: "2450",
-    adminName: "Admin Asadujjaman",
+    sNo: "2451",
+    adminName: "Admin Nathan Roberts",
     email: "nathan.roberts@example.com",
     adminType: "Admin",
     status: "inactive",
   },
   {
     key: "4",
-    sNo: "2450",
+    sNo: "2452",
     adminName: "Dr. Anna KOWALSKA",
     email: "alma.lawson@example.com",
-    adminType: "Admin",
+    adminType: "Manager",
     status: "active",
   },
   {
     key: "5",
-    sNo: "2450",
+    sNo: "2453",
     adminName: "Dr. Michael O'CONNOR",
     email: "tim.jennings@example.com",
     adminType: "Admin",
@@ -77,7 +75,7 @@ const mockAdmins = [
     sNo: "2465",
     adminName: "Dr. Yasmin AL-FARSI",
     email: "willie.jennings@example.com",
-    adminType: "Admin",
+    adminType: "Super Admin",
     status: "active",
   },
   {
@@ -85,7 +83,7 @@ const mockAdmins = [
     sNo: "2472",
     adminName: "Dr. Leila BEN AMAR",
     email: "bill.sanders@example.com",
-    adminType: "Admin",
+    adminType: "Manager",
     status: "active",
   },
   {
@@ -93,6 +91,62 @@ const mockAdmins = [
     sNo: "2465",
     adminName: "Dr. Elena PETROVA",
     email: "debra.holt@example.com",
+    adminType: "Admin",
+    status: "active",
+  },
+  {
+    key: "9",
+    sNo: "2466",
+    adminName: "Admin James Wilson",
+    email: "james.wilson@example.com",
+    adminType: "Admin",
+    status: "inactive",
+  },
+  {
+    key: "10",
+    sNo: "2467",
+    adminName: "Dr. Maria Garcia",
+    email: "maria.garcia@example.com",
+    adminType: "Super Admin",
+    status: "active",
+  },
+  {
+    key: "11",
+    sNo: "2468",
+    adminName: "Admin Robert Brown",
+    email: "robert.brown@example.com",
+    adminType: "Manager",
+    status: "active",
+  },
+  {
+    key: "12",
+    sNo: "2469",
+    adminName: "Dr. Lisa Anderson",
+    email: "lisa.anderson@example.com",
+    adminType: "Admin",
+    status: "active",
+  },
+  {
+    key: "13",
+    sNo: "2470",
+    adminName: "Admin David Lee",
+    email: "david.lee@example.com",
+    adminType: "Super Admin",
+    status: "inactive",
+  },
+  {
+    key: "14",
+    sNo: "2471",
+    adminName: "Dr. Jennifer Taylor",
+    email: "jennifer.taylor@example.com",
+    adminType: "Manager",
+    status: "active",
+  },
+  {
+    key: "15",
+    sNo: "2473",
+    adminName: "Admin Christopher White",
+    email: "christopher.white@example.com",
     adminType: "Admin",
     status: "active",
   },
@@ -105,15 +159,24 @@ export default function ManageAdminPage() {
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
   const [currentAdmin, setCurrentAdmin] = useState<any>(null);
+  const [isAddMode, setIsAddMode] = useState(false);
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [form] = Form.useForm();
+  const [statusFilter, setStatusFilter] = useState<string>("all"); // "all", "active", "inactive"
 
-  const filteredAdmins = admins.filter(
-    (admin) =>
+  const filteredAdmins = admins.filter((admin) => {
+    const matchesSearch =
       admin.adminName.toLowerCase().includes(searchText.toLowerCase()) ||
       admin.email.toLowerCase().includes(searchText.toLowerCase()) ||
-      admin.adminType.toLowerCase().includes(searchText.toLowerCase())
-  );
+      admin.adminType.toLowerCase().includes(searchText.toLowerCase());
+
+    const matchesStatus =
+      statusFilter === "all" ||
+      (statusFilter === "active" && admin.status === "active") ||
+      (statusFilter === "inactive" && admin.status === "inactive");
+
+    return matchesSearch && matchesStatus;
+  });
 
   const handleSelectAll = (checked: boolean) => {
     if (checked) {
@@ -133,12 +196,20 @@ export default function ManageAdminPage() {
 
   const handleEdit = (record: any) => {
     setCurrentAdmin(record);
+    setIsAddMode(false);
     form.setFieldsValue({
       adminName: record.adminName,
       email: record.email,
       password: "",
       userType: record.adminType,
     });
+    setEditModalVisible(true);
+  };
+
+  const handleAdd = () => {
+    setCurrentAdmin(null);
+    setIsAddMode(true);
+    form.resetFields();
     setEditModalVisible(true);
   };
 
@@ -165,30 +236,40 @@ export default function ManageAdminPage() {
     toast.success("Admin deleted successfully");
   };
 
-  const handleEditSubmit = (values: any) => {
-    setAdmins(
-      admins.map((admin) =>
-        admin.key === currentAdmin.key
-          ? {
-              ...admin,
-              adminName: values.adminName,
-              email: values.email,
-              adminType: values.userType,
-            }
-          : admin
-      )
-    );
+  const handleFormSubmit = (values: any) => {
+    if (isAddMode) {
+      const newAdmin = {
+        key: Date.now().toString(),
+        sNo: (
+          Math.max(...admins.map((a) => Number.parseInt(a.sNo))) + 1
+        ).toString(),
+        adminName: values.adminName,
+        email: values.email,
+        adminType: values.userType,
+        status: "active",
+      };
+      setAdmins([...admins, newAdmin]);
+      message.success("Admin added successfully");
+      toast.success("Admin added successfully");
+    } else {
+      setAdmins(
+        admins.map((admin) =>
+          admin.key === currentAdmin.key
+            ? {
+                ...admin,
+                adminName: values.adminName,
+                email: values.email,
+                adminType: values.userType,
+              }
+            : admin
+        )
+      );
+      message.success("Admin updated successfully");
+      toast.success("Admin updated successfully");
+    }
     setEditModalVisible(false);
     setCurrentAdmin(null);
     form.resetFields();
-    message.success("Admin updated successfully");
-    toast.success("Admin updated successfully");
-  };
-
-  const handleAddAgent = () => {
-    // Add agent functionality
-    toast.info("Developer is working on it");
-    message.info("Add Agent functionality");
   };
 
   const isAllSelected =
@@ -239,6 +320,37 @@ export default function ManageAdminPage() {
       title: "Admin Type",
       dataIndex: "adminType",
       key: "adminType",
+      render: (type: string) => (
+        <span
+          style={{
+            color:
+              type === "Super Admin"
+                ? "#1890ff"
+                : type === "Manager"
+                ? "#52c41a"
+                : "#666",
+            fontWeight: "500",
+          }}
+        >
+          {type}
+        </span>
+      ),
+    },
+    {
+      title: "Status",
+      dataIndex: "status",
+      key: "status",
+      render: (status: string) => (
+        <span
+          style={{
+            color: status === "active" ? "#52c41a" : "#ff4d4f",
+            fontWeight: "500",
+            textTransform: "capitalize",
+          }}
+        >
+          {status}
+        </span>
+      ),
     },
     {
       title: "Action",
@@ -311,18 +423,29 @@ export default function ManageAdminPage() {
           />
           <Button
             icon={<UnlockOutlined style={{ fontSize: "20px" }} />}
+            onClick={() =>
+              setStatusFilter(statusFilter === "active" ? "all" : "active")
+            }
             style={{
-              color: "#A1A1A1",
+              color: statusFilter === "active" ? "#52c41a" : "#A1A1A1",
               padding: "19px",
-              border: "none",
+              border: statusFilter === "active" ? "2px solid #52c41a" : "none",
+              backgroundColor:
+                statusFilter === "active" ? "#f6ffed" : "transparent",
             }}
           />
           <Button
             icon={<LockOutlined style={{ fontSize: "20px" }} />}
+            onClick={() =>
+              setStatusFilter(statusFilter === "inactive" ? "all" : "inactive")
+            }
             style={{
-              color: "#A1A1A1",
+              color: statusFilter === "inactive" ? "#ff4d4f" : "#A1A1A1",
               padding: "19px",
-              border: "none",
+              border:
+                statusFilter === "inactive" ? "2px solid #ff4d4f" : "none",
+              backgroundColor:
+                statusFilter === "inactive" ? "#fff2f0" : "transparent",
             }}
           />
           <Input
@@ -348,6 +471,20 @@ export default function ManageAdminPage() {
               setSearchText(e.target.value);
             }}
           />
+          {statusFilter !== "all" && (
+            <span
+              style={{
+                fontSize: "12px",
+                color: "#666",
+                backgroundColor: "#f0f0f0",
+                padding: "4px 8px",
+                borderRadius: "4px",
+                marginLeft: "8px",
+              }}
+            >
+              Showing: {statusFilter} admins ({filteredAdmins.length})
+            </span>
+          )}
         </div>
         <DatePicker
           placeholder="Date"
@@ -359,7 +496,7 @@ export default function ManageAdminPage() {
           }}
         />
         <Button
-          onClick={handleAddAgent}
+          onClick={handleAdd}
           type="primary"
           style={{
             backgroundColor: "#18953D",
@@ -372,7 +509,7 @@ export default function ManageAdminPage() {
           }}
           className="leading-5"
         >
-          Add Agent
+          Add Admin
           <PlusOutlined />
         </Button>
       </div>
@@ -387,15 +524,19 @@ export default function ManageAdminPage() {
         <Table
           columns={columns}
           dataSource={filteredAdmins}
-          pagination={{}}
+          pagination={{
+            pageSize: 10,
+            // showSizeChanger: true,
+            // pageSizeOptions: ["10", "20", "50", "100"],
+          }}
           size="middle"
           style={{ backgroundColor: "white" }}
         />
       </div>
 
-      {/* Edit Modal */}
+      {/* Add/Edit Modal */}
       <Modal
-        title="Edit"
+        title={isAddMode ? "Add Admin" : "Edit"}
         open={editModalVisible}
         onCancel={() => {
           setEditModalVisible(false);
@@ -408,7 +549,7 @@ export default function ManageAdminPage() {
       >
         <Form
           form={form}
-          onFinish={handleEditSubmit}
+          onFinish={handleFormSubmit}
           layout="vertical"
           style={{ marginTop: "24px" }}
         >
@@ -426,10 +567,13 @@ export default function ManageAdminPage() {
           <Form.Item
             label="Email"
             name="email"
-            rules={[{ required: true, message: "Please input email!" }]}
+            rules={[
+              { required: true, message: "Please input email!" },
+              { type: "email", message: "Please enter a valid email!" },
+            ]}
           >
             <Input
-              placeholder="1454"
+              placeholder="admin@example.com"
               style={{ padding: "12px", borderRadius: "8px" }}
             />
           </Form.Item>
@@ -437,7 +581,7 @@ export default function ManageAdminPage() {
           <Form.Item
             label="Password"
             name="password"
-            rules={[{ required: true, message: "Please input password!" }]}
+            rules={[{ required: isAddMode, message: "Please input password!" }]}
           >
             <Input
               type={passwordVisible ? "text" : "password"}
@@ -481,7 +625,7 @@ export default function ManageAdminPage() {
               marginTop: "24px",
             }}
           >
-            Submit
+            {isAddMode ? "Add Admin" : "Submit"}
           </Button>
         </Form>
       </Modal>

@@ -321,7 +321,7 @@ export default function NominatedTeamPage() {
 
       {/* Edit/Add Modal */}
       <Modal
-        title="Edit"
+        title={<span>{isAddMode ? "Add Team" : "Edit Team"}</span>}
         open={editModalVisible}
         onCancel={() => {
           setEditModalVisible(false);

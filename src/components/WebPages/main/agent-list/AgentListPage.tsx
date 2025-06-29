@@ -1,7 +1,19 @@
 "use client";
 
 import { useState } from "react";
-import { Table, Button, Input, Space, Avatar, DatePicker, Tooltip } from "antd";
+import {
+  Table,
+  Button,
+  Input,
+  Space,
+  Avatar,
+  DatePicker,
+  Tooltip,
+  Modal,
+  Form,
+  Select,
+  message,
+} from "antd";
 import {
   SearchOutlined,
   FilePdfOutlined,
@@ -13,7 +25,8 @@ import {
   UnlockOutlined,
 } from "@ant-design/icons";
 import { useRouter } from "next/navigation";
-import { toast } from "sonner";
+
+const { Option } = Select;
 
 const mockAgents = [
   {
@@ -24,60 +37,212 @@ const mockAgents = [
     contactNo: "(+33)7 00 55 59 27",
     postCode: "2472",
     poolingAddress: "3891 Ranchview Dr. Richardson",
-    avatar: "/assets/user2.png?height=40&width=40",
+    avatar: "/images/asad.jpg?height=40&width=40",
+    status: "active",
+    position: "Senior Agent",
+    department: "Operations",
   },
   {
     key: "2",
     id: "AB4578DCD2",
     name: "Siphokazi Selebe",
-    email: "mr101@gmail.ru",
-    contactNo: "(+33)7 00 55 59 27",
+    email: "siphokazi@gmail.com",
+    contactNo: "(+33)7 00 55 59 28",
     postCode: "2450",
     poolingAddress: "4517 Washington Ave. Manchester",
-    avatar: "/assets/user2.png?height=40&width=40",
+    avatar: "/images/asad.jpg?height=40&width=40",
+    status: "active",
+    position: "Agent",
+    department: "Field Operations",
   },
   {
     key: "3",
     id: "FF4578EDD4",
     name: "Alison Moloi",
-    email: "mr101@gmail.ru",
-    contactNo: "(+33)7 00 55 59 27",
+    email: "alison.moloi@gmail.com",
+    contactNo: "(+33)7 00 55 59 29",
     postCode: "2450",
     poolingAddress: "3517 W. Gray St. Utica",
-    avatar: "/assets/user2.png?height=40&width=40",
+    avatar: "/images/asad.jpg?height=40&width=40",
+    status: "inactive",
+    position: "Junior Agent",
+    department: "Support",
   },
   {
     key: "4",
     id: "BB4579EED2",
-    name: "Mr. Nadir",
-    email: "xterris@gmail.com",
-    contactNo: "(+33)7 00 55 59 27",
+    name: "Mr. Nadir Johnson",
+    email: "nadir.johnson@gmail.com",
+    contactNo: "(+33)7 00 55 59 30",
     postCode: "2450",
     poolingAddress: "2118 Thornridge Cir. Syracuse",
-    avatar: "/assets/user2.png?height=40&width=40",
+    avatar: "/images/asad.jpg?height=40&width=40",
+    status: "active",
+    position: "Team Lead",
+    department: "Management",
   },
   {
     key: "5",
-    id: "FF4578EDD4",
+    id: "FF4578EDD5",
     name: "Babalwa Moloi",
-    email: "irnabela@gmail.com",
-    contactNo: "(+33)7 00 55 59 27",
+    email: "babalwa.moloi@gmail.com",
+    contactNo: "(+33)7 00 55 59 31",
     postCode: "2450",
     poolingAddress: "2972 Westheimer Rd. Santa Ana",
-    avatar: "/assets/user2.png?height=40&width=40",
+    avatar: "/images/asad.jpg?height=40&width=40",
+    status: "active",
+    position: "Senior Agent",
+    department: "Operations",
+  },
+  {
+    key: "6",
+    id: "CD1234ABC6",
+    name: "Sarah Williams",
+    email: "sarah.williams@gmail.com",
+    contactNo: "(+33)7 00 55 59 32",
+    postCode: "2451",
+    poolingAddress: "1234 Oak Street, Boston",
+    avatar: "/images/asad.jpg?height=40&width=40",
+    status: "active",
+    position: "Agent",
+    department: "Field Operations",
+  },
+  {
+    key: "7",
+    id: "EF5678DEF7",
+    name: "Michael Brown",
+    email: "michael.brown@gmail.com",
+    contactNo: "(+33)7 00 55 59 33",
+    postCode: "2452",
+    poolingAddress: "5678 Pine Ave, Chicago",
+    avatar: "/images/asad.jpg?height=40&width=40",
+    status: "inactive",
+    position: "Junior Agent",
+    department: "Support",
+  },
+  {
+    key: "8",
+    id: "GH9012GHI8",
+    name: "Emily Davis",
+    email: "emily.davis@gmail.com",
+    contactNo: "(+33)7 00 55 59 34",
+    postCode: "2453",
+    poolingAddress: "9012 Maple Dr, Miami",
+    avatar: "/images/asad.jpg?height=40&width=40",
+    status: "active",
+    position: "Senior Agent",
+    department: "Operations",
+  },
+  {
+    key: "9",
+    id: "IJ3456JKL9",
+    name: "David Wilson",
+    email: "david.wilson@gmail.com",
+    contactNo: "(+33)7 00 55 59 35",
+    postCode: "2454",
+    poolingAddress: "3456 Cedar Ln, Seattle",
+    avatar: "/images/asad.jpg?height=40&width=40",
+    status: "active",
+    position: "Team Lead",
+    department: "Management",
+  },
+  {
+    key: "10",
+    id: "KL7890MNO0",
+    name: "Lisa Anderson",
+    email: "lisa.anderson@gmail.com",
+    contactNo: "(+33)7 00 55 59 36",
+    postCode: "2455",
+    poolingAddress: "7890 Birch St, Denver",
+    avatar: "/images/asad.jpg?height=40&width=40",
+    status: "active",
+    position: "Agent",
+    department: "Field Operations",
+  },
+  {
+    key: "11",
+    id: "MN1234PQR1",
+    name: "James Taylor",
+    email: "james.taylor@gmail.com",
+    contactNo: "(+33)7 00 55 59 37",
+    postCode: "2456",
+    poolingAddress: "1234 Elm Ave, Portland",
+    avatar: "/images/asad.jpg?height=40&width=40",
+    status: "inactive",
+    position: "Junior Agent",
+    department: "Support",
+  },
+  {
+    key: "12",
+    id: "OP5678STU2",
+    name: "Maria Garcia",
+    email: "maria.garcia@gmail.com",
+    contactNo: "(+33)7 00 55 59 38",
+    postCode: "2457",
+    poolingAddress: "5678 Willow Rd, Austin",
+    avatar: "/images/asad.jpg?height=40&width=40",
+    status: "active",
+    position: "Senior Agent",
+    department: "Operations",
+  },
+  {
+    key: "13",
+    id: "QR9012VWX3",
+    name: "Robert Martinez",
+    email: "robert.martinez@gmail.com",
+    contactNo: "(+33)7 00 55 59 39",
+    postCode: "2458",
+    poolingAddress: "9012 Spruce Blvd, Phoenix",
+    avatar: "/images/asad.jpg?height=40&width=40",
+    status: "active",
+    position: "Team Lead",
+    department: "Management",
+  },
+  {
+    key: "14",
+    id: "ST3456YZA4",
+    name: "Jennifer Lee",
+    email: "jennifer.lee@gmail.com",
+    contactNo: "(+33)7 00 55 59 40",
+    postCode: "2459",
+    poolingAddress: "3456 Poplar Way, Las Vegas",
+    avatar: "/images/asad.jpg?height=40&width=40",
+    status: "active",
+    position: "Agent",
+    department: "Field Operations",
+  },
+  {
+    key: "15",
+    id: "UV7890BCD5",
+    name: "Christopher White",
+    email: "christopher.white@gmail.com",
+    contactNo: "(+33)7 00 55 59 41",
+    postCode: "2460",
+    poolingAddress: "7890 Aspen Ct, San Diego",
+    avatar: "/images/asad.jpg?height=40&width=40",
+    status: "inactive",
+    position: "Junior Agent",
+    department: "Support",
   },
 ];
 
 export default function AgentsListPage() {
   const [searchText, setSearchText] = useState("");
   const [selectedRowKeys, setSelectedRowKeys] = useState<string[]>([]);
+  const [agents, setAgents] = useState(mockAgents);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [editingAgent, setEditingAgent] = useState<any>(null);
+  const [isAddMode, setIsAddMode] = useState(false);
+  const [form] = Form.useForm();
   const router = useRouter();
 
-  const filteredAgents = mockAgents.filter(
+  const filteredAgents = agents.filter(
     (agent) =>
       agent.name.toLowerCase().includes(searchText.toLowerCase()) ||
       agent.email.toLowerCase().includes(searchText.toLowerCase()) ||
-      agent.id.toLowerCase().includes(searchText.toLowerCase())
+      agent.id.toLowerCase().includes(searchText.toLowerCase()) ||
+      agent.position.toLowerCase().includes(searchText.toLowerCase()) ||
+      agent.department.toLowerCase().includes(searchText.toLowerCase())
   );
 
   const handleSelectAll = (checked: boolean) => {
@@ -94,6 +259,51 @@ export default function AgentsListPage() {
     } else {
       setSelectedRowKeys(selectedRowKeys.filter((k) => k !== key));
     }
+  };
+
+  const handleAdd = () => {
+    setEditingAgent(null);
+    setIsAddMode(true);
+    form.resetFields();
+    setIsModalVisible(true);
+  };
+
+  const handleFormSubmit = (values: any) => {
+    if (isAddMode) {
+      const newAgent = {
+        key: Date.now().toString(),
+        id: `AG${Date.now().toString().slice(-8)}`,
+        ...values,
+        avatar: "/images/asad.jpg?height=40&width=40",
+      };
+      setAgents([...agents, newAgent]);
+      message.success("Agent added successfully");
+    } else {
+      setAgents(
+        agents.map((agent) =>
+          agent.key === editingAgent.key
+            ? {
+                ...agent,
+                ...values,
+              }
+            : agent
+        )
+      );
+      message.success("Agent updated successfully");
+    }
+    setIsModalVisible(false);
+    setEditingAgent(null);
+    form.resetFields();
+  };
+
+  const handleUpdateStatus = (key: string, currentStatus: string) => {
+    const newStatus = currentStatus === "active" ? "inactive" : "active";
+    setAgents(
+      agents.map((agent) =>
+        agent.key === key ? { ...agent, status: newStatus } : agent
+      )
+    );
+    message.success(`Agent status updated to ${newStatus}`);
   };
 
   const isAllSelected =
@@ -142,7 +352,7 @@ export default function AgentsListPage() {
       ),
     },
     {
-      title: "email",
+      title: "Email",
       dataIndex: "email",
       key: "email",
     },
@@ -150,6 +360,16 @@ export default function AgentsListPage() {
       title: "Contact No",
       dataIndex: "contactNo",
       key: "contactNo",
+    },
+    {
+      title: "Position",
+      dataIndex: "position",
+      key: "position",
+    },
+    {
+      title: "Department",
+      dataIndex: "department",
+      key: "department",
     },
     {
       title: "Post Code",
@@ -160,6 +380,22 @@ export default function AgentsListPage() {
       title: "Pooling Address",
       dataIndex: "poolingAddress",
       key: "poolingAddress",
+    },
+    {
+      title: "Status",
+      dataIndex: "status",
+      key: "status",
+      render: (status: string) => (
+        <span
+          style={{
+            color: status === "active" ? "#52c41a" : "#ff4d4f",
+            fontWeight: "500",
+            textTransform: "capitalize",
+          }}
+        >
+          {status}
+        </span>
+      ),
     },
     {
       title: "Action",
@@ -175,6 +411,12 @@ export default function AgentsListPage() {
             }
             style={{ color: "#1890ff", fontSize: 20 }}
           />
+          {/* <Button
+            type="text"
+            icon={<EditOutlined />}
+            onClick={() => handleEdit(record)}
+            style={{ color: "#52c41a", fontSize: 20 }}
+          /> */}
           <Tooltip
             title={record?.status === "active" ? "Deactivate" : "Activate"}
           >
@@ -199,22 +441,6 @@ export default function AgentsListPage() {
       ),
     },
   ];
-
-  const handleUpdateStatus = (key: string, status: string) => {
-    // Implement your logic to update the status of the agent here
-    // You can use the key to identify the agent and update the status accordingly
-    // For example:
-    // const updatedAgents = mockAgents.map((agent) =>
-    //   agent.key === key ? { ...agent, status: status === "active" ? "inactive" : "active" } : agent
-    // );
-    // setMockAgents(updatedAgents);
-    toast.info("Status updated successfully");
-  };
-
-  const handleAddAgent = () => {
-    // router.push("/agents-list/add-agent");
-    toast.info("Add agent feature is coming soon");
-  };
 
   return (
     <div>
@@ -244,10 +470,8 @@ export default function AgentsListPage() {
                 borderRadius: "8px",
                 background:
                   "linear-gradient(135deg, #E1E3EB, #DDE0EA, #CEE9FF)",
-                // marginRight: 16,
               }}
             />
-
             <Button
               icon={<UnlockOutlined style={{ fontSize: "20px" }} />}
               style={{
@@ -265,13 +489,12 @@ export default function AgentsListPage() {
               }}
             />
             <Input
-              placeholder="Search by name, email, or designation"
+              placeholder="Search by name, email, position, or department"
               allowClear
               style={{
                 width: 350,
                 padding: "6px 12px 6px 6px",
                 borderRadius: "30px",
-                // marginRight: 16,
               }}
               prefix={
                 <SearchOutlined
@@ -299,7 +522,7 @@ export default function AgentsListPage() {
             }}
           />
           <Button
-            onClick={handleAddAgent}
+            onClick={handleAdd}
             type="primary"
             style={{
               backgroundColor: "#18953D",
@@ -316,6 +539,7 @@ export default function AgentsListPage() {
             <PlusOutlined />
           </Button>
         </div>
+
         <Table
           columns={columns}
           dataSource={filteredAgents}
@@ -326,17 +550,173 @@ export default function AgentsListPage() {
           }}
           size="middle"
           style={{ backgroundColor: "white" }}
+          scroll={{ x: 1200 }}
         />
       </div>
 
-      {/* <div
-        style={{
-          backgroundColor: "white",
-          borderRadius: "8px",
+      {/* Add/Edit Modal */}
+      <Modal
+        title={isAddMode ? "Add New Agent" : "Edit Agent"}
+        open={isModalVisible}
+        onCancel={() => {
+          setIsModalVisible(false);
+          setEditingAgent(null);
+          form.resetFields();
         }}
+        footer={null}
+        width={700}
+        closeIcon={<span style={{ fontSize: "20px", color: "#999" }}>×</span>}
       >
-        
-      </div> */}
+        <Form
+          form={form}
+          onFinish={handleFormSubmit}
+          layout="vertical"
+          style={{ marginTop: "24px" }}
+        >
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "1fr 1fr",
+              gap: "16px",
+            }}
+          >
+            <Form.Item
+              label="Name"
+              name="name"
+              rules={[{ required: true, message: "Please input name!" }]}
+            >
+              <Input
+                placeholder="Enter full name"
+                style={{ padding: "12px", borderRadius: "8px" }}
+              />
+            </Form.Item>
+
+            <Form.Item
+              label="Email"
+              name="email"
+              rules={[
+                { required: true, message: "Please input email!" },
+                { type: "email", message: "Please enter a valid email!" },
+              ]}
+            >
+              <Input
+                placeholder="Enter email address"
+                style={{ padding: "12px", borderRadius: "8px" }}
+              />
+            </Form.Item>
+          </div>
+
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "1fr 1fr",
+              gap: "16px",
+            }}
+          >
+            <Form.Item
+              label="Contact Number"
+              name="contactNo"
+              rules={[
+                { required: true, message: "Please input contact number!" },
+              ]}
+            >
+              <Input
+                placeholder="Enter contact number"
+                style={{ padding: "12px", borderRadius: "8px" }}
+              />
+            </Form.Item>
+
+            <Form.Item
+              label="Post Code"
+              name="postCode"
+              rules={[{ required: true, message: "Please input post code!" }]}
+            >
+              <Input
+                placeholder="Enter post code"
+                style={{ padding: "12px", borderRadius: "8px" }}
+              />
+            </Form.Item>
+          </div>
+
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "1fr 1fr",
+              gap: "16px",
+            }}
+          >
+            <Form.Item
+              label="Position"
+              name="position"
+              rules={[{ required: true, message: "Please select position!" }]}
+            >
+              <Select placeholder="Select position" style={{ height: "48px" }}>
+                <Option value="Junior Agent">Junior Agent</Option>
+                <Option value="Agent">Agent</Option>
+                <Option value="Senior Agent">Senior Agent</Option>
+                <Option value="Team Lead">Team Lead</Option>
+              </Select>
+            </Form.Item>
+
+            <Form.Item
+              label="Department"
+              name="department"
+              rules={[{ required: true, message: "Please select department!" }]}
+            >
+              <Select
+                placeholder="Select department"
+                style={{ height: "48px" }}
+              >
+                <Option value="Operations">Operations</Option>
+                <Option value="Field Operations">Field Operations</Option>
+                <Option value="Support">Support</Option>
+                <Option value="Management">Management</Option>
+              </Select>
+            </Form.Item>
+          </div>
+
+          <Form.Item
+            label="Pooling Address"
+            name="poolingAddress"
+            rules={[
+              { required: true, message: "Please input pooling address!" },
+            ]}
+          >
+            <Input
+              placeholder="Enter pooling address"
+              style={{ padding: "12px", borderRadius: "8px" }}
+            />
+          </Form.Item>
+
+          <Form.Item
+            label="Status"
+            name="status"
+            rules={[{ required: true, message: "Please select status!" }]}
+          >
+            <Select placeholder="Select status" style={{ height: "48px" }}>
+              <Option value="active">Active</Option>
+              <Option value="inactive">Inactive</Option>
+            </Select>
+          </Form.Item>
+
+          <Button
+            type="primary"
+            htmlType="submit"
+            block
+            style={{
+              backgroundColor: "#1BA0D9",
+              borderColor: "#1BA0D9",
+              borderRadius: "16px",
+              padding: "12px",
+              height: "48px",
+              fontSize: "16px",
+              marginTop: "24px",
+            }}
+          >
+            {isAddMode ? "Add Agent" : "Update Agent"}
+          </Button>
+        </Form>
+      </Modal>
     </div>
   );
 }

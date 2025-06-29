@@ -199,7 +199,7 @@ export default function ElectionAreaPage() {
   const handleDelete = (record: any) => {
     setCurrentArea(record);
     setDeleteModalVisible(true);
-    toast.success("Election area deleted successfully");
+    // toast.success("Election area deleted successfully");
   };
 
   const confirmDelete = () => {
@@ -208,7 +208,7 @@ export default function ElectionAreaPage() {
     );
     setDeleteModalVisible(false);
     setCurrentArea(null);
-    message.success("Election area deleted successfully");
+    toast.success("Election area deleted successfully");
   };
 
   const handleFormSubmit = (values: any) => {

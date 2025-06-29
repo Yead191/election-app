@@ -5,21 +5,22 @@ import {
   Layout,
   Typography,
   Button,
-  Collapse,
   Checkbox,
   Space,
   Modal,
   Form,
   Input,
   message,
-  Popconfirm,
-  ConfigProvider,
+  Divider,
+  Tooltip,
 } from "antd";
-import { EditOutlined, DeleteOutlined, PlusOutlined } from "@ant-design/icons";
+import { PlusOutlined } from "@ant-design/icons";
+import { FaRegTrashAlt } from "react-icons/fa";
+import { BsPencilSquare } from "react-icons/bs";
+import { toast } from "sonner";
 
 const { Header, Content } = Layout;
 const { Title, Paragraph } = Typography;
-const { Panel } = Collapse;
 const { TextArea } = Input;
 
 interface FAQItem {
@@ -55,7 +56,9 @@ export default function FAQDashboard() {
   ]);
 
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
   const [editingItem, setEditingItem] = useState<FAQItem | null>(null);
+  const [deletingItem, setDeletingItem] = useState<FAQItem | null>(null);
   const [form] = Form.useForm();
 
   const handleAddContent = () => {
@@ -73,9 +76,18 @@ export default function FAQDashboard() {
     setIsModalVisible(true);
   };
 
-  const handleDelete = (id: string) => {
-    setFaqItems(faqItems.filter((item) => item.id !== id));
-    message.success("FAQ item deleted successfully");
+  const handleDelete = (item: FAQItem) => {
+    setDeletingItem(item);
+    setIsDeleteModalVisible(true);
+  };
+
+  const confirmDelete = () => {
+    if (deletingItem) {
+      setFaqItems(faqItems.filter((item) => item.id !== deletingItem.id));
+      toast.success("FAQ item deleted successfully");
+      setIsDeleteModalVisible(false);
+      setDeletingItem(null);
+    }
   };
 
   const handleModalOk = () => {
@@ -89,7 +101,7 @@ export default function FAQDashboard() {
               : item
           )
         );
-        message.success("FAQ item updated successfully");
+        toast.success("FAQ item updated successfully");
       } else {
         // Add new item
         const newItem: FAQItem = {
@@ -99,7 +111,7 @@ export default function FAQDashboard() {
           selected: false,
         };
         setFaqItems([...faqItems, newItem]);
-        message.success("FAQ item added successfully");
+        toast.success("FAQ item added successfully");
       }
       setIsModalVisible(false);
       form.resetFields();
@@ -150,7 +162,12 @@ export default function FAQDashboard() {
               <Title
                 className="w-full shadow-md rounded-xl py-2 px-4"
                 level={5}
-                style={{ margin: 0, color: "#666", marginBottom: 9 }}
+                style={{
+                  margin: 0,
+                  color: "#666",
+                  marginBottom: 9,
+                  backgroundColor: "#F9F9F9",
+                }}
               >
                 {item.title}
               </Title>
@@ -161,32 +178,31 @@ export default function FAQDashboard() {
                   color: "#888",
                   fontSize: 14,
                   lineHeight: 1.6,
+                  backgroundColor: "#F9F9F9",
                 }}
               >
                 {item.content}
               </Paragraph>
             </div>
             <Space direction="vertical" size={4}>
-              <Button
-                type="text"
-                icon={<EditOutlined size={25} />}
-                size="large"
-                onClick={() => handleEdit(item)}
-                style={{ color: "#666" }}
-              />
-              <Popconfirm
-                title="Are you sure you want to delete this FAQ item?"
-                onConfirm={() => handleDelete(item.id)}
-                okText="Yes"
-                cancelText="No"
-              >
+              <Tooltip title="Edit">
                 <Button
                   type="text"
-                  icon={<DeleteOutlined size={25} />}
+                  icon={<BsPencilSquare size={20} />}
                   size="large"
-                  style={{ color: "#666" }}
+                  onClick={() => handleEdit(item)}
+                  style={{ color: "#58553A" }}
                 />
-              </Popconfirm>
+              </Tooltip>
+              <Tooltip title="Delete">
+                <Button
+                  type="text"
+                  icon={<FaRegTrashAlt size={20} />}
+                  size="large"
+                  onClick={() => handleDelete(item)}
+                  style={{ color: "#58553A" }}
+                />
+              </Tooltip>
             </Space>
           </div>
         </div>
@@ -199,17 +215,15 @@ export default function FAQDashboard() {
       style={{
         backgroundColor: "#fff",
         borderRadius: "8px",
-
-        padding: "16px  ",
+        padding: "16px",
       }}
     >
-      <Content style={{ padding: "16px " }}>
+      <Content style={{ padding: "16px", paddingBottom: 32 }}>
         <div
           style={{
             display: "flex",
             justifyContent: "end",
             alignItems: "center",
-            marginBottom: 32,
           }}
         >
           <Button
@@ -228,54 +242,178 @@ export default function FAQDashboard() {
             Add FAQ
           </Button>
         </div>
-
-        <div>{faqItems.map(renderFAQItem)}</div>
-
-        <ConfigProvider
-          theme={{
-            components: {
-              Modal: {
-                contentBg: "rgb(241,241,249)",
-                headerBg: "rgb(241,241,249)",
-              },
-            },
+        <div
+          style={{
+            height: "70vh",
+            overflowY: "auto",
+            paddingBottom: "24px",
+            marginTop: 10,
           }}
         >
-          <Modal
-            title={editingItem ? "Edit FAQ Item" : "Add New FAQ Item"}
-            open={isModalVisible}
-            onOk={handleModalOk}
-            onCancel={handleModalCancel}
-            width={600}
-            okText={editingItem ? "Update" : "Add"}
-          >
-            <Form
-              form={form}
-              layout="vertical"
+          {faqItems.map(renderFAQItem)}
+        </div>
+
+        {/* Custom Add/Edit Modal */}
+        <Modal
+          open={isModalVisible}
+          onCancel={handleModalCancel}
+          footer={null}
+          width={537}
+          closeIcon={<span style={{ fontSize: "20px", color: "#999" }}>×</span>}
+          styles={{
+            header: { borderBottom: "none", paddingBottom: 0 },
+            body: { paddingTop: 0 },
+          }}
+        >
+          <div style={{ padding: "0 8px" }}>
+            <h3
               style={{
-                marginTop: 16,
-                backgroundColor: "white",
-                padding: "12px 24px",
-                borderRadius: "16px",
+                fontSize: "18px",
+                fontWeight: "600",
+                marginBottom: "24px",
+                color: "#333",
+                // borderBottom: "1px solid #e8e8e8",
               }}
             >
+              Add/Edit FAQ
+            </h3>
+            <Divider
+              style={{
+                height: "1.5px",
+                backgroundColor: "#e8e8e8",
+              }}
+            />
+
+            <Form form={form} layout="vertical">
               <Form.Item
                 name="title"
-                label="Title"
+                label={
+                  <span style={{ color: "#666", fontSize: "14px" }}>
+                    Question
+                  </span>
+                }
                 rules={[{ required: true, message: "Please enter a title" }]}
+                style={{ marginBottom: "20px" }}
               >
-                <Input placeholder="Enter FAQ title" />
+                <Input
+                  placeholder="Our Story"
+                  style={{
+                    padding: "12px",
+                    borderRadius: "8px",
+                    border: "1px solid #d9d9d9",
+                    fontSize: "14px",
+                  }}
+                />
               </Form.Item>
+
               <Form.Item
                 name="content"
-                label="Content"
+                label={
+                  <span style={{ color: "#666", fontSize: "14px" }}>
+                    Answer
+                  </span>
+                }
                 rules={[{ required: true, message: "Please enter content" }]}
+                style={{ marginBottom: "32px" }}
               >
-                <TextArea rows={6} placeholder="Enter FAQ content" />
+                <TextArea
+                  rows={10}
+                  placeholder="Where your health is concerned, we believe you have the right to decide what to do with your body. That is why we offer you the opportunity to consult a licensed and registered EU"
+                  style={{
+                    padding: "12px",
+                    borderRadius: "8px",
+                    border: "1px solid #d9d9d9",
+                    fontSize: "14px",
+                    resize: "none",
+                  }}
+                />
               </Form.Item>
             </Form>
-          </Modal>
-        </ConfigProvider>
+
+            <Button
+              type="primary"
+              onClick={handleModalOk}
+              block
+              style={{
+                backgroundColor: "#1BA0D9",
+                borderColor: "#1BA0D9",
+                borderRadius: "16px",
+                padding: "12px",
+                height: "48px",
+                fontSize: "16px",
+                fontWeight: "500",
+              }}
+            >
+              Save & Change
+            </Button>
+          </div>
+        </Modal>
+
+        {/* Custom Delete Confirmation Modal */}
+        <Modal
+          open={isDeleteModalVisible}
+          onCancel={() => {
+            setIsDeleteModalVisible(false);
+            setDeletingItem(null);
+          }}
+          footer={null}
+          width={350}
+          centered
+          closeIcon={<span style={{ fontSize: "20px", color: "#999" }}>×</span>}
+        >
+          <div style={{ textAlign: "center", padding: "20px 16px" }}>
+            <h3
+              style={{
+                color: "#ff4d4f",
+                fontSize: "16px",
+                fontWeight: "600",
+                marginBottom: "12px",
+              }}
+            >
+              Are you sure !
+            </h3>
+            <p
+              style={{ color: "#666", fontSize: "14px", marginBottom: "24px" }}
+            >
+              Do you want to Delete a FAQ item
+            </p>
+            <div
+              style={{ display: "flex", gap: "12px", justifyContent: "center" }}
+            >
+              <Button
+                onClick={() => {
+                  setIsDeleteModalVisible(false);
+                  setDeletingItem(null);
+                }}
+                style={{
+                  backgroundColor: "#fff",
+                  borderColor: "#52c41a",
+                  color: "#52c41a",
+                  borderRadius: "6px",
+                  padding: "6px 20px",
+                  height: "auto",
+                  fontSize: "14px",
+                }}
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={confirmDelete}
+                style={{
+                  backgroundColor: "#ff4d4f",
+                  borderColor: "#ff4d4f",
+                  color: "#fff",
+                  borderRadius: "6px",
+                  padding: "6px 20px",
+                  height: "auto",
+                  fontSize: "14px",
+                }}
+              >
+                Confirm
+              </Button>
+            </div>
+          </div>
+        </Modal>
       </Content>
     </Layout>
   );

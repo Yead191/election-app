@@ -246,74 +246,68 @@ export default function PoolingDataPage() {
   ];
 
   return (
-    <div>
-      <Row style={{ marginBottom: "24px" }}>
-        <Col span={24}>
-          <Card>
-            {/* Header Section */}
-            <div
+    <div className="px-6 py-4 bg-white rounded-lg ">
+      {/* Header Section */}
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          marginBottom: "24px",
+        }}
+      >
+        {/* Left side - Back button */}
+        <Space size="large">
+          <Link href="/analytics/pooling-station-status">
+            <Button
+              icon={<ArrowLeftOutlined />}
+              type="text"
+              size="large"
+              style={{ padding: "4px 8px" }}
+            />
+          </Link>
+        </Space>
+
+        {/* Right side - Search, Date, Area */}
+        <Space size="large">
+          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+            <Button
+              icon={<FilePdfOutlined style={{ fontSize: "20px" }} />}
               style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-                marginBottom: "24px",
-                padding: "12px 0",
+                color: "#3A99D9",
+                padding: "19px",
+                borderRadius: "8px",
+                background:
+                  "linear-gradient(135deg, #E1E3EB, #DDE0EA, #CEE9FF)",
+                marginRight: 16,
               }}
-            >
-              {/* Left side - Back button */}
-              <Space size="large">
-                <Link href="/analytics/pooling-station-status">
-                  <Button
-                    icon={<ArrowLeftOutlined />}
-                    type="text"
-                    size="large"
-                    style={{ padding: "4px 8px" }}
-                  />
-                </Link>
-              </Space>
+            />
 
-              {/* Right side - Search, Date, Area */}
-              <Space size="large">
-                <div
-                  style={{ display: "flex", alignItems: "center", gap: "8px" }}
-                >
-                  <Button
-                    icon={<FilePdfOutlined style={{ fontSize: "20px" }} />}
-                    style={{
-                      color: "#3A99D9",
-                      padding: "19px",
-                      borderRadius: "8px",
-                      background:
-                        "linear-gradient(135deg, #E1E3EB, #DDE0EA, #CEE9FF)",
-                      marginRight: 16,
-                    }}
-                  />
-
-                  <Input
-                    placeholder="Search by name, email, or designation"
-                    allowClear
-                    style={{
-                      width: 350,
-                      padding: "6px 12px 6px 6px",
-                      borderRadius: "30px",
-                      marginRight: 16,
-                    }}
-                    prefix={
-                      <SearchOutlined
-                        style={{
-                          fontSize: "16px",
-                          borderRadius: "50%",
-                          padding: "6px",
-                          backgroundColor: "#B7DBC9",
-                        }}
-                      />
-                    }
-                    value={searchText}
-                    onChange={(e) => {
-                      setSearchText(e.target.value);
-                    }}
-                  />
-                  {/* <AutoComplete
+            <Input
+              placeholder="Search by name, email, or designation"
+              allowClear
+              style={{
+                width: 350,
+                padding: "6px 12px 6px 6px",
+                borderRadius: "30px",
+                marginRight: 16,
+              }}
+              prefix={
+                <SearchOutlined
+                  style={{
+                    fontSize: "16px",
+                    borderRadius: "50%",
+                    padding: "6px",
+                    backgroundColor: "#B7DBC9",
+                  }}
+                />
+              }
+              value={searchText}
+              onChange={(e) => {
+                setSearchText(e.target.value);
+              }}
+            />
+            {/* <AutoComplete
                     className="shadow-2xl"
                     style={{ width: 330, marginTop: "-12px", marginRight: 24 }}
                     options={searchOptions}
@@ -340,54 +334,51 @@ export default function PoolingDataPage() {
                       }}
                     />
                   </AutoComplete> */}
-                  <DatePicker
-                    placeholder="Date"
-                    suffixIcon={<CalendarOutlined />}
-                    style={{
-                      width: 120,
-                      height: "40px",
-                      borderRadius: "6px",
-                    }}
-                  />
-                </div>
+            <DatePicker
+              placeholder="Date"
+              suffixIcon={<CalendarOutlined />}
+              style={{
+                width: 120,
+                height: "40px",
+                borderRadius: "6px",
+              }}
+            />
+          </div>
 
-                <Select
-                  value={selectedArea}
-                  onChange={handleAreaChange}
-                  style={{
-                    width: 140,
-                    height: "40px",
-                  }}
-                  suffixIcon={<DownOutlined />}
-                >
-                  {areas.map((area) => (
-                    <Option key={area} value={area}>
-                      {area}
-                    </Option>
-                  ))}
-                </Select>
-              </Space>
-            </div>
+          <Select
+            value={selectedArea}
+            onChange={handleAreaChange}
+            style={{
+              width: 140,
+              height: "40px",
+            }}
+            suffixIcon={<DownOutlined />}
+          >
+            {areas.map((area) => (
+              <Option key={area} value={area}>
+                {area}
+              </Option>
+            ))}
+          </Select>
+        </Space>
+      </div>
 
-            {/* Data Table */}
-            <div className="overflow-hidden max-w-[99%]">
-              <Table
-                columns={columns}
-                dataSource={filteredData}
-                // scroll={{ y: 510 }}
-                pagination={{
-                  pageSize: 10,
-                  showSizeChanger: true,
-                  showQuickJumper: true,
-                  showTotal: (total, range) =>
-                    `${range[0]}-${range[1]} of ${total} submissions`,
-                }}
-                size="middle"
-              />
-            </div>
-          </Card>
-        </Col>
-      </Row>
+      {/* Data Table */}
+      <div className="overflow-hidden max-w-[99%]">
+        <Table
+          columns={columns}
+          dataSource={filteredData}
+          // scroll={{ y: 510 }}
+          pagination={{
+            pageSize: 10,
+            // showSizeChanger: true,
+            // showQuickJumper: true,
+            // showTotal: (total, range) =>
+            //   `${range[0]}-${range[1]} of ${total} submissions`,
+          }}
+          size="middle"
+        />
+      </div>
     </div>
   );
 }

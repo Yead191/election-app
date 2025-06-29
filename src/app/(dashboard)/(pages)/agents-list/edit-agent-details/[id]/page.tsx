@@ -205,7 +205,7 @@ export default function EditAgentPage() {
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
-            marginBottom: "24px",
+            marginBottom: "12px",
           }}
         >
           <Button
