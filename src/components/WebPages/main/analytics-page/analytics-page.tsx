@@ -17,6 +17,7 @@ import { Card, Row, Col, Typography } from "antd";
 import { ExportOutlined } from "@ant-design/icons";
 import PollingStationTable from "./PollingStationTable";
 import { limitedPollingStations } from "@/data/polling-stations";
+import pieImg from "@/party/pieImg.png";
 
 const { Title, Text } = Typography;
 
@@ -214,6 +215,20 @@ export default function ElectionAnalytics() {
                 </Pie>
                 <Tooltip
                   formatter={(value) => [value.toLocaleString(), "Votes"]}
+                />
+                {/* Add the image in the center */}
+                <image
+                  x="39.6%"
+                  y="22%"
+                  width={100}
+                  height={100}
+                  href={"/party/pieImg.png"}
+                  style={{
+                    clipPath: `circle(40px at center)`,
+                  }}
+                  onError={(e) => {
+                    e.currentTarget.style.display = "none";
+                  }}
                 />
               </PieChart>
             </ResponsiveContainer>

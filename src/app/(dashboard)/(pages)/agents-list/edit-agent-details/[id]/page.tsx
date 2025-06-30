@@ -1,5 +1,5 @@
 "use client";
-import { Button, Input, Form, Upload } from "antd";
+import { Button, Input, Form, Upload, Tooltip } from "antd";
 import {
   ArrowLeftOutlined,
   EditOutlined,
@@ -12,6 +12,7 @@ import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 import { useState } from "react";
 import Image from "next/image";
+import { BsPencilSquare } from "react-icons/bs";
 
 export default function EditAgentPage() {
   const router = useRouter();
@@ -68,24 +69,33 @@ export default function EditAgentPage() {
               style={{ fontSize: "16px" }}
             />
             <div style={{ display: "flex", gap: "8px" }}>
-              <Button
-                icon={<SettingOutlined />}
-                onClick={() =>
-                  router.push(
-                    `/agents-list/edit-agent-details/${params.id}?mode=settings`
-                  )
-                }
-                style={{ borderRadius: "6px" }}
-              />
-              <Button
-                icon={<EditOutlined />}
-                onClick={() =>
-                  router.push(
-                    `/agents-list/edit-agent-details/${params.id}?mode=edit`
-                  )
-                }
-                style={{ borderRadius: "6px" }}
-              />
+              <Tooltip title="Change Password">
+                <Button
+                  icon={<SettingOutlined />}
+                  onClick={() =>
+                    router.push(
+                      `/agents-list/edit-agent-details/${params.id}?mode=settings`
+                    )
+                  }
+                  style={{
+                    borderRadius: "6px",
+                    fontSize: 20,
+                    padding: 6,
+                    color: isSettingsMode ? "#1BA0D9" : "black",
+                  }}
+                />
+              </Tooltip>
+              <Tooltip title="Edit Profile">
+                <Button
+                  icon={<BsPencilSquare />}
+                  onClick={() =>
+                    router.push(
+                      `/agents-list/edit-agent-details/${params.id}?mode=edit`
+                    )
+                  }
+                  style={{ borderRadius: "6px", fontSize: 20, padding: 6 }}
+                />
+              </Tooltip>
             </div>
           </div>
 
@@ -215,24 +225,33 @@ export default function EditAgentPage() {
             style={{ fontSize: "16px" }}
           />
           <div style={{ display: "flex", gap: "8px" }}>
-            <Button
-              icon={<SettingOutlined />}
-              onClick={() =>
-                router.push(
-                  `/agents-list/edit-agent-details/${params.id}?mode=settings`
-                )
-              }
-              style={{ borderRadius: "6px" }}
-            />
-            <Button
-              icon={<EditOutlined />}
-              onClick={() =>
-                router.push(
-                  `/agents-list/edit-agent-details/${params.id}?mode=edit`
-                )
-              }
-              style={{ borderRadius: "6px" }}
-            />
+            <Tooltip title="Change Password">
+              <Button
+                icon={<SettingOutlined />}
+                onClick={() =>
+                  router.push(
+                    `/agents-list/edit-agent-details/${params.id}?mode=settings`
+                  )
+                }
+                style={{ borderRadius: "6px", fontSize: 20, padding: 6 }}
+              />
+            </Tooltip>
+            <Tooltip title="Edit Profile">
+              <Button
+                icon={<BsPencilSquare />}
+                onClick={() =>
+                  router.push(
+                    `/agents-list/edit-agent-details/${params.id}?mode=edit`
+                  )
+                }
+                style={{
+                  borderRadius: "6px",
+                  fontSize: 20,
+                  padding: 6,
+                  color: !isSettingsMode ? "#1BA0D9" : "#000",
+                }}
+              />
+            </Tooltip>
           </div>
         </div>
 
@@ -291,7 +310,7 @@ export default function EditAgentPage() {
                     border: "2px dashed #d9d9d9",
                     borderRadius: "8px",
                     padding: "40px",
-                    
+
                     textAlign: "center",
                     backgroundColor: "#fafafa",
                     marginBottom: "6px",

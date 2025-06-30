@@ -11,6 +11,7 @@ import {
 import { useRouter, useParams } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
+import { BsPencilSquare } from "react-icons/bs";
 
 const mockAgentData = {
   name: "Asadujjaman Mahfuz",
@@ -30,7 +31,9 @@ export default function AgentProfilePage() {
   const [status, setStatus] = useState("active");
   const handleUpdateStatus = (status: string) => {
     setStatus(status === "active" ? "inactive" : "active");
-    toast.success(`Status updated to ${status === "active" ? "inactive" : "active"}!`);
+    toast.success(
+      `Status updated to ${status === "active" ? "inactive" : "active"}!`
+    );
   };
 
   return (
@@ -59,24 +62,28 @@ export default function AgentProfilePage() {
             style={{ fontSize: "16px" }}
           />
           <Space>
-            <Button
-              icon={<SettingOutlined />}
-              onClick={() =>
-                router.push(
-                  `/agents-list/edit-agent-details/${params.id}?mode=settings`
-                )
-              }
-              style={{ borderRadius: "6px" }}
-            />
-            <Button
-              icon={<EditOutlined />}
-              onClick={() =>
-                router.push(
-                  `/agents-list/edit-agent-details/${params.id}?mode=edit`
-                )
-              }
-              style={{ borderRadius: "6px" }}
-            />
+            <Tooltip title="Change Password">
+              <Button
+                icon={<SettingOutlined />}
+                onClick={() =>
+                  router.push(
+                    `/agents-list/edit-agent-details/${params.id}?mode=settings`
+                  )
+                }
+                style={{ borderRadius: "6px", fontSize: 20, padding: 6 }}
+              />
+            </Tooltip>
+            <Tooltip title="Edit Profile">
+              <Button
+                icon={<BsPencilSquare />}
+                onClick={() =>
+                  router.push(
+                    `/agents-list/edit-agent-details/${params.id}?mode=edit`
+                  )
+                }
+                style={{ borderRadius: "6px", fontSize: 20, padding: 6 }}
+              />
+            </Tooltip>
           </Space>
         </div>
 
