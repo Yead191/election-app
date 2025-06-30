@@ -39,11 +39,21 @@ export default function DashboardSidebar({
   const [selectedKey, setSelectedKey] = useState("analytics");
   const router = useRouter();
   const pathname = usePathname();
-
+  const [hasNewPollingData, setHasNewPollingData] = useState(false);
   // console.log(pathname);
   useEffect(() => {
     setSelectedKey(pathname.split("/")[1] || "analytics");
   }, [pathname]);
+
+  // useEffect(() => {
+  //   // Example: Check for new data every 5 seconds
+  //   const interval = setInterval(() => {
+  //     // Simulate new data (e.g., random condition)
+  //     setHasNewPollingData(Math.random() > 0.5);
+  //   }, 5000);
+
+  //   return () => clearInterval(interval);
+  // }, []);
 
   const menuItems = [
     {
@@ -54,7 +64,11 @@ export default function DashboardSidebar({
     {
       key: "polling-data",
       icon: <FileTextOutlined />,
-      label: "Polling Data",
+      label: (
+        <Badge count={4} offset={[15, 0]} size="small" >
+          Polling Data
+        </Badge>
+      ),
     },
     {
       key: "agents-list",

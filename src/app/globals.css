@@ -63,6 +63,17 @@ body {
 .ant-menu-item-selected:hover {
   color: white !important;
 }
+.ant-menu-item-selected .ant-badge:hover {
+  color: white !important;
+}
+.ant-menu-item-selected .ant-badge {
+  font-weight: 500 !important;
+  color: white !important;
+}
+.ant-badge-count {
+  background-color: #eec10b !important;
+  color: #0a0a0a !important;
+}
 
 /* .ant-menu-submenu-active {
   color: #1BA0D9 !important;
