@@ -132,31 +132,34 @@ export default function PoolingStationStatusPage() {
   };
 
   return (
-    <div>
-      <Row style={{ marginBottom: "24px" }}>
-        <Col span={24}>
-          <Card>
-            {/* Header Section */}
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-                marginBottom: "24px",
-                padding: "12px 0",
-              }}
-            >
-              {/* Left side - Back button and Export */}
-              <Space size="large">
-                <Link href="/analytics">
-                  <Button
-                    icon={<ArrowLeftOutlined />}
-                    type="text"
-                    size="large"
-                    style={{ padding: "4px 8px" }}
-                  />
-                </Link>
-                {/* <Button
+    <div
+      style={{
+        marginBottom: "24px",
+        padding: "16px 24px",
+        backgroundColor: "#fff",
+      }}
+    >
+      {/* Header Section */}
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          marginBottom: "24px",
+          paddingRight:20
+        }}
+      >
+        {/* Left side - Back button and Export */}
+        <Space size="large">
+          <Link href="/analytics">
+            <Button
+              icon={<ArrowLeftOutlined />}
+              type="text"
+              size="large"
+              style={{ padding: "4px 8px" }}
+            />
+          </Link>
+          {/* <Button
                   icon={<DownloadOutlined />}
                   type="text"
                   size="large"
@@ -166,95 +169,93 @@ export default function PoolingStationStatusPage() {
                     padding: "4px 8px",
                   }}
                 /> */}
-              </Space>
+        </Space>
 
-              {/* Right side - Search, Date, Area */}
-              <Space size="large">
-                {/* Search Input with Dropdown */}
+        {/* Right side - Search, Date, Area */}
+        <Space size="large">
+          {/* Search Input with Dropdown */}
 
-                {/* Date Picker */}
-                <div
-                  style={{ display: "flex", alignItems: "center", gap: "8px" }}
-                >
-                  <Button
-                    onClick={() => toast.info("Feature coming soon...")}
-                    className="bg-blue-500"
-                    icon={<FilePdfOutlined style={{ fontSize: "20px" }} />}
+          {/* Date Picker */}
+          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+            <Button
+              onClick={() => toast.info("Feature coming soon...")}
+              className="bg-blue-500"
+              icon={<FilePdfOutlined style={{ fontSize: "20px" }} />}
+              style={{
+                color: "#3A99D9",
+                padding: "19px",
+                borderRadius: "8px",
+                background:
+                  "linear-gradient(135deg, #E1E3EB, #DDE0EA, #CEE9FF)",
+                //   backgroundColor:
+                //   "linear-gradient(to right, #E1E3EB, #DDE0EA, #CEE9FF)",
+                //   height: "40px",
+                marginRight: 16,
+              }}
+            />
+            <AutoComplete
+              className="shadow-2xl"
+              style={{ width: 350, marginTop: "-12px" }}
+              options={searchOptions}
+              onSelect={handleSearchSelect}
+              onSearch={handleSearch}
+              allowClear
+            >
+              <Input
+                placeholder="Search here"
+                prefix={
+                  <SearchOutlined
                     style={{
-                      color: "#3A99D9",
-                      padding: "19px",
-                      borderRadius: "8px",
-                      background:
-                        "linear-gradient(135deg, #E1E3EB, #DDE0EA, #CEE9FF)",
-                      //   backgroundColor:
-                      //   "linear-gradient(to right, #E1E3EB, #DDE0EA, #CEE9FF)",
-                      //   height: "40px",
-                      marginRight: 16,
+                      fontSize: "20px",
+                      borderRadius: "50%",
+                      padding: "6px",
+                      backgroundColor: "#B7DBC9",
                     }}
                   />
-                  <AutoComplete
-                    className="shadow-2xl"
-                    style={{ width: 350, marginTop: "-12px" }}
-                    options={searchOptions}
-                    onSelect={handleSearchSelect}
-                    onSearch={handleSearch}
-                    allowClear
-                  >
-                    <Input
-                      placeholder="Search here"
-                      prefix={
-                        <SearchOutlined
-                          style={{
-                            fontSize: "20px",
-                            borderRadius: "50%",
-                            padding: "6px",
-                            backgroundColor: "#B7DBC9",
-                          }}
-                        />
-                      }
-                      style={{
-                        width: 335,
-                        padding: "6px 8px",
-                        borderRadius: "30px",
-                      }}
-                    />
-                  </AutoComplete>
-                  <DatePicker
-                    placeholder="Date"
-                    suffixIcon={<CalendarOutlined />}
-                    style={{
-                      width: 120,
-                      height: "40px",
-                      borderRadius: "6px",
-                    }}
-                  />
-                </div>
+                }
+                style={{
+                  width: 335,
+                  padding: "6px 8px",
+                  borderRadius: "30px",
+                }}
+              />
+            </AutoComplete>
+            <DatePicker
+              placeholder="Date"
+              suffixIcon={<CalendarOutlined />}
+              style={{
+                width: 120,
+                height: "40px",
+                borderRadius: "6px",
+              }}
+            />
+          </div>
 
-                {/* Area Dropdown */}
-                <Select
-                  value={selectedArea}
-                  onChange={handleAreaChange}
-                  style={{
-                    width: 140,
-                    height: "40px",
-                  }}
-                  suffixIcon={<DownOutlined />}
-                >
-                  {areas.map((area) => (
-                    <Option key={area} value={area}>
-                      {area}
-                    </Option>
-                  ))}
-                </Select>
-              </Space>
-            </div>
+          {/* Area Dropdown */}
+          <Select
+            value={selectedArea}
+            onChange={handleAreaChange}
+            style={{
+              width: 140,
+              height: "40px",
+            }}
+            suffixIcon={<DownOutlined />}
+          >
+            {areas.map((area) => (
+              <Option key={area} value={area}>
+                {area}
+              </Option>
+            ))}
+          </Select>
+        </Space>
+      </div>
 
-            {/* <Title level={3} style={{ margin: "16px 0 24px 0" }}>
+      {/* <Title level={3} style={{ margin: "16px 0 24px 0" }}>
               Pooling Station Status - Complete View
             </Title> */}
 
-            {/* Results Summary */}
-            {/* <div style={{ marginBottom: "16px" }}>
+      {/* Results Summary */}
+      {/* <div style={{ marginBottom: "16px" }}>
               <Typography.Text type="secondary">
                 Showing {filteredData.length} of {allPollingStations.length}{" "}
                 polling stations
@@ -263,21 +264,18 @@ export default function PoolingStationStatusPage() {
               </Typography.Text>
             </div> */}
 
-            {/* Full Table */}
-            <PollingStationTable
-              dataSource={filteredData}
-              pagination={{
-                pageSize: 20,
-                // showSizeChanger: true,
-                // showQuickJumper: true,
-                // showTotal: (total, range) =>
-                //   `${range[0]}-${range[1]} of ${total} stations`,
-              }}
-              scroll={{ x: 700, y: 510 }}
-            />
-          </Card>
-        </Col>
-      </Row>
+      {/* Full Table */}
+      <PollingStationTable
+        dataSource={filteredData}
+        pagination={{
+          pageSize: 20,
+          // showSizeChanger: true,
+          // showQuickJumper: true,
+          // showTotal: (total, range) =>
+          //   `${range[0]}-${range[1]} of ${total} stations`,
+        }}
+        scroll={{ x: 700, y: 510 }}
+      />
     </div>
   );
 }

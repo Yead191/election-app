@@ -112,3 +112,6 @@ div.custom-table .ant-table-body::-webkit-scrollbar-thumb:hover {
 
 /* Custom autocomplete input */
 
+::-webkit-scrollbar-button {
+  display: none;
+}

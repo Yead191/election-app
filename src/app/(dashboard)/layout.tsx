@@ -60,7 +60,7 @@ const layout = ({ children }: { children: ReactNode }) => {
             {formatPathName(targetSlug)}
           </Title>
           <Space style={{ gap: "30px" }} size="middle">
-            <Link href={"/notification"}>
+            <Link href={"/notifications"}>
               <Badge dot>
                 <BellOutlined
                   style={{
@@ -74,7 +74,7 @@ const layout = ({ children }: { children: ReactNode }) => {
                 />
               </Badge>
             </Link>
-            <Link href={"/admin-profile"} className="flex items-center gap-2">
+            <Link href={"/my-profile"} className="flex items-center gap-2">
               <Avatar src="/assets/user1.jpg?height=40&width=40" size={40} />
               <span className="leading-6 font-semibold text-black">
                 Admin Yead

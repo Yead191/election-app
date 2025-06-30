@@ -20,6 +20,7 @@ import {
 } from "@ant-design/icons";
 import { BsPencilSquare } from "react-icons/bs";
 import { FaRegTrashAlt } from "react-icons/fa";
+import { toast } from "sonner";
 
 const mockTeams = [
   {
@@ -114,7 +115,7 @@ export default function NominatedTeamPage() {
     setTeams(teams.filter((team) => team.key !== currentTeam.key));
     setDeleteModalVisible(false);
     setCurrentTeam(null);
-    message.success("Team deleted successfully");
+    toast.success("Team deleted successfully");
   };
 
   const handleFormSubmit = (values: any) => {
@@ -126,7 +127,7 @@ export default function NominatedTeamPage() {
         teamLogo: imageUrl || "/placeholder.svg?height=60&width=60",
       };
       setTeams([...teams, newTeam]);
-      message.success("Team added successfully");
+      toast.success("Team added successfully");
     } else {
       setTeams(
         teams.map((team) =>
@@ -139,7 +140,7 @@ export default function NominatedTeamPage() {
             : team
         )
       );
-      message.success("Team updated successfully");
+      toast.success("Team updated successfully");
     }
     setEditModalVisible(false);
     setCurrentTeam(null);

@@ -383,12 +383,14 @@ export default function ManageAdminPage() {
               }}
             />
           </Tooltip>
-          <Button
-            type="text"
-            icon={<FaRegTrashAlt />}
-            onClick={() => handleDelete(record)}
-            style={{ color: "#999999", fontSize: 20 }}
-          />
+          <Tooltip title="Delete">
+            <Button
+              type="text"
+              icon={<FaRegTrashAlt />}
+              onClick={() => handleDelete(record)}
+              style={{ color: "#999999", fontSize: 20 }}
+            />
+          </Tooltip>
         </Space>
       ),
     },
