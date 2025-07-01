@@ -219,12 +219,14 @@ export default function ElectionAnalytics() {
                 {/* Add the image in the center */}
                 <image
                   x="39.6%"
-                  y="22%"
+                  y="21%"
                   width={100}
                   height={100}
                   href={"/party/party1.jpg"}
                   style={{
                     clipPath: `circle(50px at center)`,
+                    overflow: "hidden",
+                    borderRadius: "90%",
                   }}
                   onError={(e) => {
                     e.currentTarget.style.display = "none";
