@@ -177,7 +177,14 @@ export default function PoolingDetailsPage() {
             </div>
 
             {/* Additional Details */}
-            <div style={{ fontSize: "12px", color: "#4E4E4E", lineHeight: 2, fontWeight: 400 }}>
+            <div
+              style={{
+                fontSize: "12px",
+                color: "#4E4E4E",
+                lineHeight: 2,
+                fontWeight: 400,
+              }}
+            >
               <div>
                 <strong style={{ color: "#999999", fontSize: "14px" }}>
                   Name

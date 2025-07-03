@@ -65,7 +65,7 @@ export default function DashboardSidebar({
       key: "polling-data",
       icon: <FileTextOutlined />,
       label: (
-        <Badge count={4} offset={[15, 0]} size="small" >
+        <Badge count={4} offset={[15, 0]} size="small">
           Polling Data
         </Badge>
       ),

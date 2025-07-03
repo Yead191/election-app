@@ -445,6 +445,7 @@ export default function AgentsListPage() {
   return (
     <div>
       <div
+        className=""
         style={{
           backgroundColor: "white",
           padding: "16px 24px",

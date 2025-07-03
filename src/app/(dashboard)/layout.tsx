@@ -83,8 +83,17 @@ const layout = ({ children }: { children: ReactNode }) => {
           </Space>
         </div>
 
-        {/* Page content below fixed header */}
-        <div className="mt-[84px] p-6">{children}</div>
+        <div
+          className="mt-[84px] p-6 "
+          style={{
+            position: "fixed",
+            left: "260px",
+            right: 0,
+            padding: "22px 24px",
+          }}
+        >
+          {children}
+        </div>
       </div>
     </div>
   );
