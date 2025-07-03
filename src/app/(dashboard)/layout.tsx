@@ -84,7 +84,7 @@ const layout = ({ children }: { children: ReactNode }) => {
         </div>
 
         <div
-          className="mt-[84px] p-6 "
+          className="mt-[84px] p-6 overflow-x-auto"
           style={{
             position: "fixed",
             left: "260px",

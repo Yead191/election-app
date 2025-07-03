@@ -246,21 +246,25 @@ export default function PoolingDataPage() {
   ];
 
   return (
-    <div className="bg-white">
-      <Table
-        className="overflow-x-auto w-full"
-        columns={columns}
-        dataSource={filteredData}
-        // scroll={{ y: 510 }}
-        pagination={{
-          pageSize: 10,
-          // showSizeChanger: true,
-          // showQuickJumper: true,
-          // showTotal: (total, range) =>
-          //   `${range[0]}-${range[1]} of ${total} submissions`,
-        }}
-        size="middle"
-      />
+    <div className="px-6 py-4 bg-white rounded-lg ">
+      {/* Header Section */}
+
+      {/* Data Table */}
+      <div className="w-full">
+        <Table
+          columns={columns}
+          dataSource={filteredData}
+          // scroll={{ y: 510 }}
+          pagination={{
+            pageSize: 10,
+            // showSizeChanger: true,
+            // showQuickJumper: true,
+            // showTotal: (total, range) =>
+            //   `${range[0]}-${range[1]} of ${total} submissions`,
+          }}
+          size="middle"
+        />
+      </div>
     </div>
   );
 }
