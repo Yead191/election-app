@@ -24,7 +24,7 @@ export default function PollingStationTable({
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedStation, setSelectedStation] = useState(null);
   const pathname = usePathname();
-// console.log(pathname);
+  // console.log(pathname);
   const showModal = (station: any) => {
     setSelectedStation(station);
     setIsModalVisible(true);
@@ -40,14 +40,14 @@ export default function PollingStationTable({
       title: "Postal Code",
       dataIndex: "postCode",
       key: "postCode",
-      width: 110,
+      width: 80,
       sorter: (a: any, b: any) => a.postCode.localeCompare(b.postCode),
     },
     {
       title: "Area Name",
       dataIndex: "name",
       key: "name",
-      width: 110,
+      width: 80,
       filters: [
         { text: "Tiki", value: "Tiki" },
         { text: "Sendo", value: "Sendo" },
@@ -60,13 +60,13 @@ export default function PollingStationTable({
       title: "Pooling Address",
       dataIndex: "address",
       key: "address",
-      width: 250,
+      width: 100,
     },
     {
       title: "Sending Time",
       dataIndex: "sendingTime",
       key: "sendingTime",
-      width: 150,
+      width: 80,
     },
     {
       title: "CRM",
@@ -79,6 +79,7 @@ export default function PollingStationTable({
           {value.toLocaleString()}
         </Text>
       ),
+      width: 70,
     },
     {
       title: "CPDM",
@@ -87,6 +88,7 @@ export default function PollingStationTable({
       align: "center" as const,
       sorter: (a: any, b: any) => a.CPDM - b.CPDM,
       render: (value: any) => <Text strong>{value.toLocaleString()}</Text>,
+      width: 80,
     },
     {
       title: "APC",
@@ -99,6 +101,7 @@ export default function PollingStationTable({
           {value.toLocaleString()}
         </Text>
       ),
+      width: 60,
     },
     {
       title: "APT/ATP",
@@ -107,6 +110,7 @@ export default function PollingStationTable({
       align: "center" as const,
       sorter: (a: any, b: any) => a["APT/ATP"] - b["APT/ATP"],
       render: (value: any) => <Text strong>{value.toLocaleString()}</Text>,
+      width: 70,
     },
     {
       title: "SDF",
@@ -119,6 +123,7 @@ export default function PollingStationTable({
           {value.toLocaleString()}
         </Text>
       ),
+      width: 60,
     },
     {
       title: "UDC",
@@ -127,7 +132,9 @@ export default function PollingStationTable({
       align: "center" as const,
       sorter: (a: any, b: any) => a.UDC - b.UDC,
       render: (value: any) => <Text strong>{value.toLocaleString()}</Text>,
+      width: 65,
     },
+
     {
       title: "PMSC",
       dataIndex: "PMSC",
@@ -135,12 +142,13 @@ export default function PollingStationTable({
       align: "center" as const,
       sorter: (a: any, b: any) => a.PMSC - b.PMSC,
       render: (value: any) => <Text strong>{value.toLocaleString()}</Text>,
+      width: 70,
     },
     {
       title: "Action",
       key: "action",
       align: "right" as const,
-      width: 120,
+      width: 70,
       render: (_: any, record: any) => (
         <Space>
           <Button

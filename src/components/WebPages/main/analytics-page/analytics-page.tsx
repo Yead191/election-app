@@ -1,4 +1,5 @@
 "use client";
+import { useRef, useEffect, useState } from "react";
 
 import Link from "next/link";
 import {
@@ -139,7 +140,34 @@ const CustomLogoLabel = (props: any) => {
   );
 };
 
+// pie
+
 export default function ElectionAnalytics() {
+  const chartRef = useRef(null);
+  const [imagePos, setImagePos] = useState({ x: 180 - 40, y: 90 - 40 }); 
+
+  useEffect(() => {
+    const updatePosition = () => {
+      if (chartRef.current) {
+        const { offsetWidth, offsetHeight } = chartRef.current;
+        const cx = offsetWidth * 0.5;
+        const cy = offsetHeight * 0.5;
+        const imageSize = 80; 
+        setImagePos({
+          x: cx - imageSize / 2,
+          y: cy - imageSize / 2,
+        });
+      }
+    };
+
+    updatePosition(); // Initial calculation
+    window.addEventListener("resize", updatePosition); 
+    window.addEventListener("zoom", updatePosition); 
+    return () => {
+      window.removeEventListener("resize", updatePosition);
+      window.removeEventListener("zoom", updatePosition);
+    };
+  }, []);
   return (
     <div>
       {/* Voting Results Section */}
@@ -198,7 +226,7 @@ export default function ElectionAnalytics() {
         {/* Pie Chart */}
         <Col xs={24} lg={8}>
           <Card style={{ height: "400px" }}>
-            <ResponsiveContainer width="100%" height={180}>
+            <ResponsiveContainer width="100%" height={180} ref={chartRef}>
               <PieChart>
                 <Pie
                   data={pieData}
@@ -216,17 +244,15 @@ export default function ElectionAnalytics() {
                 <Tooltip
                   formatter={(value) => [value.toLocaleString(), "Votes"]}
                 />
-                {/* Add the image in the center */}
+                {/* Larger single image in the center */}
                 <image
-                  x="39.6%"
-                  y="21%"
-                  width={100}
-                  height={100}
-                  href={"/party/party1.jpg"}
+                  x={imagePos.x}
+                  y={imagePos.y}
+                  width={80}
+                  height={80}
+                  href="/party/party1.jpg"
                   style={{
-                    clipPath: `circle(50px at center)`,
-                    overflow: "hidden",
-                    borderRadius: "90%",
+                    clipPath: `circle(40px at center)`,
                   }}
                   onError={(e) => {
                     e.currentTarget.style.display = "none";

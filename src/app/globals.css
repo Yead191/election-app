@@ -75,15 +75,12 @@ body {
   color: #0a0a0a !important;
 }
 
-/* .ant-menu-submenu-active {
-  color: #1BA0D9 !important;
-} */
+
 .ant-menu-submenu-selected > .ant-menu-submenu-title {
   color: #1ba0d9 !important;
 }
 
-/* Target all table bodies' scrollbars */
-/* Target the table's scrollable body with high specificity */
+
 div.custom-table .ant-table-body::-webkit-scrollbar {
   width: 4px;
 }
@@ -103,25 +100,24 @@ div.custom-table .ant-table-body::-webkit-scrollbar-thumb:hover {
 }
 
 ::-webkit-scrollbar {
-  width: 4px; /* You can change width here */
+  width: 4px; 
 }
 
 ::-webkit-scrollbar-track {
-  background: #f1f1f1; /* Optional: background behind scrollbar thumb */
+  background: #f1f1f1; 
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #1ba0d9 !important; /* Your custom color */
+  background: #1ba0d9 !important; 
   border-radius: 4px;
 }
 
-/* Firefox scrollbar styling */
 * {
-  scrollbar-width: thin; /* "auto" | "thin" | "none" */
-  scrollbar-color: #1ba0d9 #f1f1f1; /* thumb color | track color */
+  scrollbar-width: thin; 
+  scrollbar-color: #1ba0d9 #f1f1f1; 
 }
 
-/* Custom autocomplete input */
+
 
 ::-webkit-scrollbar-button {
   display: none;

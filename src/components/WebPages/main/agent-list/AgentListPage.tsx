@@ -326,7 +326,6 @@ export default function AgentsListPage() {
         />
       ),
       dataIndex: "select",
-      width: 50,
       render: (_: any, record: any) => (
         <input
           type="checkbox"
@@ -339,6 +338,7 @@ export default function AgentsListPage() {
       title: "Id. no.",
       dataIndex: "id",
       key: "id",
+      
     },
     {
       title: "Name",
@@ -350,37 +350,44 @@ export default function AgentsListPage() {
           {text}
         </Space>
       ),
+      
     },
     {
       title: "Email",
       dataIndex: "email",
       key: "email",
+     
     },
     {
       title: "Contact No",
       dataIndex: "contactNo",
       key: "contactNo",
+ 
     },
     {
       title: "Position",
       dataIndex: "position",
       key: "position",
+      
     },
     {
       title: "Department",
       dataIndex: "department",
       key: "department",
+     
     },
     {
       title: "Post Code",
       dataIndex: "postCode",
       key: "postCode",
+     
     },
-    {
-      title: "Pooling Address",
-      dataIndex: "poolingAddress",
-      key: "poolingAddress",
-    },
+    // {
+    //   title: "Pooling Address",
+    //   dataIndex: "poolingAddress",
+    //   key: "poolingAddress",
+     
+    // },
     {
       title: "Status",
       dataIndex: "status",
@@ -450,6 +457,7 @@ export default function AgentsListPage() {
           padding: "16px 24px",
           borderRadius: "8px",
           overflow: "hidden",
+          width: "100%",
         }}
       >
         <div
@@ -539,19 +547,20 @@ export default function AgentsListPage() {
             <PlusOutlined />
           </Button>
         </div>
-
-        <Table
-          columns={columns}
-          dataSource={filteredAgents}
-          pagination={{
-            pageSize: 10,
-            showSizeChanger: true,
-            pageSizeOptions: ["10", "20", "50", "100"],
-          }}
-          size="middle"
-          style={{ backgroundColor: "white" }}
-          scroll={{ x: 1200 }}
-        />
+        <div className="  w-[99%] overflow-x-auto">
+          <Table
+            columns={columns}
+            dataSource={filteredAgents}
+            pagination={{
+              pageSize: 10,
+              showSizeChanger: true,
+              pageSizeOptions: ["10", "20", "50", "100"],
+            }}
+            size="middle"
+            // style={{ backgroundColor: "white", minWidth: 900 }} 
+            scroll={{ x: 500 }}
+          />
+        </div>
       </div>
 
       {/* Add/Edit Modal */}
