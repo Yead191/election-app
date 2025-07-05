@@ -49,52 +49,8 @@ export default function PoolingDataPage() {
     ),
   ];
 
-  // Create search options
-  const searchOptions = [
-    ...Array.from(new Set(poolingData.map((station) => station.arlaName))).map(
-      (name) => ({
-        value: name,
-        label: `Station: ${name}`,
-        category: "station",
-      })
-    ),
-    ...Array.from(new Set(poolingData.map((station) => station.agent))).map(
-      (agent) => ({
-        value: agent,
-        label: `Agent: ${agent}`,
-        category: "agent",
-      })
-    ),
-    ...Array.from(new Set(poolingData.map((station) => station.postCode))).map(
-      (code) => ({
-        value: code,
-        label: `Post Code: ${code}`,
-        category: "postcode",
-      })
-    ),
-  ];
-
   const handleSearch = (value: string) => {
     setSearchText(value);
-    let filtered = poolingData;
-
-    if (value) {
-      filtered = filtered.filter(
-        (station) =>
-          station.arlaName.toLowerCase().includes(value.toLowerCase()) ||
-          station.agent.toLowerCase().includes(value.toLowerCase()) ||
-          station.address.toLowerCase().includes(value.toLowerCase()) ||
-          station.postCode.includes(value)
-      );
-    }
-
-    if (selectedArea !== "All Area") {
-      filtered = filtered.filter((station) =>
-        station.address.toLowerCase().includes(selectedArea.toLowerCase())
-      );
-    }
-
-    setFilteredData(filtered);
   };
 
   useEffect(() => {
@@ -103,33 +59,9 @@ export default function PoolingDataPage() {
 
   const handleAreaChange = (value: string) => {
     setSelectedArea(value);
-    // Apply filtering logic here
-    let filtered = poolingData;
-
-    if (searchText) {
-      filtered = filtered.filter(
-        (station) =>
-          station.arlaName.toLowerCase().includes(searchText.toLowerCase()) ||
-          station.agent.toLowerCase().includes(searchText.toLowerCase()) ||
-          station.address.toLowerCase().includes(searchText.toLowerCase()) ||
-          station.postCode.includes(searchText)
-      );
-    }
-
-    if (value !== "All Area") {
-      filtered = filtered.filter((station) =>
-        station.address.toLowerCase().includes(value.toLowerCase())
-      );
-    }
-
-    setFilteredData(filtered);
   };
 
-  const handleSearchSelect = (value: string) => {
-    setSearchText(value);
-    handleSearch(value);
-  };
-
+  // img count
   const renderImageCount = (totalImages: number, images: string[]) => {
     if (totalImages <= 3) {
       return (
@@ -307,33 +239,7 @@ export default function PoolingDataPage() {
                 setSearchText(e.target.value);
               }}
             />
-            {/* <AutoComplete
-                    className="shadow-2xl"
-                    style={{ width: 330, marginTop: "-12px", marginRight: 24 }}
-                    options={searchOptions}
-                    onSelect={handleSearchSelect}
-                    onSearch={handleSearch}
-                    allowClear
-                  >
-                    <Input
-                      placeholder="Search here"
-                      prefix={
-                        <SearchOutlined
-                          style={{
-                            fontSize: "20px",
-                            borderRadius: "50%",
-                            padding: "6px",
-                            backgroundColor: "#D2EBC5",
-                          }}
-                        />
-                      }
-                      style={{
-                        width: 335,
-                        padding: "6px 12px",
-                        borderRadius: "30px",
-                      }}
-                    />
-                  </AutoComplete> */}
+
             <DatePicker
               placeholder="Date"
               suffixIcon={<CalendarOutlined />}

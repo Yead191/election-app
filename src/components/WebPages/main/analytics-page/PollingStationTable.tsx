@@ -167,15 +167,6 @@ export default function PollingStationTable({
   return (
     <>
       <div className="max-w-[99%] ">
-        {/* <ConfigProvider
-          theme={{
-            components: {
-              Table: {
-                stickyScrollBarBg: "rgb(201,38,38)",
-              },
-            },
-          }}
-        > */}
         <Table
           columns={columns}
           dataSource={dataSource}
@@ -183,7 +174,6 @@ export default function PollingStationTable({
           pagination={pagination}
           size="middle"
         />
-        {/* </ConfigProvider> */}
       </div>
       <StationInfoModal
         visible={isModalVisible}

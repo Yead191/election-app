@@ -19,61 +19,10 @@ import { ExportOutlined } from "@ant-design/icons";
 import PollingStationTable from "./PollingStationTable";
 import { limitedPollingStations } from "@/data/polling-stations";
 import pieImg from "@/party/pieImg.png";
+import { votingData } from "@/data/votingData";
 
 const { Title, Text } = Typography;
 
-// Demo data for voting results
-const votingData = [
-  {
-    party: "CRM",
-    votes: 380000,
-    color: "#22c55e",
-    fullName: "Cameroon Renaissance Movement",
-    partyLogo: "/party/party1.jpg",
-  },
-  {
-    party: "CPDM",
-    votes: 290000,
-    color: "#a855f7",
-    fullName: "Cameroon People's Democratic Movement",
-    partyLogo: "/party/party2.png",
-  },
-  {
-    party: "APC",
-    votes: 220000,
-    color: "#ef4444",
-    fullName: "Alliance for Progress and Change",
-    partyLogo: "/party/party3.png",
-  },
-  {
-    party: "APT/ATP",
-    votes: 200000,
-    color: "#f59e0b",
-    fullName: "Alliance for Progress and Transformation",
-    partyLogo: "/party/party4.png",
-  },
-  {
-    party: "SDF",
-    votes: 160000,
-    color: "#1e40af",
-    fullName: "Social Democratic Front",
-    partyLogo: "/party/party5.png",
-  },
-  {
-    party: "UDC",
-    votes: 150000,
-    color: "#7c3aed",
-    fullName: "Union of Democratic Forces",
-    partyLogo: "/party/party6.png",
-  },
-  {
-    party: "PMSC",
-    votes: 130000,
-    color: "#dc2626",
-    fullName: "Progressive Movement for Social Change",
-    partyLogo: "/party/party7.png",
-  },
-];
 
 // Calculate total votes and percentages
 const totalVotes = votingData.reduce((sum, item) => sum + item.votes, 0);
@@ -144,7 +93,7 @@ const CustomLogoLabel = (props: any) => {
 
 export default function ElectionAnalytics() {
   const chartRef = useRef(null);
-  const [imagePos, setImagePos] = useState({ x: 180 - 40, y: 90 - 40 }); 
+  const [imagePos, setImagePos] = useState({ x: 180 - 40, y: 90 - 40 });
 
   useEffect(() => {
     const updatePosition = () => {
@@ -152,7 +101,7 @@ export default function ElectionAnalytics() {
         const { offsetWidth, offsetHeight } = chartRef.current;
         const cx = offsetWidth * 0.5;
         const cy = offsetHeight * 0.5;
-        const imageSize = 80; 
+        const imageSize = 80;
         setImagePos({
           x: cx - imageSize / 2,
           y: cy - imageSize / 2,
@@ -161,8 +110,8 @@ export default function ElectionAnalytics() {
     };
 
     updatePosition(); // Initial calculation
-    window.addEventListener("resize", updatePosition); 
-    window.addEventListener("zoom", updatePosition); 
+    window.addEventListener("resize", updatePosition);
+    window.addEventListener("zoom", updatePosition);
     return () => {
       window.removeEventListener("resize", updatePosition);
       window.removeEventListener("zoom", updatePosition);

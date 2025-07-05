@@ -20,7 +20,7 @@ const SignInForm = () => {
     <div className=" flex items-center justify-center min-h-screen">
       <div
         className="bg-white shadow-lg rounded-lg flex items-center justify-center"
-        style={{ width: "755px", height: "700px" }}
+        style={{ width: "755px", height: "85vh" }}
       >
         <div className="flex flex-col items-center justify-center w-full ">
           <div className="text-center mb-4">
@@ -38,7 +38,7 @@ const SignInForm = () => {
             style={{
               width: "486px",
               margin: "auto",
-              marginTop: 24,
+              marginTop: 12,
             }}
             // style={{ maxWidth: 600, margin: "auto", padding: 20 }}
           >

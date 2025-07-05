@@ -48,82 +48,13 @@ export default function PoolingStationStatusPage() {
     ),
   ];
 
-  // Create search options from polling station data
-  const searchOptions = [
-    ...Array.from(
-      new Set(allPollingStations.map((station) => station.name))
-    ).map((name) => ({
-      value: name,
-      label: `Station: ${name}`,
-      category: "station",
-    })),
-    ...Array.from(
-      new Set(allPollingStations.map((station) => station.postCode))
-    ).map((code) => ({
-      value: code,
-      label: `Postal Code: ${code}`,
-      category: "postcode",
-    })),
-    ...Array.from(
-      new Set(
-        allPollingStations.map((station) => {
-          const addressParts = station.address.split(",");
-          return addressParts[addressParts.length - 1]?.trim() || "Unknown";
-        })
-      )
-    ).map((area) => ({
-      value: area,
-      label: `Area: ${area}`,
-      category: "area",
-    })),
-  ];
-
   const handleSearch = (value: string) => {
     setSearchText(value);
     let filtered = allPollingStations;
-
-    // Filter by search text
-    if (value) {
-      filtered = filtered.filter(
-        (station) =>
-          station.name.toLowerCase().includes(value.toLowerCase()) ||
-          station.address.toLowerCase().includes(value.toLowerCase()) ||
-          station.postCode.includes(value)
-      );
-    }
-
-    // Filter by selected area
-    if (selectedArea !== "All Area") {
-      filtered = filtered.filter((station) =>
-        station.address.toLowerCase().includes(selectedArea.toLowerCase())
-      );
-    }
-
-    setFilteredData(filtered);
   };
 
   const handleAreaChange = (value: string) => {
     setSelectedArea(value);
-    let filtered = allPollingStations;
-
-    // Filter by search text
-    if (searchText) {
-      filtered = filtered.filter(
-        (station) =>
-          station.name.toLowerCase().includes(searchText.toLowerCase()) ||
-          station.address.toLowerCase().includes(searchText.toLowerCase()) ||
-          station.postCode.includes(searchText)
-      );
-    }
-
-    // Filter by selected area
-    if (value !== "All Area") {
-      filtered = filtered.filter((station) =>
-        station.address.toLowerCase().includes(value.toLowerCase())
-      );
-    }
-
-    setFilteredData(filtered);
   };
 
   const handleSearchSelect = (value: string) => {
@@ -146,7 +77,7 @@ export default function PoolingStationStatusPage() {
           alignItems: "center",
           justifyContent: "space-between",
           marginBottom: "24px",
-          paddingRight:20
+          paddingRight: 20,
         }}
       >
         {/* Left side - Back button and Export */}
@@ -159,22 +90,10 @@ export default function PoolingStationStatusPage() {
               style={{ padding: "4px 8px" }}
             />
           </Link>
-          {/* <Button
-                  icon={<DownloadOutlined />}
-                  type="text"
-                  size="large"
-                  style={{
-                    backgroundColor: "#e6f4ff",
-                    color: "#1677ff",
-                    padding: "4px 8px",
-                  }}
-                /> */}
         </Space>
 
         {/* Right side - Search, Date, Area */}
         <Space size="large">
-          {/* Search Input with Dropdown */}
-
           {/* Date Picker */}
           <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
             <Button
@@ -187,39 +106,33 @@ export default function PoolingStationStatusPage() {
                 borderRadius: "8px",
                 background:
                   "linear-gradient(135deg, #E1E3EB, #DDE0EA, #CEE9FF)",
-                //   backgroundColor:
-                //   "linear-gradient(to right, #E1E3EB, #DDE0EA, #CEE9FF)",
-                //   height: "40px",
                 marginRight: 16,
               }}
             />
-            <AutoComplete
-              className="shadow-2xl"
-              style={{ width: 350, marginTop: "-12px" }}
-              options={searchOptions}
-              onSelect={handleSearchSelect}
-              onSearch={handleSearch}
+            <Input
+              placeholder="Search by name, email, or designation"
               allowClear
-            >
-              <Input
-                placeholder="Search here"
-                prefix={
-                  <SearchOutlined
-                    style={{
-                      fontSize: "20px",
-                      borderRadius: "50%",
-                      padding: "6px",
-                      backgroundColor: "#B7DBC9",
-                    }}
-                  />
-                }
-                style={{
-                  width: 335,
-                  padding: "6px 8px",
-                  borderRadius: "30px",
-                }}
-              />
-            </AutoComplete>
+              style={{
+                width: 350,
+                padding: "6px 12px 6px 6px",
+                borderRadius: "30px",
+                marginRight: 16,
+              }}
+              prefix={
+                <SearchOutlined
+                  style={{
+                    fontSize: "16px",
+                    borderRadius: "50%",
+                    padding: "6px",
+                    backgroundColor: "#B7DBC9",
+                  }}
+                />
+              }
+              value={searchText}
+              onChange={(e) => {
+                setSearchText(e.target.value);
+              }}
+            />
             <DatePicker
               placeholder="Date"
               suffixIcon={<CalendarOutlined />}
