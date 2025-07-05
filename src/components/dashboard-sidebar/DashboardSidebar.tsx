@@ -153,7 +153,7 @@ export default function DashboardSidebar({
   };
 
   return (
-    <Layout style={{ minHeight: "100vh", position: "fixed", zIndex: 10 }}>
+    <Layout style={{ minHeight: "100vh", position: "sticky", top:"0px", zIndex: 10 }}>
       <Sider
         // collapsible
         collapsed={collapsed}

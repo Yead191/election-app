@@ -338,7 +338,6 @@ export default function AgentsListPage() {
       title: "Id. no.",
       dataIndex: "id",
       key: "id",
-      
     },
     {
       title: "Name",
@@ -350,43 +349,37 @@ export default function AgentsListPage() {
           {text}
         </Space>
       ),
-      
     },
     {
       title: "Email",
       dataIndex: "email",
       key: "email",
-     
     },
     {
       title: "Contact No",
       dataIndex: "contactNo",
       key: "contactNo",
- 
     },
     {
       title: "Position",
       dataIndex: "position",
       key: "position",
-      
     },
     {
       title: "Department",
       dataIndex: "department",
       key: "department",
-     
     },
     {
       title: "Post Code",
       dataIndex: "postCode",
       key: "postCode",
-     
     },
     // {
     //   title: "Pooling Address",
     //   dataIndex: "poolingAddress",
     //   key: "poolingAddress",
-     
+
     // },
     {
       title: "Status",
@@ -450,14 +443,12 @@ export default function AgentsListPage() {
   ];
 
   return (
-    <div>
+    <div className="w-full">
       <div
         style={{
           backgroundColor: "white",
           padding: "16px 24px",
           borderRadius: "8px",
-          overflow: "hidden",
-          width: "100%",
         }}
       >
         <div
@@ -547,7 +538,7 @@ export default function AgentsListPage() {
             <PlusOutlined />
           </Button>
         </div>
-        <div className="  w-[99%] overflow-x-auto">
+        <div className="">
           <Table
             columns={columns}
             dataSource={filteredAgents}
@@ -557,8 +548,10 @@ export default function AgentsListPage() {
               pageSizeOptions: ["10", "20", "50", "100"],
             }}
             size="middle"
-            // style={{ backgroundColor: "white", minWidth: 900 }} 
-            scroll={{ x: 500 }}
+            style={{
+              backgroundColor: "white",
+            }}
+            scroll={{}}
           />
         </div>
       </div>

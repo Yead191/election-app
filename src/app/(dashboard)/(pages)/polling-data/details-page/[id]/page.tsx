@@ -55,7 +55,7 @@ export default function PoolingDetailsPage() {
       title: "Pooling Address",
       dataIndex: "address",
       key: "address",
-      width: 200,
+      width: 150,
     },
     {
       title: "Sending Time",
