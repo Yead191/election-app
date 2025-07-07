@@ -27,6 +27,8 @@ import { toast } from "sonner";
 import { BsPencilSquare } from "react-icons/bs";
 import { FaRegTrashAlt } from "react-icons/fa";
 import { mockAdmins } from "@/data/mockAdmins";
+import ManageAdminModal from "./ManageAdminModal";
+import DeleteModal from "./DeleteModal";
 
 const { Option } = Select;
 
@@ -38,7 +40,6 @@ export default function ManageAdminPage() {
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
   const [currentAdmin, setCurrentAdmin] = useState<any>(null);
   const [isAddMode, setIsAddMode] = useState(false);
-  const [passwordVisible, setPasswordVisible] = useState(false);
   const [form] = Form.useForm();
   const [statusFilter, setStatusFilter] = useState<string>("all"); // "all", "active", "inactive"
 
@@ -145,6 +146,12 @@ export default function ManageAdminPage() {
       message.success("Admin updated successfully");
       toast.success("Admin updated successfully");
     }
+    setEditModalVisible(false);
+    setCurrentAdmin(null);
+    form.resetFields();
+  };
+
+  const handleCancel = () => {
     setEditModalVisible(false);
     setCurrentAdmin(null);
     form.resetFields();
@@ -415,149 +422,21 @@ export default function ManageAdminPage() {
       </div>
 
       {/* Add/Edit Modal */}
-      <Modal
-        title={isAddMode ? "Add Admin" : "Edit"}
-        open={editModalVisible}
-        onCancel={() => {
-          setEditModalVisible(false);
-          setCurrentAdmin(null);
-          form.resetFields();
-        }}
-        footer={null}
-        width={600}
-        closeIcon={<span style={{ fontSize: "24px", color: "#999" }}>×</span>}
-      >
-        <Form
-          form={form}
-          onFinish={handleFormSubmit}
-          layout="vertical"
-          style={{ marginTop: "24px" }}
-        >
-          <Form.Item
-            label="Admin name"
-            name="adminName"
-            rules={[{ required: true, message: "Please input admin name!" }]}
-          >
-            <Input
-              placeholder="Title name 1"
-              style={{ padding: "12px", borderRadius: "8px" }}
-            />
-          </Form.Item>
-
-          <Form.Item
-            label="Email"
-            name="email"
-            rules={[
-              { required: true, message: "Please input email!" },
-              { type: "email", message: "Please enter a valid email!" },
-            ]}
-          >
-            <Input
-              placeholder="admin@example.com"
-              style={{ padding: "12px", borderRadius: "8px" }}
-            />
-          </Form.Item>
-
-          <Form.Item
-            label="Password"
-            name="password"
-            rules={[{ required: isAddMode, message: "Please input password!" }]}
-          >
-            <Input
-              type={passwordVisible ? "text" : "password"}
-              placeholder="**********"
-              style={{ padding: "12px", borderRadius: "8px" }}
-              suffix={
-                <Button
-                  type="text"
-                  icon={
-                    passwordVisible ? <EyeInvisibleOutlined /> : <EyeOutlined />
-                  }
-                  onClick={() => setPasswordVisible(!passwordVisible)}
-                />
-              }
-            />
-          </Form.Item>
-
-          <Form.Item
-            label="User Type"
-            name="userType"
-            rules={[{ required: true, message: "Please select user type!" }]}
-          >
-            <Select placeholder="Admin" style={{ height: "48px" }}>
-              <Option value="Admin">Admin</Option>
-              <Option value="Super Admin">Super Admin</Option>
-              <Option value="Manager">Manager</Option>
-            </Select>
-          </Form.Item>
-
-          <Button
-            type="primary"
-            htmlType="submit"
-            block
-            style={{
-              backgroundColor: "#1BA0D9",
-              borderColor: "#1BA0D9",
-              borderRadius: "16px",
-              padding: "10px",
-              height: "auto",
-              fontSize: "16px",
-              marginTop: "24px",
-            }}
-          >
-            {isAddMode ? "Add Admin" : "Submit"}
-          </Button>
-        </Form>
-      </Modal>
+      <ManageAdminModal
+        isAddMode={isAddMode}
+        editModalVisible={editModalVisible}
+        handleCancel={handleCancel}
+        handleFormSubmit={handleFormSubmit}
+        form={form}
+      />
 
       {/* Delete Confirmation Modal */}
-      <Modal
-        open={deleteModalVisible}
-        onCancel={() => {
-          setDeleteModalVisible(false);
-          setCurrentAdmin(null);
-        }}
-        footer={null}
-        width={400}
-        centered
-      >
-        <div style={{ textAlign: "center", padding: "24px" }}>
-          <h3
-            style={{
-              color: "#F90B0F",
-              fontSize: "16px",
-              marginBottom: "16px",
-              fontWeight: "600",
-            }}
-          >
-            Are you sure !
-          </h3>
-          <p
-            className="leading-6"
-            style={{ color: "#606060", fontSize: "16px", marginBottom: "8px" }}
-          >
-            Do you want to delete your admin ?
-          </p>
-          <p
-            style={{ color: "#606060", fontSize: "12px", marginBottom: "32px" }}
-          >
-            Only Super admin can delete this item.
-          </p>
-          <Button
-            type="primary"
-            onClick={confirmDelete}
-            style={{
-              backgroundColor: "#1BA0D9",
-              borderColor: "#1890ff",
-              borderRadius: "8px",
-              padding: "8px 24px",
-              height: "auto",
-            }}
-          >
-            Confirm
-          </Button>
-        </div>
-      </Modal>
+      <DeleteModal
+        deleteModalVisible={deleteModalVisible}
+        setDeleteModalVisible={setDeleteModalVisible}
+        setCurrentAdmin={setCurrentAdmin}
+        confirmDelete={confirmDelete}
+      />
     </div>
   );
 }
