@@ -301,6 +301,7 @@ export default function ManageAdminPage() {
       >
         <div style={{ display: "flex", alignItems: "center", gap: "24px" }}>
           <Button
+            onClick={() => toast.info("Coming soon")}
             icon={<FilePdfOutlined style={{ fontSize: "20px" }} />}
             style={{
               color: "#3A99D9",

@@ -26,6 +26,7 @@ import {
   InfoCircleOutlined,
 } from "@ant-design/icons";
 import { poolingData } from "@/data/pooling-data";
+import { toast } from "sonner";
 
 const { Title, Text } = Typography;
 const { Option } = Select;
@@ -117,19 +118,19 @@ export default function PoolingDataPage() {
       width: 120,
     },
     {
-      title: "Arla Name",
+      title: "Area Name",
       dataIndex: "arlaName",
       key: "arlaName",
       width: 120,
     },
     {
-      title: "Pooling Address",
+      title: "Polling Address",
       dataIndex: "address",
       key: "address",
       width: 250,
     },
     {
-      title: "Pooling Agent",
+      title: "Polling Agent",
       dataIndex: "agent",
       key: "agent",
       width: 150,
@@ -204,6 +205,7 @@ export default function PoolingDataPage() {
         <Space size="large">
           <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
             <Button
+            onClick={()=> toast.warning("Coming Soon")}
               icon={<FilePdfOutlined style={{ fontSize: "20px" }} />}
               style={{
                 color: "#3A99D9",
