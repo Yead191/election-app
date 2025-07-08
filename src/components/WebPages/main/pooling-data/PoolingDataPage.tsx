@@ -190,7 +190,7 @@ export default function PoolingDataPage() {
       >
         {/* Left side - Back button */}
         <Space size="large">
-          <Link href="/analytics/pooling-station-status">
+          <Link href="/analytics">
             <Button
               icon={<ArrowLeftOutlined />}
               type="text"

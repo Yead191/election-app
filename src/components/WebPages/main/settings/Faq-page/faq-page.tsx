@@ -18,6 +18,8 @@ import { PlusOutlined } from "@ant-design/icons";
 import { FaRegTrashAlt } from "react-icons/fa";
 import { BsPencilSquare } from "react-icons/bs";
 import { toast } from "sonner";
+import FaqModal from "./FaqModal";
+import DeleteModal from "./DeleteModal";
 
 const { Header, Content } = Layout;
 const { Title, Paragraph } = Typography;
@@ -250,170 +252,25 @@ export default function FAQDashboard() {
             marginTop: 10,
           }}
         >
-          {faqItems.map(renderFAQItem)}
+          {faqItems?.map(renderFAQItem)}
         </div>
 
         {/* Custom Add/Edit Modal */}
-        <Modal
-          open={isModalVisible}
-          onCancel={handleModalCancel}
-          footer={null}
-          width={537}
-          closeIcon={<span style={{ fontSize: "20px", color: "#999" }}>×</span>}
-          styles={{
-            header: { borderBottom: "none", paddingBottom: 0 },
-            body: { paddingTop: 0 },
-          }}
-        >
-          <div style={{ padding: "0 8px" }}>
-            <h3
-              style={{
-                fontSize: "18px",
-                fontWeight: "600",
-                marginBottom: "24px",
-                color: "#333",
-                // borderBottom: "1px solid #e8e8e8",
-              }}
-            >
-              Add/Edit FAQ
-            </h3>
-            <Divider
-              style={{
-                height: "1.5px",
-                backgroundColor: "#e8e8e8",
-              }}
-            />
-
-            <Form form={form} layout="vertical">
-              <Form.Item
-                name="title"
-                label={
-                  <span style={{ color: "#666", fontSize: "14px" }}>
-                    Question
-                  </span>
-                }
-                rules={[{ required: true, message: "Please enter a title" }]}
-                style={{ marginBottom: "20px" }}
-              >
-                <Input
-                  placeholder="Our Story"
-                  style={{
-                    padding: "12px",
-                    borderRadius: "8px",
-                    border: "1px solid #d9d9d9",
-                    fontSize: "14px",
-                  }}
-                />
-              </Form.Item>
-
-              <Form.Item
-                name="content"
-                label={
-                  <span style={{ color: "#666", fontSize: "14px" }}>
-                    Answer
-                  </span>
-                }
-                rules={[{ required: true, message: "Please enter content" }]}
-                style={{ marginBottom: "32px" }}
-              >
-                <TextArea
-                  rows={10}
-                  placeholder="Where your health is concerned, we believe you have the right to decide what to do with your body. That is why we offer you the opportunity to consult a licensed and registered EU"
-                  style={{
-                    padding: "12px",
-                    borderRadius: "8px",
-                    border: "1px solid #d9d9d9",
-                    fontSize: "14px",
-                    resize: "none",
-                  }}
-                />
-              </Form.Item>
-            </Form>
-
-            <Button
-              type="primary"
-              onClick={handleModalOk}
-              block
-              style={{
-                backgroundColor: "#1BA0D9",
-                borderColor: "#1BA0D9",
-                borderRadius: "16px",
-                padding: "12px",
-                height: "48px",
-                fontSize: "16px",
-                fontWeight: "500",
-              }}
-            >
-              Save & Change
-            </Button>
-          </div>
-        </Modal>
-
+        <FaqModal
+          isModalVisible={isModalVisible}
+          handleModalCancel={handleModalCancel}
+          handleModalOk={handleModalOk}
+          form={form}
+          editingItem={editingItem}
+        />
         {/* Custom Delete Confirmation Modal */}
-        <Modal
-          open={isDeleteModalVisible}
-          onCancel={() => {
-            setIsDeleteModalVisible(false);
-            setDeletingItem(null);
-          }}
-          footer={null}
-          width={350}
-          centered
-          closeIcon={<span style={{ fontSize: "20px", color: "#999" }}>×</span>}
-        >
-          <div style={{ textAlign: "center", padding: "20px 16px" }}>
-            <h3
-              style={{
-                color: "#ff4d4f",
-                fontSize: "16px",
-                fontWeight: "600",
-                marginBottom: "12px",
-              }}
-            >
-              Are you sure !
-            </h3>
-            <p
-              style={{ color: "#666", fontSize: "14px", marginBottom: "24px" }}
-            >
-              Do you want to Delete a FAQ item
-            </p>
-            <div
-              style={{ display: "flex", gap: "12px", justifyContent: "center" }}
-            >
-              <Button
-                onClick={() => {
-                  setIsDeleteModalVisible(false);
-                  setDeletingItem(null);
-                }}
-                style={{
-                  backgroundColor: "#fff",
-                  borderColor: "#52c41a",
-                  color: "#52c41a",
-                  borderRadius: "6px",
-                  padding: "6px 20px",
-                  height: "auto",
-                  fontSize: "14px",
-                }}
-              >
-                Cancel
-              </Button>
-              <Button
-                onClick={confirmDelete}
-                style={{
-                  backgroundColor: "#ff4d4f",
-                  borderColor: "#ff4d4f",
-                  color: "#fff",
-                  borderRadius: "6px",
-                  padding: "6px 20px",
-                  height: "auto",
-                  fontSize: "14px",
-                }}
-              >
-                Confirm
-              </Button>
-            </div>
-          </div>
-        </Modal>
+        <DeleteModal
+          isDeleteModalVisible={isDeleteModalVisible}
+          setIsDeleteModalVisible={setIsDeleteModalVisible}
+          setDeletingItem={setDeletingItem}
+          title={"FAQ"}
+          confirmDelete={confirmDelete}
+        />
       </Content>
     </Layout>
   );

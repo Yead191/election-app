@@ -38,6 +38,12 @@ export default function privacyPolicy() {
     },
   };
 
+  // save content
+  const handleSave = () => {
+    // Handle saving the content to the database or API
+    console.log("Content saved:", content);
+    toast.success("Content saved successfully");
+  };
   return (
     <div>
       <div style={{}}>
@@ -68,6 +74,7 @@ export default function privacyPolicy() {
             }}
           >
             <Button
+              onClick={handleSave}
               style={{
                 height: 48,
                 width: "543px",

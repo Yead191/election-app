@@ -21,6 +21,8 @@ import { BsPencilSquare } from "react-icons/bs";
 import { FaRegTrashAlt } from "react-icons/fa";
 import { toast } from "sonner";
 import { mockElectionAreas } from "@/data/mockElectionAreas";
+import ElectionModal from "./ElectionModal";
+import DeleteElectionModal from "./DeleteElectionModal";
 
 export default function ElectionAreaPage() {
   const [searchText, setSearchText] = useState("");
@@ -324,120 +326,22 @@ export default function ElectionAreaPage() {
       </div>
 
       {/* Edit/Add Modal */}
-      <Modal
-        title={
-          <span className="text-xl font-semibold">
-            {!isAddMode ? "Edit Area" : "Add Area"}
-          </span>
-        }
-        open={editModalVisible}
-        onCancel={() => {
-          setEditModalVisible(false);
-          setCurrentArea(null);
-          form.resetFields();
-        }}
-        footer={null}
-        width={600}
-        closeIcon={<span style={{ fontSize: "24px", color: "#999" }}>×</span>}
-      >
-        <Form
-          form={form}
-          onFinish={handleFormSubmit}
-          layout="vertical"
-          style={{ marginTop: "24px" }}
-        >
-          <Form.Item
-            label="Post Code"
-            name="postCode"
-            rules={[{ required: true, message: "Please input post code!" }]}
-          >
-            <Input
-              placeholder="2472"
-              style={{ padding: "12px", borderRadius: "8px" }}
-            />
-          </Form.Item>
-
-          <Form.Item
-            label="name"
-            name="name"
-            rules={[{ required: true, message: "Please input name!" }]}
-          >
-            <Input
-              placeholder="Tiki"
-              style={{ padding: "12px", borderRadius: "8px" }}
-            />
-          </Form.Item>
-
-          <Form.Item
-            label="Pooling Address"
-            name="poolingAddress"
-            rules={[
-              { required: true, message: "Please input pooling address!" },
-            ]}
-          >
-            <Input
-              placeholder="3891 Ranchview Dr. Richardson"
-              style={{ padding: "12px", borderRadius: "8px" }}
-            />
-          </Form.Item>
-
-          <Button
-            type="primary"
-            htmlType="submit"
-            block
-            style={{
-              backgroundColor: "#1BA0D9",
-              borderColor: "#1BA0D9",
-              borderRadius: "8px",
-              padding: "12px",
-              height: "48px",
-              fontSize: "16px",
-              marginTop: "24px",
-            }}
-          >
-            Submit
-          </Button>
-        </Form>
-      </Modal>
+      <ElectionModal
+        isAddMode={isAddMode}
+        editModalVisible={editModalVisible}
+        setEditModalVisible={setEditModalVisible}
+        setCurrentArea={setCurrentArea}
+        form={form}
+        handleFormSubmit={handleFormSubmit}
+      />
 
       {/* Delete Confirmation Modal */}
-      <Modal
-        open={deleteModalVisible}
-        onCancel={() => {
-          setDeleteModalVisible(false);
-          setCurrentArea(null);
-        }}
-        footer={null}
-        width={400}
-        centered
-      >
-        <div style={{ textAlign: "center", padding: "24px" }}>
-          <h3
-            style={{ color: "#ff4d4f", fontSize: "18px", marginBottom: "16px" }}
-          >
-            Are you sure !
-          </h3>
-          <p style={{ color: "#666", fontSize: "16px", marginBottom: "8px" }}>
-            Do you want to delete this area ?
-          </p>
-          <p style={{ color: "#999", fontSize: "14px", marginBottom: "32px" }}>
-            Only Super admin can delete this item.
-          </p>
-          <Button
-            type="primary"
-            onClick={confirmDelete}
-            style={{
-              backgroundColor: "#1BA0D9",
-              borderColor: "#1BA0D9",
-              borderRadius: "8px",
-              padding: "8px 24px",
-              height: "auto",
-            }}
-          >
-            Confirm
-          </Button>
-        </div>
-      </Modal>
+      <DeleteElectionModal
+        deleteModalVisible={deleteModalVisible}
+        setDeleteModalVisible={setDeleteModalVisible}
+        setCurrentArea={setCurrentArea}
+        confirmDelete={confirmDelete}
+      />
     </div>
   );
 }

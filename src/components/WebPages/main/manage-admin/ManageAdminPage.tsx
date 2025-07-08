@@ -29,6 +29,7 @@ import { FaRegTrashAlt } from "react-icons/fa";
 import { mockAdmins } from "@/data/mockAdmins";
 import ManageAdminModal from "./ManageAdminModal";
 import DeleteModal from "./DeleteModal";
+import DeleteAdminModal from "./DeleteModal";
 
 const { Option } = Select;
 
@@ -431,7 +432,7 @@ export default function ManageAdminPage() {
       />
 
       {/* Delete Confirmation Modal */}
-      <DeleteModal
+      <DeleteAdminModal
         deleteModalVisible={deleteModalVisible}
         setDeleteModalVisible={setDeleteModalVisible}
         setCurrentAdmin={setCurrentAdmin}

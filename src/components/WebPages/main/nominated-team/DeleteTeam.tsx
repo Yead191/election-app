@@ -1,23 +1,22 @@
 import React from "react";
 import { Button, Modal } from "antd";
-
-export default function DeleteAdminModal({
+export default function DeleteTeam({
   deleteModalVisible,
   setDeleteModalVisible,
-  setCurrentAdmin,
+  setCurrentTeam,
   confirmDelete,
 }: {
   deleteModalVisible: boolean;
   setDeleteModalVisible: React.Dispatch<React.SetStateAction<boolean>>;
-  setCurrentAdmin: React.Dispatch<React.SetStateAction<any>>;
-  confirmDelete: any;
+  setCurrentTeam: React.Dispatch<React.SetStateAction<any>>;
+  confirmDelete: () => void;
 }) {
   return (
     <Modal
       open={deleteModalVisible}
       onCancel={() => {
         setDeleteModalVisible(false);
-        setCurrentAdmin(null);
+        setCurrentTeam(null);
       }}
       footer={null}
       width={400}
@@ -38,7 +37,7 @@ export default function DeleteAdminModal({
           className="leading-6"
           style={{ color: "#606060", fontSize: "16px", marginBottom: "8px" }}
         >
-          Do you want to delete your admin ?
+          Do you want to delete this team ?
         </p>
         <p style={{ color: "#606060", fontSize: "12px", marginBottom: "32px" }}>
           Only Super admin can delete this item.
@@ -48,7 +47,7 @@ export default function DeleteAdminModal({
           onClick={confirmDelete}
           style={{
             backgroundColor: "#1BA0D9",
-            borderColor: "#1890ff",
+            borderColor: "#1BA0D9",
             borderRadius: "8px",
             padding: "8px 24px",
             height: "auto",

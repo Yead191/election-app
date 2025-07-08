@@ -1,23 +1,25 @@
 import React from "react";
 import { Button, Modal } from "antd";
 
-export default function DeleteAdminModal({
+interface DeleteElectionModalProps {
+  deleteModalVisible: boolean;
+  setDeleteModalVisible: (value: boolean) => void;
+  setCurrentArea: (value: any) => void;
+  confirmDelete: () => void;
+}
+
+export default function DeleteElectionModal({
   deleteModalVisible,
   setDeleteModalVisible,
-  setCurrentAdmin,
+  setCurrentArea,
   confirmDelete,
-}: {
-  deleteModalVisible: boolean;
-  setDeleteModalVisible: React.Dispatch<React.SetStateAction<boolean>>;
-  setCurrentAdmin: React.Dispatch<React.SetStateAction<any>>;
-  confirmDelete: any;
-}) {
+}: DeleteElectionModalProps) {
   return (
     <Modal
       open={deleteModalVisible}
       onCancel={() => {
         setDeleteModalVisible(false);
-        setCurrentAdmin(null);
+        setCurrentArea(null);
       }}
       footer={null}
       width={400}
@@ -25,22 +27,14 @@ export default function DeleteAdminModal({
     >
       <div style={{ textAlign: "center", padding: "24px" }}>
         <h3
-          style={{
-            color: "#F90B0F",
-            fontSize: "16px",
-            marginBottom: "16px",
-            fontWeight: "600",
-          }}
+          style={{ color: "#ff4d4f", fontSize: "18px", marginBottom: "16px" }}
         >
           Are you sure !
         </h3>
-        <p
-          className="leading-6"
-          style={{ color: "#606060", fontSize: "16px", marginBottom: "8px" }}
-        >
-          Do you want to delete your admin ?
+        <p style={{ color: "#666", fontSize: "16px", marginBottom: "8px" }}>
+          Do you want to delete this area ?
         </p>
-        <p style={{ color: "#606060", fontSize: "12px", marginBottom: "32px" }}>
+        <p style={{ color: "#999", fontSize: "14px", marginBottom: "32px" }}>
           Only Super admin can delete this item.
         </p>
         <Button
@@ -48,7 +42,7 @@ export default function DeleteAdminModal({
           onClick={confirmDelete}
           style={{
             backgroundColor: "#1BA0D9",
-            borderColor: "#1890ff",
+            borderColor: "#1BA0D9",
             borderRadius: "8px",
             padding: "8px 24px",
             height: "auto",
