@@ -254,6 +254,7 @@ export default function ElectionAreaPage() {
         borderRadius: "8px",
       }}
     >
+      {/* header */}
       <div
         style={{
           display: "flex",

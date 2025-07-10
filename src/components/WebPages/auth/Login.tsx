@@ -1,19 +1,34 @@
 "use client";
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React from "react";
+import React, { use } from "react";
 import { Form, Input, Button, Checkbox } from "antd";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Logo from "./logo";
+import { useLoginMutation } from "@/redux/feature/auth/authApi";
 
 const SignInForm = () => {
   const router = useRouter();
-
+  const [login, { isLoading, isSuccess, data }] = useLoginMutation();
   const onFinish = async (values: any) => {
     console.log(values);
-    toast.success("Login Successful");
-    router.push("/analytics");
+
+    // toast.success("Login Successful");
+    // router.push("/analytics");
+    const user = {
+      email: values.email,
+      password: values.password,
+    };
+    toast.promise(login(values).unwrap(), {
+      loading: "Logging in...",
+      success: (res) => {
+        console.log(res);
+        router.push("/analytics");
+        return <b>{res.message}</b>;
+      },
+      error: "Login Failed",
+    });
   };
 
   return (

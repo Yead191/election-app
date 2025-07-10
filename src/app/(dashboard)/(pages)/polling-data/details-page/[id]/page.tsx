@@ -1,30 +1,14 @@
 "use client";
 
-import { useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import Link from "next/link";
-import {
-  Card,
-  Row,
-  Col,
-  Typography,
-  Button,
-  Avatar,
-  Input,
-  Table,
-  Image,
-  Descriptions,
-  Divider,
-} from "antd";
+import { Typography, Input } from "antd";
 import { poolingData } from "@/data/pooling-data";
 import { allPollingStations } from "@/data/polling-stations";
-import { toast } from "sonner";
 import PollingProfile from "@/components/WebPages/main/pooling-data/PollingProfile";
 import PollingReport from "@/components/WebPages/main/pooling-data/PollingReport";
 import ScanResult from "@/components/WebPages/main/pooling-data/ScanResult";
 
 const { Title, Text } = Typography;
-const { TextArea } = Input;
 
 export default function PoolingDetailsPage() {
   const params = useParams();
