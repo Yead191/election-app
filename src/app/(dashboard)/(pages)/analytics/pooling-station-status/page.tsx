@@ -2,23 +2,11 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import {
-  Card,
-  Row,
-  Col,
-  Typography,
-  Input,
-  DatePicker,
-  Button,
-  Space,
-  AutoComplete,
-  Select,
-} from "antd";
+import { Typography, Input, DatePicker, Button, Space, Select } from "antd";
 import {
   ArrowLeftOutlined,
   SearchOutlined,
   CalendarOutlined,
-  DownloadOutlined,
   DownOutlined,
   FilePdfOutlined,
 } from "@ant-design/icons";
@@ -163,29 +151,11 @@ export default function PoolingStationStatusPage() {
         </Space>
       </div>
 
-      {/* <Title level={3} style={{ margin: "16px 0 24px 0" }}>
-              Pooling Station Status - Complete View
-            </Title> */}
-
-      {/* Results Summary */}
-      {/* <div style={{ marginBottom: "16px" }}>
-              <Typography.Text type="secondary">
-                Showing {filteredData.length} of {allPollingStations.length}{" "}
-                polling stations
-                {searchText && ` for "${searchText}"`}
-                {selectedArea !== "All Area" && ` in ${selectedArea}`}
-              </Typography.Text>
-            </div> */}
-
       {/* Full Table */}
       <PollingStationTable
         dataSource={filteredData}
         pagination={{
           pageSize: 20,
-          // showSizeChanger: true,
-          // showQuickJumper: true,
-          // showTotal: (total, range) =>
-          //   `${range[0]}-${range[1]} of ${total} stations`,
         }}
         scroll={{ x: 700, y: 510 }}
       />
