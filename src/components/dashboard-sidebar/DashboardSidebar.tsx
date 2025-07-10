@@ -39,7 +39,7 @@ export default function DashboardSidebar({
   const [selectedKey, setSelectedKey] = useState("analytics");
   const router = useRouter();
   const pathname = usePathname();
-  const [hasNewPollingData, setHasNewPollingData] = useState(false);
+  
   // console.log(pathname);
   useEffect(() => {
     setSelectedKey(pathname.split("/")[1] || "analytics");
@@ -65,7 +65,7 @@ export default function DashboardSidebar({
       key: "polling-data",
       icon: <FileTextOutlined />,
       label: (
-        <Badge count={4} offset={[15, 0]} size="small" >
+        <Badge count={4} offset={[15, 0]} size="small">
           Polling Data
         </Badge>
       ),
@@ -153,7 +153,9 @@ export default function DashboardSidebar({
   };
 
   return (
-    <Layout style={{ minHeight: "100vh", position: "sticky", top:"0px", zIndex: 10 }}>
+    <Layout
+      style={{ minHeight: "100vh", position: "sticky", top: "0px", zIndex: 10 }}
+    >
       <Sider
         // collapsible
         collapsed={collapsed}
