@@ -8,11 +8,12 @@ import { limitedPollingStations } from "@/data/polling-stations";
 import { votingData } from "@/data/votingData";
 import BarChartComponent from "./BarChart";
 import PieChartComponent from "./PieChartComponent";
+import { usePollingSummaryQuery } from "@/redux/feature/analytics/analyticsApi";
+import { use, useEffect, useState } from "react";
 
 const { Title, Text } = Typography;
 
 // Calculate total votes and percentages
-const totalVotes = votingData.reduce((sum, item) => sum + item.votes, 0);
 // Custom label component for party logos
 const CustomLogoLabel = (props: any) => {
   const { x, y, width, height, payload, index } = props;
@@ -73,6 +74,43 @@ const CustomLogoLabel = (props: any) => {
 // pie
 
 export default function ElectionAnalytics() {
+  const [votingData, setVotingData] = useState([]);
+  const { data: pollingSummary, isSuccess } = usePollingSummaryQuery(null);
+  console.log(pollingSummary?.data);
+  const summary = pollingSummary?.data || [];
+  const totalVotes = summary.reduce(
+    (sum: number, item: { total: number }) => sum + item.total,
+    0
+  );
+  const transformVotingData = (votingData: any) => {
+    // Array of distinct colors for light/dark themes
+    const colors = [
+      "#22c55e", // Green
+      "#a855f7", // Purple
+      "#dc2626", // Red
+      "#7c3aed", // Violet
+      "#1e40af", // Blue
+      "#f59e0b", // Orange
+      "#ef4444", // Bright red
+      "#14b8a6", // Teal
+      "#ec4899", // Pink
+      "#6b7280", // Gray
+    ];
+
+    return votingData.map((item: any, index: any) => ({
+      party: item.team.name,
+      votes: item.total,
+      color: colors[index % colors.length], // Cycle through colors if more teams than colors
+      partyLogo: item.team.image,
+      fullName: item.team.name, // Use team.name as fallback for fullName
+    }));
+  };
+  useEffect(() => {
+    if (isSuccess) {
+      setVotingData(transformVotingData(summary));
+    }
+  }, [summary]);
+
   return (
     <div>
       {/* Voting Results Section */}
@@ -84,7 +122,7 @@ export default function ElectionAnalytics() {
           CustomLogoLabel={CustomLogoLabel}
         />
         {/* Pie Chart */}
-        <PieChartComponent totalVotes={totalVotes} />
+        <PieChartComponent totalVotes={totalVotes} votingData={votingData} />
       </Row>
 
       {/* Polling Station Status */}

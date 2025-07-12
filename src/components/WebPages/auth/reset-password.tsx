@@ -4,16 +4,27 @@ import React from "react";
 import { Form, Input, Button, Checkbox } from "antd";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
+
 import Logo from "./logo";
+import { useResetPasswordMutation } from "@/redux/feature/auth/authApi";
+import Cookies from "js-cookie";
 
 const ResetPassword = () => {
   const router = useRouter();
-
+  const [resetPassword, { isLoading }] = useResetPasswordMutation();
   const onFinish = async (values: any) => {
-    console.log(values);
-    toast.success("Password reset successfully");
-    router.push("/auth/login");
+    // console.log(values);
+    toast.promise(resetPassword(values).unwrap(), {
+      loading: "Resetting password...",
+      success: (res) => {
+        console.log(res);
+        router.push("/auth/login");
+        Cookies.remove("resetEmail");
+        Cookies.remove("resetToken");
+        return <b>{res.message}</b>;
+      },
+      error: (res) => `Error: ${res.data?.message || "Something went wrong"}`,
+    });
   };
 
   return (

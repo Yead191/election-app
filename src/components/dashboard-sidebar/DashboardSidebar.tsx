@@ -23,6 +23,7 @@ import Image from "next/image";
 import { toast } from "sonner";
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
+import Cookies from "js-cookie";
 
 const { Sider, Header, Content } = Layout;
 const { Title, Text } = Typography;
@@ -39,7 +40,7 @@ export default function DashboardSidebar({
   const [selectedKey, setSelectedKey] = useState("analytics");
   const router = useRouter();
   const pathname = usePathname();
-  
+
   // console.log(pathname);
   useEffect(() => {
     setSelectedKey(pathname.split("/")[1] || "analytics");
@@ -145,6 +146,8 @@ export default function DashboardSidebar({
       action: {
         label: "Logout",
         onClick: async () => {
+          Cookies.remove("accessToken");
+          Cookies.remove("refreshToken");
           toast.success("Logged out successfully");
           router.push("/auth/login");
         },

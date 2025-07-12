@@ -1,14 +1,16 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
 import { Card, Col, Typography } from "antd";
-import { votingData } from "@/data/votingData";
+// import { votingData } from "@/data/votingData";
 
 interface PieChartComponentProps {
   totalVotes: number;
+  votingData: any[];
 }
 
 export default function PieChartComponent({
   totalVotes,
+  votingData
 }: PieChartComponentProps) {
   const pieData = votingData.map((item) => ({
     ...item,

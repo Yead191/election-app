@@ -4,6 +4,7 @@ import "./globals.css";
 import { Toaster } from "sonner";
 import { AntdRegistry } from "@ant-design/nextjs-registry";
 import ReduxProvider from "@/redux/lib/ReduxProvider";
+// import { UserProvider } from "@/helpers/UserProvider";
 // import { AntdRegistry } from "@ant-design/nextjs-registry";
 
 const poppins = Poppins({
@@ -29,8 +30,10 @@ export default function RootLayout({
       <body className={`${poppins.variable} antialiased`}>
         <ReduxProvider>
           <AntdRegistry>
+            {/* <UserProvider> */}
             <Toaster position="top-right" richColors duration={2000} />
             {children}
+            {/* </UserProvider> */}
           </AntdRegistry>
         </ReduxProvider>
       </body>

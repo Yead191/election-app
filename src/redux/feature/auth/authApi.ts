@@ -1,5 +1,5 @@
 import { baseApi } from "@/redux/base/baseApi";
-
+import Cookies from "js-cookie";
 export type UserType = {
   _id: string;
   name: string;
@@ -15,6 +15,8 @@ export type UserType = {
 
 const authApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
+    // register
+
     registerUser: build.mutation({
       query: (data) => ({
         url: "/auth/signup",
@@ -22,7 +24,7 @@ const authApi = baseApi.injectEndpoints({
         body: data,
       }),
     }),
-
+    // login
     login: build.mutation({
       query: (credentials) => ({
         url: "/auth/login",
@@ -35,17 +37,72 @@ const authApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["profile"],
     }),
-
+    // update profile
     getProfile: build.query({
       query: () => ({
-        url: "/users/profile",
+        url: "/user/profile",
         method: "GET",
         credentials: "include",
       }),
       providesTags: ["profile"],
     }),
+    // update profile
+    updateProfile: build.mutation({
+      query: (data) => ({
+        url: "/user/profile",
+        method: "PATCH",
+        body: data,
+        credentials: "include",
+      }),
+      invalidatesTags: ["profile"],
+    }),
+    // change password
+    changePassword: build.mutation({
+      query: (data) => ({
+        url: "/auth/change-password",
+        method: "POST",
+        body: data,
+        credentials: "include",
+      }),
+      invalidatesTags: ["profile"],
+    }),
+    // forgot password
+    forgotPassword: build.mutation({
+      query: (data) => ({
+        url: "/auth/forget-password",
+        method: "POST",
+        body: data,
+      }),
+    }),
+    // verify email
+    verifyOtp: build.mutation({
+      query: (data) => ({
+        url: "/auth/verify-email",
+        method: "POST",
+        body: data,
+      }),
+    }),
+    // reset password
+    resetPassword: build.mutation({
+      query: (data) => ({
+        url: "/auth/reset-password",
+        method: "POST",
+        body: data,
+        headers: {
+          Authorization: Cookies.get("resetToken"),
+        },
+      }),
+    }),
   }),
 });
 
-export const { useGetProfileQuery, useLoginMutation, useRegisterUserMutation } =
-  authApi;
+export const {
+  useGetProfileQuery,
+  useLoginMutation,
+  useRegisterUserMutation,
+  useUpdateProfileMutation,
+  useChangePasswordMutation,
+  useForgotPasswordMutation,
+  useVerifyOtpMutation,
+  useResetPasswordMutation,
+} = authApi;

@@ -4,31 +4,24 @@ import React, { useState } from "react";
 import { Modal, Input, Button } from "antd";
 import { EyeInvisibleOutlined, EyeOutlined } from "@ant-design/icons";
 import { toast } from "sonner";
+import { useChangePasswordMutation } from "@/redux/feature/auth/authApi";
 
 interface ChangePasswordModalProps {
   visible: boolean;
   onClose: () => void;
-  onSave: (data: {
-    oldPassword: string;
-    newPassword: string;
-    confirmPassword: string;
-  }) => void;
 }
 
 const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({
   visible,
   onClose,
-  onSave,
 }) => {
   const [formData, setFormData] = useState({
-    oldPassword: "",
+    currentPassword: "",
     newPassword: "",
     confirmPassword: "",
   });
-  const [showOldPassword, setShowOldPassword] = useState(false);
-  const [showNewPassword, setShowNewPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
+  const [updatePassword] = useChangePasswordMutation();
   const handleChange = (field: string, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
@@ -36,7 +29,7 @@ const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({
   const handleSave = () => {
     // Add manual validation if needed
     if (
-      !formData.oldPassword ||
+      !formData.currentPassword ||
       !formData.newPassword ||
       !formData.confirmPassword
     ) {
@@ -47,13 +40,22 @@ const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({
       toast.error("New password and confirm password do not match!");
       return;
     }
-    onSave(formData);
-    setFormData({
-      oldPassword: "",
-      newPassword: "",
-      confirmPassword: "",
+    console.log(formData);
+    toast.promise(updatePassword(formData).unwrap(), {
+      loading: "Changing password...",
+      success: (res) => {
+        console.log(res);
+        setFormData({
+          currentPassword: "",
+          newPassword: "",
+          confirmPassword: "",
+        });
+        onClose();
+        return <b>{res.message}</b>;
+      },
+      error: (error) =>
+        `Error: ${error.data?.message || "Something went wrong"}`,
     });
-    onClose();
   };
 
   return (
@@ -76,8 +78,8 @@ const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({
             <label>Old Password</label>
             <Input.Password
               required
-              value={formData.oldPassword}
-              onChange={(e) => handleChange("oldPassword", e.target.value)}
+              value={formData.currentPassword}
+              onChange={(e) => handleChange("currentPassword", e.target.value)}
               placeholder="Old Password"
               iconRender={(visible) =>
                 visible ? <EyeOutlined /> : <EyeInvisibleOutlined />

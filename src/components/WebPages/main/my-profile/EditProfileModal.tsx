@@ -1,77 +1,167 @@
 "use client";
 
-import type React from "react";
 import { useState } from "react";
-import { Modal, Input, Button, Select, DatePicker, Upload } from "antd";
-import { UploadOutlined, CloseOutlined } from "@ant-design/icons";
-import type { UploadProps } from "antd/es/upload";
-import dayjs from "dayjs";
+import {
+  Modal,
+  Input,
+  Select,
+  DatePicker,
+  Button,
+  Upload,
+  Avatar,
+  message,
+  Row,
+  Col,
+} from "antd";
+import {
+  CloseOutlined,
+  UploadOutlined,
+  UserOutlined,
+  DeleteOutlined,
+} from "@ant-design/icons";
+import type { UploadFile, UploadProps } from "antd";
+import dayjs from "dayjs"; // Ensure dayjs is imported
+import { useUpdateProfileMutation } from "@/redux/feature/auth/authApi";
+import { toast } from "sonner";
 
 const { Option } = Select;
+
+interface FormData {
+  name: string;
+  dob: dayjs.Dayjs | null;
+  contact: string;
+  gender: string;
+  squareNumber: string;
+  address: string;
+}
 
 interface EditProfileModalProps {
   visible: boolean;
   onClose: () => void;
-  onSave: (data: any) => void;
-  initialData?: {
-    userName?: string;
-    contactNumber?: string;
-    squareNumber?: string;
-    dateOfBirth?: string;
-    gender?: string;
-    address?: string;
-  };
+  user?: any;
+  refetch: () => void;
 }
 
-const EditProfileModal: React.FC<EditProfileModalProps> = ({
+export default function EditProfileModal({
   visible,
   onClose,
-  onSave,
-  initialData = {},
-}) => {
-  const [formData, setFormData] = useState({
-    userName: initialData.userName || "",
-    contactNumber: initialData.contactNumber || "",
-    squareNumber: initialData.squareNumber || "",
-    dateOfBirth: initialData.dateOfBirth || "",
-    gender: initialData.gender || "Male",
-    address: initialData.address || "",
-    profilePicture: null,
+  user,
+  refetch,
+}: EditProfileModalProps) {
+  // Initialize dob as a dayjs object if user.dob exists and is valid
+  const [formData, setFormData] = useState<FormData>({
+    name: user?.name || "",
+    dob: user?.dob ? dayjs(user.dob) : null, // Convert user.dob to dayjs object
+    contact: user?.contact || "",
+    gender: user?.gender || "",
+    squareNumber: user?.squareNumber || "",
+    address: user?.address || "",
   });
 
-  const handleChange = (field: string, value: string) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string>(user?.image || "");
+  const [fileList, setFileList] = useState<UploadFile[]>([]);
+
+  const [updateProfile, { isLoading }] = useUpdateProfileMutation();
+
+  const handleChange = (field: keyof FormData, value: any) => {
+    setFormData((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
   };
 
-  const handleDateChange = (date: any, dateString: string | string[]) => {
-    const dateStr = Array.isArray(dateString)
-      ? dateString[0] || ""
-      : dateString || "";
-    setFormData((prev) => ({ ...prev, dateOfBirth: dateStr }));
-  };
-
-  const handleUpload = (info: any) => {
-    if (info.file.status === "done") {
-      setFormData((prev) => ({
-        ...prev,
-        profilePicture: info.file.originFileObj,
-      }));
-    }
+  const handleDateChange = (date: dayjs.Dayjs | null) => {
+    handleChange("dob", date); // DatePicker passes dayjs object or null
   };
 
   const uploadProps: UploadProps = {
-    name: "file",
-    action: "https://www.mocky.io/v2/5cc8019d300000980a055e76",
-    onChange: handleUpload,
-    showUploadList: false,
+    beforeUpload: (file) => {
+      const isImage = file.type.startsWith("image/");
+      if (!isImage) {
+        message.error("You can only upload image files!");
+        return false;
+      }
+
+      const isLt5M = file.size / 1024 / 1024 < 5;
+      if (!isLt5M) {
+        message.error("Image must be smaller than 5MB!");
+        return false;
+      }
+
+      setSelectedImage(file);
+
+      // Create preview URL
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setImagePreview(e.target?.result as string);
+      };
+      reader.readAsDataURL(file);
+
+      setFileList([
+        {
+          uid: "-1",
+          name: file.name,
+          status: "done",
+          url: URL.createObjectURL(file),
+        },
+      ]);
+
+      return false; // Prevent auto upload
+    },
+    fileList,
+    onRemove: () => {
+      setSelectedImage(null);
+      setImagePreview(user?.image || "");
+      setFileList([]);
+    },
+    maxCount: 1,
   };
 
-  const handleSave = () => {
-    onSave(formData);
-    onClose();
+  const handleSave = async () => {
+    // Basic validation
+    if (!formData.name.trim()) {
+      message.error("Please enter your name");
+      return;
+    }
+    if (!formData.contact.trim()) {
+      message.error("Please enter your contact number");
+      return;
+    }
+
+    // Format dob to a string if needed by the API
+    const formattedData = {
+      ...formData,
+      dob: formData.dob ? formData.dob.format("YYYY-MM-DD") : null, // Format date for API
+      image: imagePreview,
+    };
+
+    try {
+      toast.promise(updateProfile(formattedData).unwrap(), {
+        loading: "Updating profile...",
+        success: (res) => {
+          refetch();
+          onClose();
+          return <b>{res.message}</b>;
+        },
+        error: "An error occurred while updating your profile",
+      });
+    } catch (error) {
+      message.error("An error occurred while updating your profile");
+    }
   };
 
-  const dateValue = formData.dateOfBirth ? dayjs(formData.dateOfBirth) : null;
+  const labelStyle = {
+    display: "block",
+    marginBottom: "8px",
+    fontWeight: 500,
+    color: "#262626",
+  };
+
+  const inputStyle = {
+    height: "40px",
+    borderRadius: "6px",
+  };
 
   return (
     <Modal
@@ -82,228 +172,163 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
       closeIcon={
         <CloseOutlined style={{ fontSize: "16px", color: "#8c8c8c" }} />
       }
-      title={"Edit Profile"}
+      title="Edit Profile"
     >
       <div
-        style={{ padding: "20px", backgroundColor: "white", borderRadius: 12 }}
+        style={{
+          padding: "20px",
+          backgroundColor: "white",
+          borderRadius: 12,
+        }}
       >
-        {/* Profile Picture Upload */}
-        <div style={{ marginBottom: "32px" }}>
-          <div
-            style={{
-              fontSize: "14px",
-              color: "#262626",
-              marginBottom: "8px",
-              fontWeight: 500,
-            }}
-          >
-            Profile Picture
+        {/* Profile Image Section */}
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            marginBottom: "32px",
+            gap: "16px",
+          }}
+        >
+          <div style={{ position: "relative" }}>
+            <Avatar
+              size={96}
+              src={imagePreview || "/placeholder.svg?height=96&width=96"}
+              icon={<UserOutlined />}
+              style={{
+                border: "2px solid #f0f0f0",
+              }}
+            />
           </div>
-          <div
-            style={{
-              border: "2px dashed #d9d9d9",
-              borderRadius: "8px",
-              padding: "40px",
-              textAlign: "center",
-              backgroundColor: "#fafafa",
-            }}
-          >
-            <Upload {...uploadProps}>
-              <div style={{ cursor: "pointer" }}>
-                <UploadOutlined
-                  style={{
-                    fontSize: "24px",
-                    color: "#8c8c8c",
-                    marginBottom: "8px",
-                    display: "block",
-                  }}
-                />
-                <div
-                  style={{
-                    color: "#8c8c8c",
-                    fontSize: "14px",
-                  }}
-                >
-                  Upload Image
-                </div>
-              </div>
-            </Upload>
-          </div>
+
+          <Upload {...uploadProps} showUploadList={false}>
+            <Button
+              icon={<UploadOutlined />}
+              style={{
+                borderRadius: "6px",
+                height: "36px",
+                display: "flex",
+                alignItems: "center",
+                gap: "8px",
+              }}
+            >
+              Upload New Image
+            </Button>
+          </Upload>
+
+          {selectedImage && (
+            <Button
+              type="text"
+              danger
+              icon={<DeleteOutlined />}
+              onClick={() => {
+                setSelectedImage(null);
+                setImagePreview(user?.image || "");
+                setFileList([]);
+              }}
+              style={{
+                fontSize: "12px",
+                height: "auto",
+                padding: "4px 8px",
+              }}
+            >
+              Remove Image
+            </Button>
+          )}
         </div>
 
         {/* Form Fields */}
-        <div
-          style={{
-            display: "grid",
-            gap: "20px",
-            gridTemplateColumns: "1fr 1fr",
-          }}
-        >
-          {/* Name */}
-          <div>
-            <label
-              style={{
-                display: "block",
-                marginBottom: "8px",
-                fontSize: "14px",
-                color: "#262626",
-                fontWeight: 500,
-              }}
-            >
-              Name
-            </label>
-            <Input
-              value={formData.userName}
-              onChange={(e) => handleChange("userName", e.target.value)}
-              placeholder="Cevat"
-              style={{
-                height: "40px",
-                borderRadius: "6px",
-                fontSize: "14px",
-              }}
-            />
-          </div>
+        <Row gutter={20}>
+          <Col span={12}>
+            <div>
+              <label style={labelStyle}>Name</label>
+              <Input
+                value={formData.name}
+                onChange={(e) => handleChange("name", e.target.value)}
+                style={inputStyle}
+                placeholder="Enter your name"
+              />
+            </div>
+          </Col>
+          <Col span={12}>
+            <div>
+              <label style={labelStyle}>Date of birth</label>
+              <DatePicker
+                value={formData.dob}
+                onChange={handleDateChange}
+                style={{ width: "100%", height: "40px", borderRadius: "6px" }}
+                format="DD/MM/YYYY"
+                placeholder="Select date of birth"
+              />
+            </div>
+          </Col>
+        </Row>
 
-          {/* Date of Birth */}
-          <div>
-            <label
-              style={{
-                display: "block",
-                marginBottom: "8px",
-                fontSize: "14px",
-                color: "#262626",
-                fontWeight: 500,
-              }}
-            >
-              Date of birth
-            </label>
-            <DatePicker
-              value={dateValue}
-              onChange={handleDateChange}
-              style={{
-                width: "100%",
-                height: "40px",
-                borderRadius: "6px",
-              }}
-              placeholder="250 mg"
-              format="DD/MM/YYYY"
-            />
-          </div>
+        <div style={{ height: "20px" }} />
 
-          {/* Contact Number */}
-          <div>
-            <label
-              style={{
-                display: "block",
-                marginBottom: "8px",
-                fontSize: "14px",
-                color: "#262626",
-                fontWeight: 500,
-              }}
-            >
-              Contact number
-            </label>
-            <Input
-              value={formData.contactNumber}
-              onChange={(e) => handleChange("contactNumber", e.target.value)}
-              placeholder="Square"
-              style={{
-                height: "40px",
-                borderRadius: "6px",
-                fontSize: "14px",
-              }}
-            />
-          </div>
+        <Row gutter={20}>
+          <Col span={12}>
+            <div>
+              <label style={labelStyle}>Contact number</label>
+              <Input
+                value={formData.contact}
+                onChange={(e) => handleChange("contact", e.target.value)}
+                style={inputStyle}
+                placeholder="Enter contact number"
+              />
+            </div>
+          </Col>
+          <Col span={12}>
+            <div>
+              <label style={labelStyle}>Gender</label>
+              <Select
+                value={formData.gender}
+                onChange={(value) => handleChange("gender", value)}
+                style={{ width: "100%", height: "40px" }}
+                placeholder="Select gender"
+              >
+                <Option value="male">Male</Option>
+                <Option value="female">Female</Option>
+                <Option value="other">Other</Option>
+              </Select>
+            </div>
+          </Col>
+        </Row>
 
-          {/* Gender */}
-          <div>
-            <label
-              style={{
-                display: "block",
-                marginBottom: "8px",
-                fontSize: "14px",
-                color: "#262626",
-                fontWeight: 500,
-              }}
-            >
-              Gender
-            </label>
-            <Select
-              value={formData.gender}
-              onChange={(value) => handleChange("gender", value)}
-              style={{
-                width: "100%",
-                height: "40px",
-              }}
-              placeholder="Male"
-            >
-              <Option value="Male">Male</Option>
-              <Option value="Female">Female</Option>
-              <Option value="Other">Other</Option>
-            </Select>
-          </div>
+        <div style={{ height: "20px" }} />
 
-          {/* Contact Number (Second) */}
-          <div>
-            <label
-              style={{
-                display: "block",
-                marginBottom: "8px",
-                fontSize: "14px",
-                color: "#262626",
-                fontWeight: 500,
-              }}
-            >
-              Contact number
-            </label>
-            <Input
-              value={formData.squareNumber}
-              onChange={(e) => handleChange("squareNumber", e.target.value)}
-              placeholder="Square"
-              style={{
-                height: "40px",
-                borderRadius: "6px",
-                fontSize: "14px",
-              }}
-            />
-          </div>
-
-          {/* Address */}
-          <div>
-            <label
-              style={{
-                display: "block",
-                marginBottom: "8px",
-                fontSize: "14px",
-                color: "#262626",
-                fontWeight: 500,
-              }}
-            >
-              Address
-            </label>
-            <Input
-              value={formData.address}
-              onChange={(e) => handleChange("address", e.target.value)}
-              placeholder="Netherlands"
-              style={{
-                height: "40px",
-                borderRadius: "6px",
-                fontSize: "14px",
-              }}
-            />
-          </div>
-        </div>
+        <Row gutter={20}>
+          <Col span={12}>
+            <div>
+              <label style={labelStyle}>Square Number</label>
+              <Input
+                value={formData.squareNumber}
+                onChange={(e) => handleChange("squareNumber", e.target.value)}
+                style={inputStyle}
+                placeholder="Enter square number"
+              />
+            </div>
+          </Col>
+          <Col span={12}>
+            <div>
+              <label style={labelStyle}>Address</label>
+              <Input
+                value={formData.address}
+                onChange={(e) => handleChange("address", e.target.value)}
+                style={inputStyle}
+                placeholder="Enter address"
+              />
+            </div>
+          </Col>
+        </Row>
 
         {/* Save Button */}
-        <div
-          style={{
-            textAlign: "center",
-            marginTop: "32px",
-          }}
-        >
+        <div style={{ textAlign: "center", marginTop: "32px" }}>
           <Button
             type="primary"
             onClick={handleSave}
+            loading={isLoading}
             style={{
               background: "#1BA0D9",
               borderColor: "#1BA0D9",
@@ -321,6 +346,4 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
       </div>
     </Modal>
   );
-};
-
-export default EditProfileModal;
+}

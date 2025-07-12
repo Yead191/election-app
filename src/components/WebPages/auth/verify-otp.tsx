@@ -13,18 +13,57 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Logo from "./logo";
+import {
+  useForgotPasswordMutation,
+  useVerifyOtpMutation,
+} from "@/redux/feature/auth/authApi";
 const { Text } = Typography;
-
+import Cookies from "js-cookie";
 const VerifyOtp = () => {
   const router = useRouter();
-
+  const [forgotPassword] = useForgotPasswordMutation();
+  const [verifyOtp, { isLoading }] = useVerifyOtpMutation();
   const onFinish = async (values: any) => {
-    console.log(values);
-    toast.success("Password reset successfully");
-    router.push("/auth/reset-password");
+    // console.log(values);
+    // toast.success("Password reset successfully");
+    // router.push("/auth/reset-password");
+
+    const email = Cookies.get("resetEmail") || "";
+    const verificationData = {
+      email: email,
+      oneTimeCode: parseInt(values.otp),
+    };
+    try {
+      toast.promise(verifyOtp(verificationData).unwrap(), {
+        loading: "Verifying code...",
+        success: (res) => {
+          console.log(res.data);
+          Cookies.set("resetToken", res?.data || "", {
+            expires: 1,
+            path: "/",
+          });
+          router.push("/auth/reset-password");
+          return <b>{res.message}</b>;
+        },
+        error: (res) => `Error: ${res.data?.message || "Something went wrong"}`,
+      });
+    } catch (error) {
+      toast.error("Failed to verify OTP");
+    }
   };
-  const handleResendEmail = () => {
-    toast.success("Another code sent to your email!");
+
+  const handleResendOtp = () => {
+    toast.promise(
+      forgotPassword({ email: Cookies.get("resetEmail") || "" }).unwrap(),
+      {
+        loading: "Resending OTP...",
+        success: (res) => {
+          console.log(res);
+          return <b>{res.message}</b>;
+        },
+        error: (res) => `Error: ${res.data?.message || "Something went wrong"}`,
+      }
+    );
   };
 
   return (
@@ -86,7 +125,7 @@ const VerifyOtp = () => {
                   }}
                   className=""
                   variant="filled"
-                  length={5}
+                  length={4}
                 />
               </Form.Item>
             </ConfigProvider>
@@ -105,19 +144,18 @@ const VerifyOtp = () => {
                 Confirm Code
               </Button>
             </Form.Item>
-
-            <div className="flex items-center justify-center gap-3 mb-6 ">
-              <Text>You have not received the email?</Text>
-
-              <p
-                onClick={handleResendEmail}
-                className="login-form-forgot underline font-medium"
-                style={{ color: "blue", cursor: "pointer" }}
-              >
-                Resend
-              </p>
-            </div>
           </Form>
+          <div className="flex items-center justify-center gap-3 mb-6 ">
+            <Text>You have not received the email?</Text>
+
+            <p
+              onClick={handleResendOtp}
+              className="login-form-forgot underline font-medium"
+              style={{ color: "blue", cursor: "pointer" }}
+            >
+              Resend
+            </p>
+          </div>
         </div>
       </div>
     </div>

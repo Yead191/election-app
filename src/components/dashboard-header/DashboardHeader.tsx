@@ -4,6 +4,7 @@ import { BellOutlined } from "@ant-design/icons";
 import Link from "next/link";
 import DashboardSidebar from "@/components/dashboard-sidebar/DashboardSidebar";
 import { usePathname } from "next/navigation";
+import { useGetProfileQuery } from "@/redux/feature/auth/authApi";
 export default function DashboardHeader() {
   const { Title, Text } = Typography;
   const pathname = usePathname();
@@ -15,7 +16,8 @@ export default function DashboardHeader() {
       .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
       .join(" ");
   };
-
+  const { data: user, isLoading } = useGetProfileQuery(null);
+  // console.log(user);
   // Check if the string looks like an ID (Mongo _id or numeric)
   const isIdSegment = (str: string) =>
     /^[a-f\d]{24}$/i.test(str) || /^\d+$/.test(str);
@@ -62,8 +64,16 @@ export default function DashboardHeader() {
           </Badge>
         </Link>
         <Link href={"/my-profile"} className="flex items-center gap-2">
-          <Avatar src="/assets/user1.jpg?height=40&width=40" size={40} />
-          <span className="leading-6 font-semibold text-black">Admin Yead</span>
+          {isLoading ? (
+            <div className="w-6 h-6 border-2 border-gray-300 border-t-black rounded-full animate-spin"></div>
+          ) : (
+            <>
+              <Avatar src={user?.data?.image} size={40} />
+              <span className="leading-6 font-semibold text-black">
+                {user?.data?.name}
+              </span>
+            </>
+          )}
         </Link>
       </Space>
     </div>

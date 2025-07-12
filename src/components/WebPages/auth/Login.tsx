@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Logo from "./logo";
 import { useLoginMutation } from "@/redux/feature/auth/authApi";
+import Cookies from "js-cookie";
 
 const SignInForm = () => {
   const router = useRouter();
@@ -20,11 +21,14 @@ const SignInForm = () => {
       email: values.email,
       password: values.password,
     };
-    toast.promise(login(values).unwrap(), {
+    toast.promise(login(user).unwrap(), {
       loading: "Logging in...",
       success: (res) => {
         console.log(res);
         router.push("/analytics");
+        Cookies.set("accessToken", res?.data?.createToken || "");
+        Cookies.set("refreshToken", res?.data?.refreshToken || "");
+        localStorage.removeItem("resetToken");
         return <b>{res.message}</b>;
       },
       error: "Login Failed",

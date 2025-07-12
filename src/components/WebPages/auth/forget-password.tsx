@@ -4,16 +4,32 @@ import React from "react";
 import { Form, Input, Button, Checkbox } from "antd";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 import Logo from "./logo";
-
+import { useForgotPasswordMutation } from "@/redux/feature/auth/authApi";
+import Cookies from "js-cookie";
 const ForgetPassword = () => {
   const router = useRouter();
-
+  const [forgotPassword, { isLoading }] = useForgotPasswordMutation();
   const onFinish = async (values: any) => {
     console.log(values);
-    toast.success("Code sent to your email");
-    router.push("/auth/verify-otp");
+
+    try {
+      toast.promise(forgotPassword(values).unwrap(), {
+        loading: "Sending code...",
+        success: (res) => {
+          console.log(res);
+          Cookies.set("resetEmail", values.email || "", {
+            expires: 1,
+            path: "/",
+          });
+          router.push("/auth/verify-otp");
+          return <b>{res.message}</b>;
+        },
+        error: (res) => `Error: ${res.data?.message || "Something went wrong"}`,
+      });
+    } catch (error) {
+      toast.error("Failed to send code");
+    }
   };
 
   return (

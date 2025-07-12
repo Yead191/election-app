@@ -12,13 +12,11 @@ import {
 import { Card, Col, Typography } from "antd";
 
 interface BarChartComponentProps {
- 
   totalVotes: number;
   votingData: any[];
   CustomLogoLabel: any;
 }
 export default function BarChartComponent({
-  
   totalVotes,
   votingData,
   CustomLogoLabel,
@@ -49,7 +47,7 @@ export default function BarChartComponent({
               }}
             ></div>
             <Text style={{ color: "#1890ff" }}>
-              Total Voter {totalVotes.toLocaleString()}
+              Total Voter {totalVotes?.toLocaleString()}
             </Text>
           </div>
         </div>
@@ -62,7 +60,7 @@ export default function BarChartComponent({
             <YAxis />
             <Tooltip formatter={(value) => [value.toLocaleString(), "Votes"]} />
             <Bar dataKey="votes" radius={[4, 4, 0, 0]}>
-              {votingData.map((entry, index) => (
+              {votingData?.map((entry, index) => (
                 <Cell key={`cell-${index}`} fill={entry.color} />
               ))}
               <LabelList content={CustomLogoLabel} />
