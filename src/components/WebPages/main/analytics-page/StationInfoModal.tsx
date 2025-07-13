@@ -23,14 +23,13 @@ export default function StationInfoModal({
   station,
   onClose,
 }: StationInfoModalProps) {
+  // 🔥 Calculate total votes from station.polls
   const calculateStationTotal = (station: any) => {
-    if (!station) return 0;
-    return Object.entries(station)
-      .filter(
-        ([key]) =>
-          !["key", "postCode", "name", "address", "sendingTime"].includes(key)
-      )
-      .reduce((sum, [, votes]) => sum + (votes as number), 0);
+    if (!station || !station.polls) return 0;
+    return station.polls.reduce(
+      (sum: number, poll: any) => sum + (poll.votes || 0),
+      0
+    );
   };
 
   return (
@@ -45,43 +44,32 @@ export default function StationInfoModal({
         <div>
           <Descriptions bordered column={2} style={{ marginBottom: "24px" }}>
             <Descriptions.Item label="Post Code">
-              {station.postCode}
+              {station.agent?.postalCode}
             </Descriptions.Item>
             <Descriptions.Item label="Station Name">
-              {station.name}
+              {station.station?.name}
             </Descriptions.Item>
             <Descriptions.Item label="Address" span={2}>
-              {station.address}
+              {station.station?.city}
             </Descriptions.Item>
             <Descriptions.Item label="Sending Time" span={2}>
-              {station.sendingTime}
+              {new Date(station.createdAt).toLocaleTimeString()}
             </Descriptions.Item>
           </Descriptions>
 
           <Title level={5}>Vote Breakdown</Title>
           <Row gutter={[16, 16]} style={{ marginBottom: "24px" }}>
-            {Object.entries(station)
-              .filter(
-                ([key]) =>
-                  ![
-                    "key",
-                    "postCode",
-                    "name",
-                    "address",
-                    "sendingTime",
-                  ].includes(key)
-              )
-              .map(([party, votes]) => (
-                <Col xs={12} sm={8} md={6} key={party}>
-                  <Card size="small">
-                    <Statistic
-                      title={party}
-                      value={votes as number}
-                      formatter={(value) => value.toLocaleString()}
-                    />
-                  </Card>
-                </Col>
-              ))}
+            {station.polls?.map((poll: any) => (
+              <Col xs={12} sm={8} md={6} key={poll._id}>
+                <Card size="small">
+                  <Statistic
+                    title={poll.name}
+                    value={poll.votes}
+                    formatter={(value) => value.toLocaleString()}
+                  />
+                </Card>
+              </Col>
+            ))}
           </Row>
 
           <Card>

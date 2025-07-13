@@ -13,6 +13,7 @@ import {
 import PollingStationTable from "@/components/WebPages/main/analytics-page/PollingStationTable";
 import { allPollingStations } from "@/data/polling-stations";
 import { toast } from "sonner";
+import { usePollingStationStatusQuery } from "@/redux/feature/analytics/analyticsApi";
 
 const { Title } = Typography;
 const { Option } = Select;
@@ -21,7 +22,10 @@ export default function PoolingStationStatusPage() {
   const [searchText, setSearchText] = useState("");
   const [filteredData, setFilteredData] = useState(allPollingStations);
   const [selectedArea, setSelectedArea] = useState("All Area");
-
+  const { data: pollingStationStatus } = usePollingStationStatusQuery({
+    searchTerm: searchText,
+  });
+console.log(searchText);
   // Extract unique areas from polling station data
   const areas = [
     "All Area",
@@ -153,11 +157,11 @@ export default function PoolingStationStatusPage() {
 
       {/* Full Table */}
       <PollingStationTable
-        dataSource={filteredData}
-        pagination={{
-          pageSize: 20,
-        }}
-        scroll={{ x: 700, y: 510 }}
+        dataSource={pollingStationStatus?.data || []}
+        // pagination={{
+        //   pageSize: 20,
+        // }}
+        // scroll={{ x: 700, y: 510 }}
       />
     </div>
   );

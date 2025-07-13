@@ -8,7 +8,10 @@ import { limitedPollingStations } from "@/data/polling-stations";
 import { votingData } from "@/data/votingData";
 import BarChartComponent from "./BarChart";
 import PieChartComponent from "./PieChartComponent";
-import { usePollingSummaryQuery } from "@/redux/feature/analytics/analyticsApi";
+import {
+  usePollingStationStatusQuery,
+  usePollingSummaryQuery,
+} from "@/redux/feature/analytics/analyticsApi";
 import { use, useEffect, useState } from "react";
 
 const { Title, Text } = Typography;
@@ -76,7 +79,7 @@ const CustomLogoLabel = (props: any) => {
 export default function ElectionAnalytics() {
   const [votingData, setVotingData] = useState([]);
   const { data: pollingSummary, isSuccess } = usePollingSummaryQuery(null);
-  console.log(pollingSummary?.data);
+
   const summary = pollingSummary?.data || [];
   const totalVotes = summary.reduce(
     (sum: number, item: { total: number }) => sum + item.total,
@@ -110,6 +113,12 @@ export default function ElectionAnalytics() {
       setVotingData(transformVotingData(summary));
     }
   }, [summary]);
+
+  // get polling station status
+  const { data: pollingStationStatus } = usePollingStationStatusQuery({
+    limit: 5,
+    searchTerm: "",
+  });
 
   return (
     <div>
@@ -148,9 +157,9 @@ export default function ElectionAnalytics() {
               </Link>
             </div>
             <PollingStationTable
-              dataSource={limitedPollingStations}
-              pagination={false}
-              scroll={{ x: 700, y: 200 }}
+              dataSource={pollingStationStatus?.data || []}
+              // pagination={false}
+              // scroll={{ x: 700, y: 200 }}
             />
           </Card>
         </Col>

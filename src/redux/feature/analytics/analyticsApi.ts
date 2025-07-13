@@ -10,6 +10,19 @@ const analyticsApi = baseApi.injectEndpoints({
         credentials: "include",
       }),
     }),
+    // Polling station status
+    pollingStationStatus: build.query({
+      query: ({ searchTerm, limit }) => ({
+        url: `/polling`,
+        method: "GET",
+        credentials: "include",
+        params: {
+          searchTerm,
+          limit,
+        },
+      }),
+    }),
   }),
 });
-export const { usePollingSummaryQuery } = analyticsApi;
+export const { usePollingSummaryQuery, usePollingStationStatusQuery } =
+  analyticsApi;

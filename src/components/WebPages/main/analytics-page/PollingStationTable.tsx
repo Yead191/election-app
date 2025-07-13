@@ -1,30 +1,125 @@
 "use client";
 
-import { use, useState } from "react";
-import { Table, Button, Space, Typography, ConfigProvider } from "antd";
+import { useState } from "react";
+import { Table, Button, Space, Typography } from "antd";
 import { InfoCircleOutlined } from "@ant-design/icons";
 import StationInfoModal from "./StationInfoModal";
+import { usePathname } from "next/navigation";
+import path from "path";
 
 const { Text } = Typography;
 
-import type { TablePaginationConfig } from "antd/es/table";
-import { usePathname } from "next/navigation";
-
 interface PollingStationTableProps {
   dataSource: any[];
-  pagination?: false | TablePaginationConfig;
-  scroll?: object;
 }
 
 export default function PollingStationTable({
   dataSource,
-  pagination = false,
-  scroll = { x: 1200, y: 1100 },
 }: PollingStationTableProps) {
+  const pathname = usePathname();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedStation, setSelectedStation] = useState(null);
-  const pathname = usePathname();
-  // console.log(pathname);
+
+  // 🔥 Build all unique poll names dynamically
+  const allPollNames = Array.from(
+    new Set(
+      dataSource.flatMap((item) => item.polls.map((poll: any) => poll.name))
+    )
+  );
+
+  // 🔥 Transform data and store the max vote for each row
+  const transformedData = dataSource.map((item, index) => {
+    const voteMap: Record<string, number> = {};
+    item.polls.forEach((poll: any) => {
+      voteMap[poll.name] = poll.votes;
+    });
+
+    const votesArray = Object.values(voteMap);
+    const highestVote = Math.max(...votesArray);
+
+    return {
+      key: item._id || index,
+      postCode: item.agent?.postalCode || "N/A",
+      name: item.station?.name || "N/A",
+      address: item.station?.city || "N/A",
+      sendingTime: new Date(item.createdAt).toLocaleTimeString(),
+      ...voteMap,
+      highestVote,
+      fullData: item,
+    };
+  });
+
+  // 🔥 Build poll columns dynamically with per-row highlight logic
+  const pollColumns = allPollNames.map((name) => ({
+    title: name,
+    dataIndex: name,
+    key: name,
+    align: "center" as const,
+    sorter: (a: any, b: any) => (a[name] ?? 0) - (b[name] ?? 0),
+    render: (_: any, record: any) => {
+      const value = record[name] || 0;
+      const isMax = value === record.highestVote;
+      return (
+        <Text
+          style={{
+            color: isMax ? "#22c55e" : "black",
+            fontWeight: isMax ? "bold" : "normal",
+          }}
+        >
+          {Number(value).toLocaleString()}
+        </Text>
+      );
+    },
+    width: 80,
+  }));
+
+  // 🔥 Build full columns
+  const columns = [
+    {
+      title: "Postal Code",
+      dataIndex: "postCode",
+      key: "postCode",
+      width: 80,
+    },
+    {
+      title: "Area Name",
+      dataIndex: "name",
+      key: "name",
+      width: 120,
+    },
+    {
+      title: "Pooling Address",
+      dataIndex: "address",
+      key: "address",
+      width: 150,
+    },
+    {
+      title: "Sending Time",
+      dataIndex: "sendingTime",
+      key: "sendingTime",
+      width: 100,
+    },
+    ...pollColumns,
+    {
+      title: "Action",
+      key: "action",
+      align: "right" as const,
+      width: 70,
+      render: (_: any, record: any) => (
+        <Space>
+          <Button
+            type="text"
+            icon={
+              <InfoCircleOutlined style={{ color: "#1677ff", fontSize: 20 }} />
+            }
+            onClick={() => showModal(record.fullData)}
+          />
+        </Space>
+      ),
+    },
+  ];
+
+  // 🔥 Modal functions
   const showModal = (station: any) => {
     setSelectedStation(station);
     setIsModalVisible(true);
@@ -34,144 +129,28 @@ export default function PollingStationTable({
     setIsModalVisible(false);
     setSelectedStation(null);
   };
-
-  const columns = [
-    {
-      title: "Postal Code",
-      dataIndex: "postCode",
-      key: "postCode",
-      width: 80,
-      sorter: (a: any, b: any) => a.postCode.localeCompare(b.postCode),
-    },
-    {
-      title: "Area Name",
-      dataIndex: "name",
-      key: "name",
-      width: 80,
-      filters: [
-        { text: "Tiki", value: "Tiki" },
-        { text: "Sendo", value: "Sendo" },
-        { text: "Lazada", value: "Lazada" },
-        { text: "Shopee", value: "Shopee" },
-      ],
-      onFilter: (value: any, record: any) => record.name === value,
-    },
-    {
-      title: "Pooling Address",
-      dataIndex: "address",
-      key: "address",
-      width: 100,
-    },
-    {
-      title: "Sending Time",
-      dataIndex: "sendingTime",
-      key: "sendingTime",
-      width: 80,
-    },
-    {
-      title: "CRM",
-      dataIndex: "CRM",
-      key: "CRM",
-      align: "center" as const,
-      sorter: (a: any, b: any) => a.CRM - b.CRM,
-      render: (value: any) => (
-        <Text style={{ color: "#22c55e", fontWeight: "bold" }}>
-          {value.toLocaleString()}
-        </Text>
-      ),
-      width: 70,
-    },
-    {
-      title: "CPDM",
-      dataIndex: "CPDM",
-      key: "CPDM",
-      align: "center" as const,
-      sorter: (a: any, b: any) => a.CPDM - b.CPDM,
-      render: (value: any) => <Text strong>{value.toLocaleString()}</Text>,
-      width: 80,
-    },
-    {
-      title: "APC",
-      dataIndex: "APC",
-      key: "APC",
-      align: "center" as const,
-      sorter: (a: any, b: any) => a.APC - b.APC,
-      render: (value: any) => (
-        <Text style={{ color: "#22c55e", fontWeight: "bold" }}>
-          {value.toLocaleString()}
-        </Text>
-      ),
-      width: 60,
-    },
-    {
-      title: "APT/ATP",
-      dataIndex: "APT/ATP",
-      key: "APT/ATP",
-      align: "center" as const,
-      sorter: (a: any, b: any) => a["APT/ATP"] - b["APT/ATP"],
-      render: (value: any) => <Text strong>{value.toLocaleString()}</Text>,
-      width: 70,
-    },
-    {
-      title: "SDF",
-      dataIndex: "SDF",
-      key: "SDF",
-      align: "center" as const,
-      sorter: (a: any, b: any) => a.SDF - b.SDF,
-      render: (value: any) => (
-        <Text style={{ color: "#22c55e", fontWeight: "bold" }}>
-          {value.toLocaleString()}
-        </Text>
-      ),
-      width: 60,
-    },
-    {
-      title: "UDC",
-      dataIndex: "UDC",
-      key: "UDC",
-      align: "center" as const,
-      sorter: (a: any, b: any) => a.UDC - b.UDC,
-      render: (value: any) => <Text strong>{value.toLocaleString()}</Text>,
-      width: 65,
-    },
-
-    {
-      title: "PMSC",
-      dataIndex: "PMSC",
-      key: "PMSC",
-      align: "center" as const,
-      sorter: (a: any, b: any) => a.PMSC - b.PMSC,
-      render: (value: any) => <Text strong>{value.toLocaleString()}</Text>,
-      width: 70,
-    },
-    {
-      title: "Action",
-      key: "action",
-      align: "right" as const,
-      width: 70,
-      render: (_: any, record: any) => (
-        <Space>
-          <Button
-            style={{
-              fontSize: 20,
-            }}
-            type="text"
-            icon={<InfoCircleOutlined style={{ color: "#1677ff" }} />}
-            onClick={() => showModal(record)}
-          />
-        </Space>
-      ),
-    },
-  ];
+  console.log(pathname);
 
   return (
     <>
-      <div className="max-w-[99%] ">
+      <div className="max-w-[99%]">
         <Table
           columns={columns}
-          dataSource={dataSource}
-          scroll={pathname === "/pooling-station-status" ? undefined : scroll}
-          pagination={pagination}
+          dataSource={transformedData}
+          scroll={
+            pathname === "/analytics/pooling-station-status"
+              ? undefined
+              : { x: 1200, y: 200 }
+          }
+          pagination={
+            pathname === "/analytics/pooling-station-status"
+              ? {
+                  pageSize: 20,
+                  showSizeChanger: true,
+                  pageSizeOptions: ["10", "20", "50", "100"],
+                }
+              : false
+          }
           size="middle"
         />
       </div>
