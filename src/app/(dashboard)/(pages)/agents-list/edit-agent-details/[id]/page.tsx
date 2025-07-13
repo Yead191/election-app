@@ -10,31 +10,46 @@ import {
 } from "@ant-design/icons";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { toast } from "sonner";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { BsPencilSquare } from "react-icons/bs";
-import { useUpdateAgentPasswordMutation } from "@/redux/feature/agent-list-apis/agentApi";
+import {
+  useGetAgentProfileQuery,
+  useUpdateAgentPasswordMutation,
+  useUpdateAgentProfileMutation,
+} from "@/redux/feature/agent-list-apis/agentApi";
+import { on } from "events";
 
 export default function EditAgentPage() {
   const router = useRouter();
   const params = useParams();
   const searchParams = useSearchParams();
+   const { data: agentData, refetch } = useGetAgentProfileQuery(params.id);
   const mode = searchParams.get("mode"); // 'settings' or 'edit'
   const [form] = Form.useForm();
-  const [imageUrl, setImageUrl] = useState<string | null>(null);
-  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imageUrl, setImageUrl] = useState<string | null>(`${process.env.NEXT_PUBLIC_IMG_URL}/${agentData?.data?.image}`);
+  const [imageFile, setImageFile] = useState<File | null>(null); 
+  console.log(imageUrl);
 
   // console.log(params.id);
   //   console.log(params.id);
   const isSettingsMode = mode === "settings";
   const [updateAgentPassword] = useUpdateAgentPasswordMutation();
+ 
+  const [updateAgentProfile] = useUpdateAgentProfileMutation();
+
+  useEffect(() => {
+    if (agentData?.data) {
+      setImageUrl(agentData?.data?.image);
+    }
+    console.log(imageUrl);
+    
+  }, [ agentData?.data?.image]);
+  
 
   const onFinish = (values: any) => {
-    console.log("Form values:", values);
-    // Handle form submission
     if (isSettingsMode) {
-      // Handle settings update logic here
-
+      // Handle settings update logic (password change)
       return toast.promise(
         updateAgentPassword({ id: params.id, data: values }).unwrap(),
         {
@@ -46,20 +61,34 @@ export default function EditAgentPage() {
           error: (res) => `Error: ${res.message || "Something went wrong"}`,
         }
       );
-
-      // console.log("Updating settings for agent:", params.id);
     }
-    // console.log("Selected image file:", imageFile);
 
-    // if (imageFile) {
-    //   const formData = new FormData();
-    //   formData.append("profileImage", imageFile);
-    //   formData.append("name", values.name);
-    //   // ...append other fields
+    // Create FormData for profile update
+    const updateData = new FormData();
+    updateData.append("name", values.name);
+    updateData.append("contact", values.contact);
+    updateData.append("address", values.address);
+    if (imageFile) {
+      updateData.append("image", imageFile);
+    } else if (imageUrl) {
+      updateData.append("imageUrl", imageUrl);
+    }
 
-    //   // Upload this via fetch/axios as needed
-    // }
-    // toast.success("Form submitted successfully!");
+    console.log("Update data:", Object.fromEntries(updateData));
+
+    toast.promise(
+      updateAgentProfile({ id: params.id, data: updateData }).unwrap(),
+      {
+        loading: "Updating profile...",
+        success: (res) => {
+          console.log(res);
+          refetch();
+          return <b>Profile Updated Successfully!</b>;
+        },
+        error: (err) =>
+          `Error: ${err?.data?.message || "Something went wrong"}`,
+      }
+    );
   };
 
   if (isSettingsMode) {
@@ -283,13 +312,15 @@ export default function EditAgentPage() {
         </div>
 
         <Form
-          style={{
-            width: "100%",
-            maxWidth: "500px",
-          }}
+          style={{ width: "100%", maxWidth: "500px" }}
           form={form}
           onFinish={onFinish}
           layout="vertical"
+          initialValues={{
+            name: agentData?.data.name || "",
+            contact: agentData?.data.contact || "",
+            address: agentData?.data.address || "",
+          }}
         >
           <Form.Item label="Profile Picture" name="profilePicture">
             <Upload
@@ -298,8 +329,9 @@ export default function EditAgentPage() {
               beforeUpload={(file) => {
                 const reader = new FileReader();
                 reader.onload = () => {
-                  setImageUrl(reader.result as string);
                   setImageFile(file);
+                  const imageUrl = URL.createObjectURL(file);
+                  setImageUrl(imageUrl);
                 };
                 reader.readAsDataURL(file);
                 return false;
@@ -308,11 +340,10 @@ export default function EditAgentPage() {
               {imageUrl ? (
                 <div style={{ textAlign: "center", marginBottom: "24px" }}>
                   <img
-                    src={imageUrl}
+                    src={imageUrl?.startsWith('https') ? imageUrl : `${process.env.NEXT_PUBLIC_IMG_URL}/${imageUrl}`}
                     alt="Profile Preview"
                     style={{
                       width: "100%",
-                      // maxWidth: "600px",
                       height: "200px",
                       objectFit: "cover",
                       borderRadius: "8px",
@@ -320,6 +351,7 @@ export default function EditAgentPage() {
                       marginBottom: "12px",
                     }}
                   />
+
                   <Button
                     danger
                     onClick={(e) => {
@@ -337,12 +369,11 @@ export default function EditAgentPage() {
                     border: "2px dashed #d9d9d9",
                     borderRadius: "8px",
                     padding: "40px",
-
                     textAlign: "center",
                     backgroundColor: "#fafafa",
                     marginBottom: "6px",
                     cursor: "pointer",
-                    width: "500px",
+                    width: "100%",
                   }}
                 >
                   <div
@@ -371,7 +402,6 @@ export default function EditAgentPage() {
           <Form.Item
             label="Name"
             name="name"
-            initialValue="Ceevit"
             rules={[{ required: true, message: "Please input the name!" }]}
           >
             <Input
@@ -382,22 +412,7 @@ export default function EditAgentPage() {
 
           <Form.Item
             label="Contact Number"
-            name="contactNumber1"
-            initialValue="Square"
-            rules={[
-              { required: true, message: "Please input the contact number!" },
-            ]}
-          >
-            <Input
-              placeholder="Enter contact number"
-              style={{ padding: "12px", borderRadius: "8px" }}
-            />
-          </Form.Item>
-
-          <Form.Item
-            label="Contact Number"
-            name="contactNumber2"
-            initialValue="Square"
+            name="contact"
             rules={[
               { required: true, message: "Please input the contact number!" },
             ]}
@@ -411,7 +426,6 @@ export default function EditAgentPage() {
           <Form.Item
             label="Address"
             name="address"
-            initialValue="Netherlands"
             rules={[{ required: true, message: "Please input the address!" }]}
           >
             <Input

@@ -45,7 +45,7 @@ const agentApi = baseApi.injectEndpoints({
     updateAgentProfile: build.mutation({
       query: ({ id, data }) => ({
         url: `/user/${id}`,
-        method: "PATCH",
+        method: "PUT",
         credentials: "include",
         body: data,
       }),
@@ -57,4 +57,5 @@ export const {
   useGetAgentProfileQuery,
   useUpdateAgentStatusMutation,
   useUpdateAgentPasswordMutation,
+  useUpdateAgentProfileMutation,
 } = agentApi;

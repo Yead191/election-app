@@ -25,7 +25,7 @@ export default function AgentProfilePage() {
 
   const { data: agentData, refetch } = useGetAgentProfileQuery(params.id);
   const { refetch: refetchAgentList } = useGetAgentListQuery(null);
-  // console.log(agentData);
+  console.log(agentData);
   const mockAgentData = agentData?.data || {};
   const handleUpdateStatus = (id: string) => {
     // console.log(id);
@@ -95,7 +95,11 @@ export default function AgentProfilePage() {
       <div style={{ display: "flex", gap: "48px", alignItems: "flex-start" }}>
         <div style={{ textAlign: "center" }}>
           <Avatar
-            src={mockAgentData?.image || "/default-avatar.png"}
+            src={
+              mockAgentData?.image
+                ? `${process.env.NEXT_PUBLIC_IMG_URL}/${mockAgentData.image}`
+                : "/default-avatar.png"
+            }
             size={251}
             style={{ marginBottom: "16px", borderRadius: 16 }}
           />
