@@ -129,7 +129,7 @@ export default function PollingStationTable({
     setIsModalVisible(false);
     setSelectedStation(null);
   };
-  console.log(pathname);
+  // console.log(pathname);
 
   return (
     <>

@@ -13,6 +13,7 @@ import { toast } from "sonner";
 import { useState } from "react";
 import Image from "next/image";
 import { BsPencilSquare } from "react-icons/bs";
+import { useUpdateAgentPasswordMutation } from "@/redux/feature/agent-list-apis/agentApi";
 
 export default function EditAgentPage() {
   const router = useRouter();
@@ -23,23 +24,42 @@ export default function EditAgentPage() {
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [imageFile, setImageFile] = useState<File | null>(null);
 
+  // console.log(params.id);
   //   console.log(params.id);
   const isSettingsMode = mode === "settings";
+  const [updateAgentPassword] = useUpdateAgentPasswordMutation();
 
   const onFinish = (values: any) => {
     console.log("Form values:", values);
     // Handle form submission
-    console.log("Selected image file:", imageFile); // 👈 actual file
+    if (isSettingsMode) {
+      // Handle settings update logic here
 
-    if (imageFile) {
-      const formData = new FormData();
-      formData.append("profileImage", imageFile);
-      formData.append("name", values.name);
-      // ...append other fields
+      return toast.promise(
+        updateAgentPassword({ id: params.id, data: values }).unwrap(),
+        {
+          loading: "Updating settings...",
+          success: (res) => {
+            console.log(res);
+            return <b>{res.message}</b>;
+          },
+          error: (res) => `Error: ${res.message || "Something went wrong"}`,
+        }
+      );
 
-      // Upload this via fetch/axios as needed
+      // console.log("Updating settings for agent:", params.id);
     }
-    toast.success("Form submitted successfully!");
+    // console.log("Selected image file:", imageFile);
+
+    // if (imageFile) {
+    //   const formData = new FormData();
+    //   formData.append("profileImage", imageFile);
+    //   formData.append("name", values.name);
+    //   // ...append other fields
+
+    //   // Upload this via fetch/axios as needed
+    // }
+    // toast.success("Form submitted successfully!");
   };
 
   if (isSettingsMode) {
@@ -65,7 +85,9 @@ export default function EditAgentPage() {
             <Button
               type="text"
               icon={<ArrowLeftOutlined />}
-              onClick={() => router.back()}
+              onClick={() =>
+                router.push(`/agents-list/agent-profile/${params.id}`)
+              }
               style={{ fontSize: "16px" }}
             />
             <div style={{ display: "flex", gap: "8px" }}>
@@ -109,14 +131,17 @@ export default function EditAgentPage() {
             layout="vertical"
           >
             <Form.Item
-              label="Old Password"
-              name="oldPassword"
+              label="Current Password"
+              name="currentPassword"
               rules={[
-                { required: true, message: "Please input your old password!" },
+                {
+                  required: true,
+                  message: "Please input your current password!",
+                },
               ]}
             >
               <Input.Password
-                placeholder="Enter old password"
+                placeholder="Enter current password"
                 iconRender={(visible) =>
                   visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
                 }
@@ -221,7 +246,9 @@ export default function EditAgentPage() {
           <Button
             type="text"
             icon={<ArrowLeftOutlined />}
-            onClick={() => router.back()}
+            onClick={() =>
+              router.push(`/agents-list/agent-profile/${params.id}`)
+            }
             style={{ fontSize: "16px" }}
           />
           <div style={{ display: "flex", gap: "8px" }}>

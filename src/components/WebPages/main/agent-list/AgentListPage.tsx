@@ -28,6 +28,10 @@ import { useRouter } from "next/navigation";
 import { mockAgents } from "@/data/mockAgents";
 import AgentModal from "./AgentModal";
 import { toast } from "sonner";
+import {
+  useGetAgentListQuery,
+  useUpdateAgentStatusMutation,
+} from "@/redux/feature/agent-list-apis/agentApi";
 
 const { Option } = Select;
 
@@ -41,28 +45,24 @@ export default function AgentsListPage() {
   const [form] = Form.useForm();
   const router = useRouter();
 
-  const filteredAgents = agents.filter(
-    (agent) =>
-      agent.name.toLowerCase().includes(searchText.toLowerCase()) ||
-      agent.email.toLowerCase().includes(searchText.toLowerCase()) ||
-      agent.id.toLowerCase().includes(searchText.toLowerCase()) ||
-      agent.position.toLowerCase().includes(searchText.toLowerCase()) ||
-      agent.department.toLowerCase().includes(searchText.toLowerCase())
-  );
-
+  const { data: agentsData, refetch } = useGetAgentListQuery({
+    searchTerm: searchText,
+  });
+  const [updateAgentStatus] = useUpdateAgentStatusMutation();
+  // console.log(agentsData);
   const handleSelectAll = (checked: boolean) => {
     if (checked) {
-      setSelectedRowKeys(filteredAgents.map((agent) => agent.key));
+      setSelectedRowKeys(agentsData?.data?.map((agent: any) => agent._id));
     } else {
       setSelectedRowKeys([]);
     }
   };
 
-  const handleSelectRow = (key: string, checked: boolean) => {
+  const handleSelectRow = (_id: string, checked: boolean) => {
     if (checked) {
-      setSelectedRowKeys([...selectedRowKeys, key]);
+      setSelectedRowKeys([...selectedRowKeys, _id]);
     } else {
-      setSelectedRowKeys(selectedRowKeys.filter((k) => k !== key));
+      setSelectedRowKeys(selectedRowKeys.filter((k) => k !== _id));
     }
   };
 
@@ -101,22 +101,26 @@ export default function AgentsListPage() {
     form.resetFields();
   };
 
-  const handleUpdateStatus = (key: string, currentStatus: string) => {
-    const newStatus = currentStatus === "active" ? "inactive" : "active";
-    setAgents(
-      agents.map((agent) =>
-        agent.key === key ? { ...agent, status: newStatus } : agent
-      )
-    );
-    message.success(`Agent status updated to ${newStatus}`);
+  const handleUpdateStatus = (id: string) => {
+    // console.log(id);
+    toast.promise(updateAgentStatus({ id }).unwrap(), {
+      loading: "Updating status...",
+      success: (response) => {
+        refetch();
+        return `Status updated to ${
+          response.data.status === "active" ? "active" : "delete"
+        }!`;
+      },
+      error: (error) => `Failed to update status: ${error.message}`,
+    });
   };
 
   const isAllSelected =
-    filteredAgents.length > 0 &&
-    selectedRowKeys.length === filteredAgents.length;
+    agentsData?.data?.length > 0 &&
+    selectedRowKeys.length === agentsData?.data?.length;
   const isIndeterminate =
     selectedRowKeys.length > 0 &&
-    selectedRowKeys.length < filteredAgents.length;
+    selectedRowKeys.length < agentsData?.data?.length;
 
   const columns = [
     {
@@ -134,15 +138,20 @@ export default function AgentsListPage() {
       render: (_: any, record: any) => (
         <input
           type="checkbox"
-          checked={selectedRowKeys.includes(record.key)}
-          onChange={(e) => handleSelectRow(record.key, e.target.checked)}
+          checked={selectedRowKeys.includes(record._id)}
+          onChange={(e) => handleSelectRow(record._id, e.target.checked)}
         />
       ),
     },
     {
       title: "Id. no.",
-      dataIndex: "id",
-      key: "id",
+      dataIndex: "_id",
+      key: "_id",
+      render: (text: string) => (
+        <Tooltip title={text}>
+          <span className="text-sm">{text.slice(0, 8)}</span>
+        </Tooltip>
+      ),
     },
     {
       title: "Name",
@@ -150,7 +159,7 @@ export default function AgentsListPage() {
       key: "name",
       render: (text: string, record: any) => (
         <Space>
-          <Avatar src={record.avatar} size={32} />
+          <Avatar src={record.image} size={32} />
           {text}
         </Space>
       ),
@@ -162,30 +171,29 @@ export default function AgentsListPage() {
     },
     {
       title: "Contact No",
-      dataIndex: "contactNo",
-      key: "contactNo",
+      dataIndex: "contact",
+      key: "contact",
     },
     {
       title: "Position",
-      dataIndex: "position",
-      key: "position",
-    },
-    {
-      title: "Department",
-      dataIndex: "department",
-      key: "department",
-    },
-    {
-      title: "Post Code",
-      dataIndex: "postCode",
-      key: "postCode",
+      dataIndex: "role",
+      key: "role",
     },
     // {
-    //   title: "Pooling Address",
-    //   dataIndex: "poolingAddress",
-    //   key: "poolingAddress",
-
+    //   title: "Department",
+    //   dataIndex: "department",
+    //   key: "department",
     // },
+    {
+      title: "Postal Code",
+      dataIndex: "postalCode",
+      key: "postalCode",
+    },
+    {
+      title: "Pooling Station",
+      dataIndex: "pollingStation",
+      key: "pollingStation",
+    },
     {
       title: "Status",
       dataIndex: "status",
@@ -212,7 +220,7 @@ export default function AgentsListPage() {
             type="text"
             icon={<InfoCircleOutlined />}
             onClick={() =>
-              router.push(`/agents-list/agent-profile/${record.key}`)
+              router.push(`/agents-list/agent-profile/${record._id}`)
             }
             style={{ color: "#1890ff", fontSize: 20 }}
           />
@@ -227,7 +235,7 @@ export default function AgentsListPage() {
           >
             <Button
               type="text"
-              onClick={() => handleUpdateStatus(record.key, record.status)}
+              onClick={() => handleUpdateStatus(record._id)}
               icon={
                 record.status === "active" ? (
                   <LockOutlined />
@@ -317,7 +325,7 @@ export default function AgentsListPage() {
               }}
             />
           </div>
-          <DatePicker
+          {/* <DatePicker
             placeholder="Date"
             suffixIcon={<CalendarOutlined />}
             style={{
@@ -325,7 +333,7 @@ export default function AgentsListPage() {
               height: "40px",
               borderRadius: "6px",
             }}
-          />
+          /> */}
           <Button
             onClick={handleAdd}
             type="primary"
@@ -347,7 +355,7 @@ export default function AgentsListPage() {
         <div className="">
           <Table
             columns={columns}
-            dataSource={filteredAgents}
+            dataSource={agentsData?.data || []}
             pagination={{
               pageSize: 10,
               showSizeChanger: true,

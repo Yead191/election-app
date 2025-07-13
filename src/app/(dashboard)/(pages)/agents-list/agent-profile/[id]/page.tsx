@@ -12,191 +12,204 @@ import { useRouter, useParams } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 import { BsPencilSquare } from "react-icons/bs";
-
-const mockAgentData = {
-  name: "Asadujjaman Mahfuz",
-  position: "Polling Agent",
-  poolingAddress: "3891 Ranchview Dr. Richardson",
-  id: "BB4578EED2",
-  email: "Asadujjaman101@bd.com",
-  contactNumber: "073 155 4568",
-  agentAddress: "284 Daffodil Dr, Mount Frere, Eastern Cape -5088 South Africa",
-  avatar: "/assets/user3.png?height=252&width=251",
-  role: "Manager",
-};
+import {
+  useGetAgentListQuery,
+  useGetAgentProfileQuery,
+  useUpdateAgentStatusMutation,
+} from "@/redux/feature/agent-list-apis/agentApi";
 
 export default function AgentProfilePage() {
   const router = useRouter();
   const params = useParams();
-  const [status, setStatus] = useState("active");
-  const handleUpdateStatus = (status: string) => {
-    setStatus(status === "active" ? "inactive" : "active");
-    toast.success(
-      `Status updated to ${status === "active" ? "inactive" : "active"}!`
-    );
-  };
+  const [updateAgentStatus] = useUpdateAgentStatusMutation();
 
+  const { data: agentData, refetch } = useGetAgentProfileQuery(params.id);
+  const { refetch: refetchAgentList } = useGetAgentListQuery(null);
+  // console.log(agentData);
+  const mockAgentData = agentData?.data || {};
+  const handleUpdateStatus = (id: string) => {
+    // console.log(id);
+    toast.promise(updateAgentStatus({ id }).unwrap(), {
+      loading: "Updating status...",
+      success: (res) => {
+        // console.log(res);
+        refetchAgentList();
+        refetch();
+        return `Status updated to ${
+          res.data.status === "active" ? "active" : "delete"
+        }!`;
+      },
+      error: (res) => `Error: ${res.data?.message || "Something went wrong"}`,
+    });
+  };
   return (
-    <div>
+    <div
+      style={{
+        backgroundColor: "white",
+        borderRadius: "8px",
+        padding: "24px",
+        margin: "0 auto",
+        height: "80vh",
+      }}
+    >
       <div
         style={{
-          backgroundColor: "white",
-          borderRadius: "8px",
-          padding: "24px",
-          margin: "0 auto",
-          height: "80vh",
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          marginBottom: "32px",
         }}
       >
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            marginBottom: "32px",
-          }}
-        >
-          <Button
-            type="text"
-            icon={<ArrowLeftOutlined />}
-            onClick={() => router.push("/agents-list")}
-            style={{ fontSize: "16px" }}
+        <Button
+          type="text"
+          icon={<ArrowLeftOutlined />}
+          onClick={() => router.push("/agents-list")}
+          style={{ fontSize: "16px" }}
+        />
+        <Space>
+          <Tooltip title="Change Password">
+            <Button
+              icon={<SettingOutlined />}
+              onClick={() =>
+                router.push(
+                  `/agents-list/edit-agent-details/${params.id}?mode=settings`
+                )
+              }
+              style={{ borderRadius: "6px", fontSize: 20, padding: 6 }}
+            />
+          </Tooltip>
+          <Tooltip title="Edit Profile">
+            <Button
+              icon={<BsPencilSquare />}
+              onClick={() =>
+                router.push(
+                  `/agents-list/edit-agent-details/${params.id}?mode=edit`
+                )
+              }
+              style={{ borderRadius: "6px", fontSize: 20, padding: 6 }}
+            />
+          </Tooltip>
+        </Space>
+      </div>
+
+      <div style={{ display: "flex", gap: "48px", alignItems: "flex-start" }}>
+        <div style={{ textAlign: "center" }}>
+          <Avatar
+            src={mockAgentData?.image || "/default-avatar.png"}
+            size={251}
+            style={{ marginBottom: "16px", borderRadius: 16 }}
           />
-          <Space>
-            <Tooltip title="Change Password">
+          <div className="flex justify-between items-start">
+            <div></div>
+            <div>
+              <div
+                style={{
+                  fontSize: "18px",
+                  fontWeight: "600",
+                  marginBottom: "4px",
+                }}
+              >
+                {mockAgentData.name}
+              </div>
+              <div
+                style={{
+                  color: "#ff7a00",
+                  fontSize: "14px",
+                  fontWeight: "500",
+                }}
+              >
+                {mockAgentData.role}
+              </div>
+            </div>
+            <Tooltip
+              title={
+                mockAgentData.status === "active" ? "Deactivate" : "Activate"
+              }
+            >
               <Button
-                icon={<SettingOutlined />}
-                onClick={() =>
-                  router.push(
-                    `/agents-list/edit-agent-details/${params.id}?mode=settings`
+                type="text"
+                onClick={() => handleUpdateStatus(mockAgentData._id)}
+                icon={
+                  mockAgentData.status === "active" ? (
+                    <LockOutlined />
+                  ) : (
+                    <UnlockOutlined />
                   )
                 }
-                style={{ borderRadius: "6px", fontSize: 20, padding: 6 }}
+                size="small"
+                style={{
+                  color:
+                    mockAgentData.status === "active" ? "#ff4d4f" : "#52c41a",
+                  fontSize: "20px",
+                }}
               />
             </Tooltip>
-            <Tooltip title="Edit Profile">
-              <Button
-                icon={<BsPencilSquare />}
-                onClick={() =>
-                  router.push(
-                    `/agents-list/edit-agent-details/${params.id}?mode=edit`
-                  )
-                }
-                style={{ borderRadius: "6px", fontSize: 20, padding: 6 }}
-              />
-            </Tooltip>
-          </Space>
+          </div>
         </div>
 
-        <div style={{ display: "flex", gap: "48px", alignItems: "flex-start" }}>
-          <div style={{ textAlign: "center" }}>
-            <Avatar
-              src={mockAgentData.avatar}
-              size={251}
-              style={{ marginBottom: "16px", borderRadius: 16 }}
-            />
-            <div className="flex justify-between items-start">
-              <div></div>
-              <div>
-                <div
-                  style={{
-                    fontSize: "18px",
-                    fontWeight: "600",
-                    marginBottom: "4px",
-                  }}
-                >
-                  {mockAgentData.name}
-                </div>
-                <div
-                  style={{
-                    color: "#ff7a00",
-                    fontSize: "14px",
-                    fontWeight: "500",
-                  }}
-                >
-                  {mockAgentData.role}
-                </div>
-              </div>
-              <Tooltip title={status === "active" ? "Deactivate" : "Activate"}>
-                <Button
-                  type="text"
-                  onClick={() => handleUpdateStatus(status)}
-                  icon={
-                    status === "active" ? <LockOutlined /> : <UnlockOutlined />
-                  }
-                  size="small"
-                  style={{
-                    color: status === "active" ? "#ff4d4f" : "#52c41a",
-                    fontSize: "20px",
-                  }}
-                />
-              </Tooltip>
+        <div style={{ flex: 1 }}>
+          <div style={{ marginBottom: "24px" }}>
+            <div
+              style={{ color: "#999", fontSize: "14px", marginBottom: "4px" }}
+            >
+              Name
             </div>
-          </div>
+            <div style={{ fontSize: "16px", marginBottom: "16px" }}>
+              : {mockAgentData.name}
+            </div>
 
-          <div style={{ flex: 1 }}>
-            <div style={{ marginBottom: "24px" }}>
-              <div
-                style={{ color: "#999", fontSize: "14px", marginBottom: "4px" }}
-              >
-                Name
-              </div>
-              <div style={{ fontSize: "16px", marginBottom: "16px" }}>
-                : {mockAgentData.name}
-              </div>
+            <div
+              style={{ color: "#999", fontSize: "14px", marginBottom: "4px" }}
+            >
+              Position
+            </div>
+            <div style={{ fontSize: "16px", marginBottom: "16px" }}>
+              : {mockAgentData?.role}
+            </div>
 
-              <div
-                style={{ color: "#999", fontSize: "14px", marginBottom: "4px" }}
-              >
-                Position
-              </div>
-              <div style={{ fontSize: "16px", marginBottom: "16px" }}>
-                : {mockAgentData.position}
-              </div>
+            <div
+              style={{ color: "#999", fontSize: "14px", marginBottom: "4px" }}
+            >
+              Polling Address
+            </div>
+            <div style={{ fontSize: "16px", marginBottom: "16px" }}>
+              : {mockAgentData.pollingStation}
+            </div>
 
-              <div
-                style={{ color: "#999", fontSize: "14px", marginBottom: "4px" }}
-              >
-                Polling Address
-              </div>
-              <div style={{ fontSize: "16px", marginBottom: "16px" }}>
-                : {mockAgentData.poolingAddress}
-              </div>
+            <div
+              style={{ color: "#999", fontSize: "14px", marginBottom: "4px" }}
+            >
+              Id. no.
+            </div>
+            <div style={{ fontSize: "16px", marginBottom: "16px" }}>
+              : {mockAgentData._id}
+            </div>
 
-              <div
-                style={{ color: "#999", fontSize: "14px", marginBottom: "4px" }}
-              >
-                Id. no.
-              </div>
-              <div style={{ fontSize: "16px", marginBottom: "16px" }}>
-                : {mockAgentData.id}
-              </div>
+            <div
+              style={{ color: "#999", fontSize: "14px", marginBottom: "4px" }}
+            >
+              Email
+            </div>
+            <div style={{ fontSize: "16px", marginBottom: "16px" }}>
+              : {mockAgentData.email}
+            </div>
 
-              <div
-                style={{ color: "#999", fontSize: "14px", marginBottom: "4px" }}
-              >
-                Email
-              </div>
-              <div style={{ fontSize: "16px", marginBottom: "16px" }}>
-                : {mockAgentData.email}
-              </div>
+            <div
+              style={{ color: "#999", fontSize: "14px", marginBottom: "4px" }}
+            >
+              Contact Number
+            </div>
+            <div style={{ fontSize: "16px", marginBottom: "16px" }}>
+              : {mockAgentData.contact}
+            </div>
 
-              <div
-                style={{ color: "#999", fontSize: "14px", marginBottom: "4px" }}
-              >
-                Contact Number
-              </div>
-              <div style={{ fontSize: "16px", marginBottom: "16px" }}>
-                : {mockAgentData.contactNumber}
-              </div>
-
-              <div
-                style={{ color: "#999", fontSize: "14px", marginBottom: "4px" }}
-              >
-                Agent Address
-              </div>
-              <div style={{ fontSize: "16px" }}>
-                : {mockAgentData.agentAddress}
-              </div>
+            <div
+              style={{ color: "#999", fontSize: "14px", marginBottom: "4px" }}
+            >
+              Represent Code
+            </div>
+            <div style={{ fontSize: "16px" }}>
+              : {mockAgentData.represent_code}
             </div>
           </div>
         </div>
