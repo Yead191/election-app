@@ -96,9 +96,9 @@ export default function AgentProfilePage() {
         <div style={{ textAlign: "center" }}>
           <Avatar
             src={
-              mockAgentData?.image
-                ? `${process.env.NEXT_PUBLIC_IMG_URL}/${mockAgentData.image}`
-                : "/default-avatar.png"
+              mockAgentData?.image?.startsWith("http")
+                ? mockAgentData?.image
+                : `${process.env.NEXT_PUBLIC_IMG_URL}${mockAgentData.image}`
             }
             size={251}
             style={{ marginBottom: "16px", borderRadius: 16 }}

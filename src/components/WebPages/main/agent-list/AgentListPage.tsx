@@ -159,7 +159,14 @@ export default function AgentsListPage() {
       key: "name",
       render: (text: string, record: any) => (
         <Space>
-          <Avatar src={record.image} size={32} />
+          <Avatar
+            src={
+              record?.image?.startsWith("http")
+                ? record?.image
+                : `${process.env.NEXT_PUBLIC_IMG_URL}${record?.image}`
+            }
+            size={32}
+          />
           {text}
         </Space>
       ),
@@ -254,6 +261,7 @@ export default function AgentsListPage() {
       ),
     },
   ];
+  console.log(agentsData?.data);
 
   return (
     <div className="w-full">
