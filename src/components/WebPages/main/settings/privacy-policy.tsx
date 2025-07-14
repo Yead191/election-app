@@ -41,7 +41,7 @@ export default function privacyPolicy() {
   // save content
   const handleSave = () => {
     // Handle saving the content to the database or API
-    console.log("Content saved:", content);
+    // console.log("Content saved:", content);
     toast.success("Content saved successfully");
   };
   return (

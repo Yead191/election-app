@@ -37,7 +37,7 @@ const VerifyOtp = () => {
       toast.promise(verifyOtp(verificationData).unwrap(), {
         loading: "Verifying code...",
         success: (res) => {
-          console.log(res.data);
+          // console.log(res.data);
           Cookies.set("resetToken", res?.data || "", {
             expires: 1,
             path: "/",
@@ -58,7 +58,6 @@ const VerifyOtp = () => {
       {
         loading: "Resending OTP...",
         success: (res) => {
-          console.log(res);
           return <b>{res.message}</b>;
         },
         error: (res) => `Error: ${res.data?.message || "Something went wrong"}`,

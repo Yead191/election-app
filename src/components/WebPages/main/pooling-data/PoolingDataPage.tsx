@@ -160,7 +160,7 @@ export default function PoolingDataPage() {
             style={{ color: "#ff4d4f", padding: 0 }}
             onClick={() => {
               // Handle scan action
-              console.log("Scan clicked for:", record);
+              // console.log("Scan clicked for:", record);
             }}
           >
             Scan

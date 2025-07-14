@@ -25,7 +25,7 @@ export default function PoolingStationStatusPage() {
   const { data: pollingStationStatus } = usePollingStationStatusQuery({
     searchTerm: searchText,
   });
-console.log(searchText);
+
   // Extract unique areas from polling station data
   const areas = [
     "All Area",

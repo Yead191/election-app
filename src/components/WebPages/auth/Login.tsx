@@ -13,8 +13,6 @@ const SignInForm = () => {
   const router = useRouter();
   const [login, { isLoading, isSuccess, data }] = useLoginMutation();
   const onFinish = async (values: any) => {
-    console.log(values);
-
     // toast.success("Login Successful");
     // router.push("/analytics");
     const user = {
@@ -24,7 +22,6 @@ const SignInForm = () => {
     toast.promise(login(user).unwrap(), {
       loading: "Logging in...",
       success: (res) => {
-        console.log(res);
         router.push("/analytics");
         Cookies.set("accessToken", res?.data?.createToken || "");
         Cookies.set("refreshToken", res?.data?.refreshToken || "");

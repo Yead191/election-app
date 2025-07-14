@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Table,
   Button,
@@ -11,7 +11,14 @@ import {
   Form,
   Select,
   message,
+  Upload,
 } from "antd";
+import { UploadOutlined } from "@ant-design/icons";
+import {
+  useAddAgentMutation,
+  useGetAgentListQuery,
+} from "@/redux/feature/agent-list-apis/agentApi";
+import { toast } from "sonner";
 
 interface AgentModalProps {
   isAddMode: boolean;
@@ -19,17 +26,83 @@ interface AgentModalProps {
   setIsModalVisible: (visible: boolean) => void;
   setEditingAgent: (agent: any) => void;
   form: any;
-  handleFormSubmit: (values: any) => void;
+  refetch: () => void;
 }
+
 export default function AgentModal({
   isAddMode,
   isModalVisible,
   setIsModalVisible,
   setEditingAgent,
   form,
-  handleFormSubmit,
+  refetch,
 }: AgentModalProps) {
   const { Option } = Select;
+  const [addAgent] = useAddAgentMutation();
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [file, setFile] = useState<File | null>(null);
+  // const { data: agentList, refetch } = useGetAgentListQuery(null);
+
+  console.log(file);
+  const handleFormSubmit = async (values: any) => {
+    const hide = message.loading("Processing...", 0);
+    try {
+      if (isAddMode) {
+        const formData = new FormData();
+        formData.append("name", values.name);
+        formData.append("email", values.email);
+        formData.append("contact", values.contact);
+        formData.append("postalCode", values.postalCode);
+        formData.append("department", values.department);
+        formData.append("pollingStation", values.pollingStation);
+        formData.append("status", "active");
+        formData.append("role", "AGENT");
+        if (values.image?.file) {
+          formData.append("image", values.image.file);
+        }
+
+        // console.log(formData);
+        toast.promise(addAgent(formData).unwrap(), {
+          loading: "Adding agent...",
+          success: (res) => {
+            // console.log(res);
+            refetch();
+            form.resetFields();
+            setEditingAgent(null);
+            setImagePreview(null);
+            setIsModalVisible(false);
+
+            return <b>{res.message}</b>;
+          },
+          error: "Failed to add agent.",
+        });
+      }
+    } catch (error) {
+      message.error("Failed to process agent. Please try again.");
+    } finally {
+      hide();
+    }
+  };
+
+  const handleImageChange = (info: any) => {
+    if (info.file) {
+      setFile(info.file);
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setImagePreview(e.target?.result as string);
+      };
+      reader.readAsDataURL(info.file);
+    } else {
+      setImagePreview(null);
+    }
+  };
+
+  const uploadProps = {
+    beforeUpload: () => false,
+    onChange: handleImageChange,
+    accept: "image/*",
+    showUploadList: false,
+  };
 
   return (
     <Modal
@@ -39,6 +112,7 @@ export default function AgentModal({
         setIsModalVisible(false);
         setEditingAgent(null);
         form.resetFields();
+        setImagePreview(null);
       }}
       footer={null}
       width={700}
@@ -50,37 +124,82 @@ export default function AgentModal({
         layout="vertical"
         style={{ marginTop: "24px" }}
       >
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "1fr 1fr",
-            gap: "16px",
-          }}
-        >
+        <div className="grid grid-cols-1 md:grid-cols-2 items-center gap-4 ">
           <Form.Item
-            label="Name"
-            name="name"
-            rules={[{ required: true, message: "Please input name!" }]}
+            label="Agent Image"
+            name="image"
+            rules={
+              isAddMode
+                ? [{ required: true, message: "Please upload an image!" }]
+                : []
+            }
           >
-            <Input
-              placeholder="Enter full name"
-              style={{ padding: "12px", borderRadius: "8px" }}
-            />
+            <Upload {...uploadProps}>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  flexDirection: "column",
+                  border: "2px dashed #d9d9d9",
+                  borderRadius: "8px",
+                  padding: "16px",
+                  cursor: "pointer",
+                  height: "150px",
+                  width: "100%",
+                }}
+              >
+                {imagePreview ? (
+                  <img
+                    src={imagePreview}
+                    alt="Preview"
+                    style={{
+                      maxWidth: "100%",
+                      maxHeight: "100%",
+                      objectFit: "contain",
+                    }}
+                  />
+                ) : (
+                  <>
+                    <UploadOutlined
+                      style={{ fontSize: "32px", color: "#1BA0D9" }}
+                    />
+                    <div style={{ marginTop: "8px" }}>Upload Image</div>
+                  </>
+                )}
+              </div>
+            </Upload>
           </Form.Item>
+          <div
+            style={{
+              gap: "16px",
+            }}
+          >
+            <Form.Item
+              label="Name"
+              name="name"
+              rules={[{ required: true, message: "Please input name!" }]}
+            >
+              <Input
+                placeholder="Enter full name"
+                style={{ padding: "12px", borderRadius: "8px" }}
+              />
+            </Form.Item>
 
-          <Form.Item
-            label="Email"
-            name="email"
-            rules={[
-              { required: true, message: "Please input email!" },
-              { type: "email", message: "Please enter a valid email!" },
-            ]}
-          >
-            <Input
-              placeholder="Enter email address"
-              style={{ padding: "12px", borderRadius: "8px" }}
-            />
-          </Form.Item>
+            <Form.Item
+              label="Email"
+              name="email"
+              rules={[
+                { required: true, message: "Please input email!" },
+                { type: "email", message: "Please enter a valid email!" },
+              ]}
+            >
+              <Input
+                placeholder="Enter email address"
+                style={{ padding: "12px", borderRadius: "8px" }}
+              />
+            </Form.Item>
+          </div>
         </div>
 
         <div
@@ -92,7 +211,7 @@ export default function AgentModal({
         >
           <Form.Item
             label="Contact Number"
-            name="contactNo"
+            name="contact"
             rules={[
               { required: true, message: "Please input contact number!" },
             ]}
@@ -104,8 +223,8 @@ export default function AgentModal({
           </Form.Item>
 
           <Form.Item
-            label="Post Code"
-            name="postCode"
+            label="Postal Code"
+            name="postalCode"
             rules={[{ required: true, message: "Please input post code!" }]}
           >
             <Input
@@ -123,19 +242,6 @@ export default function AgentModal({
           }}
         >
           <Form.Item
-            label="Position"
-            name="position"
-            rules={[{ required: true, message: "Please select position!" }]}
-          >
-            <Select placeholder="Select position" style={{ height: "48px" }}>
-              <Option value="Junior Agent">Junior Agent</Option>
-              <Option value="Agent">Agent</Option>
-              <Option value="Senior Agent">Senior Agent</Option>
-              <Option value="Team Lead">Team Lead</Option>
-            </Select>
-          </Form.Item>
-
-          <Form.Item
             label="Department"
             name="department"
             rules={[{ required: true, message: "Please select department!" }]}
@@ -147,29 +253,22 @@ export default function AgentModal({
               <Option value="Management">Management</Option>
             </Select>
           </Form.Item>
+          <Form.Item
+            label="Polling Station Address"
+            name="pollingStation"
+            rules={[
+              {
+                required: true,
+                message: "Please input polling station address!",
+              },
+            ]}
+          >
+            <Input
+              placeholder="Enter polling station address"
+              style={{ padding: "12px", borderRadius: "8px" }}
+            />
+          </Form.Item>
         </div>
-
-        <Form.Item
-          label="Pooling Address"
-          name="poolingAddress"
-          rules={[{ required: true, message: "Please input pooling address!" }]}
-        >
-          <Input
-            placeholder="Enter pooling address"
-            style={{ padding: "12px", borderRadius: "8px" }}
-          />
-        </Form.Item>
-
-        <Form.Item
-          label="Status"
-          name="status"
-          rules={[{ required: true, message: "Please select status!" }]}
-        >
-          <Select placeholder="Select status" style={{ height: "48px" }}>
-            <Option value="active">Active</Option>
-            <Option value="inactive">Inactive</Option>
-          </Select>
-        </Form.Item>
 
         <Button
           type="primary"

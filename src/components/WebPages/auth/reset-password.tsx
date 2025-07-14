@@ -17,7 +17,7 @@ const ResetPassword = () => {
     toast.promise(resetPassword(values).unwrap(), {
       loading: "Resetting password...",
       success: (res) => {
-        console.log(res);
+        // console.log(res);
         router.push("/auth/login");
         Cookies.remove("resetEmail");
         Cookies.remove("resetToken");

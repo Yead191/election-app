@@ -40,11 +40,11 @@ const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({
       toast.error("New password and confirm password do not match!");
       return;
     }
-    console.log(formData);
+    // console.log(formData);
     toast.promise(updatePassword(formData).unwrap(), {
       loading: "Changing password...",
       success: (res) => {
-        console.log(res);
+        // console.log(res);
         setFormData({
           currentPassword: "",
           newPassword: "",

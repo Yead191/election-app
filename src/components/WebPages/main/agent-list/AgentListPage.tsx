@@ -33,8 +33,6 @@ import {
   useUpdateAgentStatusMutation,
 } from "@/redux/feature/agent-list-apis/agentApi";
 
-const { Option } = Select;
-
 export default function AgentsListPage() {
   const [searchText, setSearchText] = useState("");
   const [selectedRowKeys, setSelectedRowKeys] = useState<string[]>([]);
@@ -42,11 +40,14 @@ export default function AgentsListPage() {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [editingAgent, setEditingAgent] = useState<any>(null);
   const [isAddMode, setIsAddMode] = useState(false);
+  const [statusFilter, setStatusFilter] = useState<string>(""); // "all", "active", "delete"
   const [form] = Form.useForm();
   const router = useRouter();
 
+  console.log(statusFilter);
   const { data: agentsData, refetch } = useGetAgentListQuery({
     searchTerm: searchText,
+    status: statusFilter,
   });
   const [updateAgentStatus] = useUpdateAgentStatusMutation();
   // console.log(agentsData);
@@ -71,34 +72,6 @@ export default function AgentsListPage() {
     setIsAddMode(true);
     form.resetFields();
     setIsModalVisible(true);
-  };
-
-  const handleFormSubmit = (values: any) => {
-    if (isAddMode) {
-      const newAgent = {
-        key: Date.now().toString(),
-        id: `AG${Date.now().toString().slice(-8)}`,
-        ...values,
-        avatar: "/images/asad.jpg?height=40&width=40",
-      };
-      setAgents([...agents, newAgent]);
-      message.success("Agent added successfully");
-    } else {
-      setAgents(
-        agents.map((agent) =>
-          agent.key === editingAgent.key
-            ? {
-                ...agent,
-                ...values,
-              }
-            : agent
-        )
-      );
-      message.success("Agent updated successfully");
-    }
-    setIsModalVisible(false);
-    setEditingAgent(null);
-    form.resetFields();
   };
 
   const handleUpdateStatus = (id: string) => {
@@ -213,7 +186,7 @@ export default function AgentsListPage() {
             textTransform: "capitalize",
           }}
         >
-          {status}
+          {status === "active" ? "Active" : "Deactivated"}
         </span>
       ),
     },
@@ -261,7 +234,6 @@ export default function AgentsListPage() {
       ),
     },
   ];
-  console.log(agentsData?.data);
 
   return (
     <div className="w-full">
@@ -295,18 +267,30 @@ export default function AgentsListPage() {
             />
             <Button
               icon={<UnlockOutlined style={{ fontSize: "20px" }} />}
+              onClick={() =>
+                setStatusFilter(statusFilter === "active" ? "" : "active")
+              }
               style={{
-                color: "#A1A1A1",
+                color: statusFilter === "active" ? "#52c41a" : "#A1A1A1",
                 padding: "19px",
-                border: "none",
+                border:
+                  statusFilter === "active" ? "2px solid #52c41a" : "none",
+                backgroundColor:
+                  statusFilter === "active" ? "#f6ffed" : "transparent",
               }}
             />
             <Button
               icon={<LockOutlined style={{ fontSize: "20px" }} />}
+              onClick={() =>
+                setStatusFilter(statusFilter === "delete" ? "" : "delete")
+              }
               style={{
-                color: "#A1A1A1",
+                color: statusFilter === "delete" ? "#ff4d4f" : "#A1A1A1",
                 padding: "19px",
-                border: "none",
+                border:
+                  statusFilter === "delete" ? "2px solid #ff4d4f" : "none",
+                backgroundColor:
+                  statusFilter === "delete" ? "#fff2f0" : "transparent",
               }}
             />
             <Input
@@ -332,6 +316,20 @@ export default function AgentsListPage() {
                 setSearchText(e.target.value);
               }}
             />
+            {statusFilter !== "" && (
+              <span
+                style={{
+                  fontSize: "12px",
+                  color: "#666",
+                  backgroundColor: "#f0f0f0",
+                  padding: "4px 8px",
+                  borderRadius: "4px",
+                  marginLeft: "8px",
+                }}
+              >
+                Showing: {statusFilter} agents ({agentsData?.data?.length})
+              </span>
+            )}
           </div>
           {/* <DatePicker
             placeholder="Date"
@@ -385,7 +383,7 @@ export default function AgentsListPage() {
         setIsModalVisible={setIsModalVisible}
         setEditingAgent={setEditingAgent}
         form={form}
-        handleFormSubmit={handleFormSubmit}
+        refetch={refetch}
       />
     </div>
   );

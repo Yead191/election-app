@@ -25,7 +25,7 @@ export default function AgentProfilePage() {
 
   const { data: agentData, refetch } = useGetAgentProfileQuery(params.id);
   const { refetch: refetchAgentList } = useGetAgentListQuery(null);
-  console.log(agentData);
+
   const mockAgentData = agentData?.data || {};
   const handleUpdateStatus = (id: string) => {
     // console.log(id);
@@ -212,9 +212,15 @@ export default function AgentProfilePage() {
             >
               Represent Code
             </div>
-            <div style={{ fontSize: "16px" }}>
+            <div style={{ fontSize: "16px", marginBottom: "16px" }}>
               : {mockAgentData.represent_code}
             </div>
+            {/* <div
+              style={{ color: "#999", fontSize: "14px", marginBottom: "4px" }}
+            >
+              Address
+            </div>
+            <div style={{ fontSize: "16px" }}>: {mockAgentData.address}</div> */}
           </div>
         </div>
       </div>

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { toast } from "sonner";
 import {
+  useGetAgentListQuery,
   useGetAgentProfileQuery,
   useUpdateAgentProfileMutation,
 } from "@/redux/feature/agent-list-apis/agentApi";
@@ -14,6 +15,8 @@ export default function AgentProfileForm({ agentId }: { agentId: any }) {
   const [updateAgentProfile] = useUpdateAgentProfileMutation();
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [imageFile, setImageFile] = useState<File | null>(null);
+  const { data: agentListData, refetch: refetchAgentList } =
+    useGetAgentListQuery(null);
 
   useEffect(() => {
     if (agentData?.data) {
@@ -21,7 +24,7 @@ export default function AgentProfileForm({ agentId }: { agentId: any }) {
       form.setFieldsValue({
         name: agentData?.data.name || "",
         contact: agentData?.data.contact || "",
-        address: agentData?.data.address || "",
+        pollingStation: agentData?.data.pollingStation || "",
       });
     }
   }, [agentData?.data, form]);
@@ -36,7 +39,7 @@ export default function AgentProfileForm({ agentId }: { agentId: any }) {
     const updateData = new FormData();
     updateData.append("name", values.name);
     updateData.append("contact", values.contact);
-    updateData.append("address", values.address);
+    updateData.append("pollingStation", values.pollingStation);
     if (imageFile) {
       updateData.append("image", imageFile);
     } else if (imageUrl) {
@@ -48,6 +51,7 @@ export default function AgentProfileForm({ agentId }: { agentId: any }) {
       {
         loading: "Updating profile...",
         success: (res) => {
+          refetchAgentList();
           refetch();
           return <b>Profile Updated Successfully!</b>;
         },
@@ -66,7 +70,7 @@ export default function AgentProfileForm({ agentId }: { agentId: any }) {
       initialValues={{
         name: "",
         contact: "",
-        address: "",
+        pollingStation: "",
       }}
     >
       <Form.Item label="Profile Picture" name="profilePicture">
@@ -170,12 +174,17 @@ export default function AgentProfileForm({ agentId }: { agentId: any }) {
       </Form.Item>
 
       <Form.Item
-        label="Address"
-        name="address"
-        rules={[{ required: true, message: "Please input the address!" }]}
+        label="Polling Station Address"
+        name="pollingStation"
+        rules={[
+          {
+            required: true,
+            message: "Please input the polling station Address!",
+          },
+        ]}
       >
         <Input
-          placeholder="Enter address"
+          placeholder="Enter polling station Address"
           style={{ padding: "12px", borderRadius: "8px" }}
         />
       </Form.Item>

@@ -5,13 +5,14 @@ const agentApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
     // get agent list
     getAgentList: build.query({
-      query: ({ searchTerm }) => ({
+      query: ({ searchTerm, status }) => ({
         url: `/user`,
         method: "GET",
         credentials: "include",
         params: {
           role: "AGENT",
           searchTerm,
+          status,
         },
       }),
     }),
@@ -50,6 +51,15 @@ const agentApi = baseApi.injectEndpoints({
         body: data,
       }),
     }),
+    //add agent
+    addAgent: build.mutation({
+      query: (data) => ({
+        url: `/user`,
+        method: "POST",
+        credentials: "include",
+        body: data,
+      }),
+    }),
   }),
 });
 export const {
@@ -58,4 +68,5 @@ export const {
   useUpdateAgentStatusMutation,
   useUpdateAgentPasswordMutation,
   useUpdateAgentProfileMutation,
+  useAddAgentMutation,
 } = agentApi;

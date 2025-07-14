@@ -11,13 +11,10 @@ const ForgetPassword = () => {
   const router = useRouter();
   const [forgotPassword, { isLoading }] = useForgotPasswordMutation();
   const onFinish = async (values: any) => {
-    console.log(values);
-
     try {
       toast.promise(forgotPassword(values).unwrap(), {
         loading: "Sending code...",
         success: (res) => {
-          console.log(res);
           Cookies.set("resetEmail", values.email || "", {
             expires: 1,
             path: "/",

@@ -10,12 +10,12 @@ const VoterPage = () => {
     // console.log("Form values:", values);
     // Handle form submission here
     const voterAmount = parseInt(values.voterAmount);
-    console.log(voterAmount);
+    // console.log(voterAmount);
     if (voterAmount > 0) {
-      console.log("Voter amount is valid.");
+      // console.log("Voter amount is valid.");
       toast.success("Voter amount added!");
     } else {
-      console.log("Voter amount is invalid.");
+      // console.log("Voter amount is invalid.");
     }
   };
 
