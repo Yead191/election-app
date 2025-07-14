@@ -30,6 +30,7 @@ import { mockAdmins } from "@/data/mockAdmins";
 import ManageAdminModal from "./ManageAdminModal";
 import DeleteModal from "./DeleteModal";
 import DeleteAdminModal from "./DeleteModal";
+import { useGetAdminListQuery } from "@/redux/feature/admin-api/adminApi";
 
 const { Option } = Select;
 
@@ -42,7 +43,15 @@ export default function ManageAdminPage() {
   const [currentAdmin, setCurrentAdmin] = useState<any>(null);
   const [isAddMode, setIsAddMode] = useState(false);
   const [form] = Form.useForm();
-  const [statusFilter, setStatusFilter] = useState<string>("all"); // "all", "active", "inactive"
+  const [statusFilter, setStatusFilter] = useState<string>(""); // "all", "active", "delete"
+
+  // getting data from api
+  const { data: adminsData, refetch } = useGetAdminListQuery({
+    searchTerm: searchText,
+    status: statusFilter,
+  });
+
+  console.log(adminsData);
 
   const filteredAdmins = admins.filter((admin) => {
     const matchesSearch =
@@ -116,42 +125,6 @@ export default function ManageAdminPage() {
     toast.success("Admin deleted successfully");
   };
 
-  const handleFormSubmit = (values: any) => {
-    if (isAddMode) {
-      const newAdmin = {
-        key: Date.now().toString(),
-        sNo: (
-          Math.max(...admins.map((a) => Number.parseInt(a.sNo))) + 1
-        ).toString(),
-        adminName: values.adminName,
-        email: values.email,
-        adminType: values.userType,
-        status: "active",
-      };
-      setAdmins([...admins, newAdmin]);
-      message.success("Admin added successfully");
-      toast.success("Admin added successfully");
-    } else {
-      setAdmins(
-        admins.map((admin) =>
-          admin.key === currentAdmin.key
-            ? {
-                ...admin,
-                adminName: values.adminName,
-                email: values.email,
-                adminType: values.userType,
-              }
-            : admin
-        )
-      );
-      message.success("Admin updated successfully");
-      toast.success("Admin updated successfully");
-    }
-    setEditModalVisible(false);
-    setCurrentAdmin(null);
-    form.resetFields();
-  };
-
   const handleCancel = () => {
     setEditModalVisible(false);
     setCurrentAdmin(null);
@@ -182,20 +155,25 @@ export default function ManageAdminPage() {
       render: (_: any, record: any) => (
         <input
           type="checkbox"
-          checked={selectedRowKeys.includes(record.key)}
-          onChange={(e) => handleSelectRow(record.key, e.target.checked)}
+          checked={selectedRowKeys.includes(record._id)}
+          onChange={(e) => handleSelectRow(record._id, e.target.checked)}
         />
       ),
     },
     {
-      title: "S. no.",
-      dataIndex: "sNo",
-      key: "sNo",
+      title: "Id. no.",
+      dataIndex: "_id",
+      key: "_id",
+      render: (text: string) => (
+        <Tooltip title={text}>
+          <span className="text-sm">{text.slice(0, 8)}</span>
+        </Tooltip>
+      ),
     },
     {
       title: "Admin name",
-      dataIndex: "adminName",
-      key: "adminName",
+      dataIndex: "name",
+      key: "name",
     },
     {
       title: "Email",
@@ -203,22 +181,17 @@ export default function ManageAdminPage() {
       key: "email",
     },
     {
-      title: "Admin Type",
-      dataIndex: "adminType",
-      key: "adminType",
-      render: (type: string) => (
+      title: "Admin Role",
+      dataIndex: "role",
+      key: "role",
+      render: (role: string) => (
         <span
           style={{
-            color:
-              type === "Super Admin"
-                ? "#1890ff"
-                : type === "Manager"
-                ? "#52c41a"
-                : "#666",
+            color: "#1890ff",
             fontWeight: "500",
           }}
         >
-          {type}
+          {role}
         </span>
       ),
     },
@@ -234,7 +207,7 @@ export default function ManageAdminPage() {
             textTransform: "capitalize",
           }}
         >
-          {status}
+          {status === "active" ? "Active" : "Deactivated"}
         </span>
       ),
     },
@@ -313,7 +286,7 @@ export default function ManageAdminPage() {
           <Button
             icon={<UnlockOutlined style={{ fontSize: "20px" }} />}
             onClick={() =>
-              setStatusFilter(statusFilter === "active" ? "all" : "active")
+              setStatusFilter(statusFilter === "active" ? "" : "active")
             }
             style={{
               color: statusFilter === "active" ? "#52c41a" : "#A1A1A1",
@@ -326,15 +299,14 @@ export default function ManageAdminPage() {
           <Button
             icon={<LockOutlined style={{ fontSize: "20px" }} />}
             onClick={() =>
-              setStatusFilter(statusFilter === "inactive" ? "all" : "inactive")
+              setStatusFilter(statusFilter === "delete" ? "" : "delete")
             }
             style={{
-              color: statusFilter === "inactive" ? "#ff4d4f" : "#A1A1A1",
+              color: statusFilter === "delete" ? "#ff4d4f" : "#A1A1A1",
               padding: "19px",
-              border:
-                statusFilter === "inactive" ? "2px solid #ff4d4f" : "none",
+              border: statusFilter === "delete" ? "2px solid #ff4d4f" : "none",
               backgroundColor:
-                statusFilter === "inactive" ? "#fff2f0" : "transparent",
+                statusFilter === "delete" ? "#fff2f0" : "transparent",
             }}
           />
           <Input
@@ -360,7 +332,7 @@ export default function ManageAdminPage() {
               setSearchText(e.target.value);
             }}
           />
-          {statusFilter !== "all" && (
+          {statusFilter !== "" && (
             <span
               style={{
                 fontSize: "12px",
@@ -371,19 +343,12 @@ export default function ManageAdminPage() {
                 marginLeft: "8px",
               }}
             >
-              Showing: {statusFilter} admins ({filteredAdmins.length})
+              Showing: {statusFilter === "active" ? "Active" : "Inactive"}{" "}
+              admins ({adminsData?.data?.length})
             </span>
           )}
         </div>
-        <DatePicker
-          placeholder="Date"
-          suffixIcon={<CalendarOutlined />}
-          style={{
-            width: 94,
-            height: "40px",
-            borderRadius: "6px",
-          }}
-        />
+
         <Button
           onClick={handleAdd}
           type="primary"
@@ -412,7 +377,7 @@ export default function ManageAdminPage() {
       >
         <Table
           columns={columns}
-          dataSource={filteredAdmins}
+          dataSource={adminsData?.data || []}
           pagination={{
             pageSize: 10,
             // showSizeChanger: true,
@@ -428,8 +393,11 @@ export default function ManageAdminPage() {
         isAddMode={isAddMode}
         editModalVisible={editModalVisible}
         handleCancel={handleCancel}
-        handleFormSubmit={handleFormSubmit}
+        setCurrentAdmin={setCurrentAdmin}
+        setEditModalVisible={setEditModalVisible}
         form={form}
+        currentAdmin={currentAdmin}
+        refetch={refetch}
       />
 
       {/* Delete Confirmation Modal */}

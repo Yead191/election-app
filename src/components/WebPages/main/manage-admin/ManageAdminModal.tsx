@@ -1,24 +1,73 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Input, Modal, Form, Select } from "antd";
 import { EyeOutlined, EyeInvisibleOutlined } from "@ant-design/icons";
 import { toast } from "sonner";
+import { useCreateAdminMutation } from "@/redux/feature/admin-api/adminApi";
 
 interface ManageAdminModalProps {
   isAddMode: boolean;
   editModalVisible: boolean;
   handleCancel: () => void;
-  handleFormSubmit: (values: any) => void;
   form: any;
+  currentAdmin?: any;
+  setCurrentAdmin: any;
+  setEditModalVisible: (visible: boolean) => void;
+  refetch: () => void;
 }
 export default function ManageAdminModal({
   isAddMode,
   editModalVisible,
   handleCancel,
-  handleFormSubmit,
+  setCurrentAdmin,
   form,
+  currentAdmin,
+  setEditModalVisible,
+  refetch,
 }: ManageAdminModalProps) {
   const [passwordVisible, setPasswordVisible] = useState(false);
+  // console.log(currentAdmin);
+  const [createAdmin] = useCreateAdminMutation();
 
+  useEffect(() => {
+    if (currentAdmin) {
+      form.setFieldsValue({
+        name: currentAdmin.name || "",
+        contact: currentAdmin.contact || "",
+        pollingStation: currentAdmin.pollingStation || "",
+        password: currentAdmin.password || "",
+      });
+    }
+  }, [currentAdmin, form]);
+
+  // handle submit
+  const handleFormSubmit = (values: any) => {
+    if (isAddMode) {
+      const newAdmin = {
+        name: values.name,
+        email: values.email,
+        status: "active",
+        password: values.password,
+        role: "ADMIN",
+      };
+      // console.log(newAdmin);
+      toast.promise(createAdmin(newAdmin).unwrap(), {
+        loading: "Adding admin...",
+        success: (res) => {
+          // console.log(res);
+          refetch();
+          form.resetFields();
+          setCurrentAdmin(null);
+          setEditModalVisible(false);
+          return <b>Admin Added Successfully!</b>;
+        },
+        error: (err) =>
+          `Error: ${err?.data?.message || "Something went wrong"}`,
+      });
+    }
+    setEditModalVisible(false);
+    setCurrentAdmin(null);
+    form.resetFields();
+  };
   return (
     <Modal
       title={isAddMode ? "Add Admin" : "Edit"}
@@ -36,11 +85,11 @@ export default function ManageAdminModal({
       >
         <Form.Item
           label="Admin name"
-          name="adminName"
+          name="name"
           rules={[{ required: true, message: "Please input admin name!" }]}
         >
           <Input
-            placeholder="Title name 1"
+            placeholder="Enter admin name"
             style={{ padding: "12px", borderRadius: "8px" }}
           />
         </Form.Item>
@@ -78,18 +127,6 @@ export default function ManageAdminModal({
               />
             }
           />
-        </Form.Item>
-
-        <Form.Item
-          label="User Type"
-          name="userType"
-          rules={[{ required: true, message: "Please select user type!" }]}
-        >
-          <Select placeholder="Admin" style={{ height: "48px" }}>
-            <Select.Option value="Admin">Admin</Select.Option>
-            <Select.Option value="Super Admin">Super Admin</Select.Option>
-            <Select.Option value="Manager">Manager</Select.Option>
-          </Select>
         </Form.Item>
 
         <Button
