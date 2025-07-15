@@ -1,11 +1,11 @@
 import { baseApi } from "@/redux/base/baseApi";
 
-const nominatedTeamApi = baseApi.injectEndpoints({
+const electionAreaApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
-    // get nominated team
-    getNominatedTeam: build.query({
+    // get election area
+    getElectionArea: build.query({
       query: ({ searchTerm }) => ({
-        url: `/team`,
+        url: `/polling-station`,
         method: "GET",
         credentials: "include",
         params: {
@@ -13,29 +13,28 @@ const nominatedTeamApi = baseApi.injectEndpoints({
         },
       }),
     }),
-
-    // create nominated team
-    createNominatedTeam: build.mutation({
+    // create election area
+    createElectionArea: build.mutation({
       query: (data) => ({
-        url: `/team`,
+        url: `/polling-station`,
         method: "POST",
         credentials: "include",
         body: data,
       }),
     }),
-    // update nominated team
-    updateNominatedTeam: build.mutation({
+    // update election area
+    updateElectionArea: build.mutation({
       query: ({ id, data }) => ({
-        url: `/team/${id}`,
+        url: `/polling-station/${id}`,
         method: "PATCH",
         credentials: "include",
         body: data,
       }),
     }),
-    // delete nominated team
-    deleteNominatedTeam: build.mutation({
+    // delete election area
+    deleteElectionArea: build.mutation({
       query: ({ id }) => ({
-        url: `/team/${id}`,
+        url: `/polling-station/${id}`,
         method: "DELETE",
         credentials: "include",
       }),
@@ -44,8 +43,8 @@ const nominatedTeamApi = baseApi.injectEndpoints({
 });
 
 export const {
-  useGetNominatedTeamQuery,
-  useCreateNominatedTeamMutation,
-  useUpdateNominatedTeamMutation,
-  useDeleteNominatedTeamMutation,
-} = nominatedTeamApi;
+  useGetElectionAreaQuery,
+  useCreateElectionAreaMutation,
+  useUpdateElectionAreaMutation,
+  useDeleteElectionAreaMutation,
+} = electionAreaApi;

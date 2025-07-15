@@ -11,18 +11,18 @@ import {
   Pagination,
   Tooltip,
 } from "antd";
-import {
-  SearchOutlined,
-  PlusOutlined,
-  EditOutlined,
-  DeleteOutlined,
-} from "@ant-design/icons";
+import { SearchOutlined, PlusOutlined } from "@ant-design/icons";
 import { BsPencilSquare } from "react-icons/bs";
 import { FaRegTrashAlt } from "react-icons/fa";
 import { toast } from "sonner";
 import { mockElectionAreas } from "@/data/mockElectionAreas";
 import ElectionModal from "./ElectionModal";
 import DeleteElectionModal from "./DeleteElectionModal";
+import {
+  useDeleteElectionAreaMutation,
+  useGetElectionAreaQuery,
+} from "@/redux/feature/election-area api/election-area-api";
+import { count } from "console";
 
 export default function ElectionAreaPage() {
   const [searchText, setSearchText] = useState("");
@@ -36,45 +36,24 @@ export default function ElectionAreaPage() {
   const [pageSize] = useState(15);
   const [form] = Form.useForm();
 
-  const filteredAreas = electionAreas.filter(
-    (area) =>
-      area.votingStaCode.toLowerCase().includes(searchText.toLowerCase()) ||
-      area.country.toLowerCase().includes(searchText.toLowerCase()) ||
-      area.region.toLowerCase().includes(searchText.toLowerCase()) ||
-      area.department.toLowerCase().includes(searchText.toLowerCase()) ||
-      area.elecCommune.toLowerCase().includes(searchText.toLowerCase()) ||
-      area.electionCity.toLowerCase().includes(searchText.toLowerCase()) ||
-      area.stationName.toLowerCase().includes(searchText.toLowerCase())
-  );
-
-  const paginatedAreas = filteredAreas.slice(
-    (currentPage - 1) * pageSize,
-    currentPage * pageSize
-  );
-
-  const handleSelectAll = (checked: boolean) => {
-    if (checked) {
-      setSelectedRowKeys(paginatedAreas.map((area) => area.key));
-    } else {
-      setSelectedRowKeys([]);
-    }
-  };
-
-  const handleSelectRow = (key: string, checked: boolean) => {
-    if (checked) {
-      setSelectedRowKeys([...selectedRowKeys, key]);
-    } else {
-      setSelectedRowKeys(selectedRowKeys.filter((k) => k !== key));
-    }
-  };
+  // handle Apis
+  const { data: areasData, refetch } = useGetElectionAreaQuery({
+    searchTerm: searchText,
+  });
+  const [deleteElectionArea] = useDeleteElectionAreaMutation();
 
   const handleEdit = (record: any) => {
     setCurrentArea(record);
     setIsAddMode(false);
     form.setFieldsValue({
-      postCode: record.votingStaCode,
-      name: record.stationName,
-      poolingAddress: record.electionCity,
+      postCode: record.postCode,
+      name: record.name,
+      stationCode: record.stationCode,
+      country: record.country,
+      region: record.region,
+      department: record.department,
+      city: record.city,
+      commune: record.commune,
     });
     setEditModalVisible(true);
   };
@@ -87,140 +66,101 @@ export default function ElectionAreaPage() {
   };
 
   const handleDelete = (record: any) => {
-    setCurrentArea(record);
+    setCurrentArea(record._id);
     setDeleteModalVisible(true);
     // toast.success("Election area deleted successfully");
   };
 
   const confirmDelete = () => {
-    setElectionAreas(
-      electionAreas.filter((area) => area.key !== currentArea.key)
-    );
+    toast.promise(deleteElectionArea({ id: currentArea }).unwrap(), {
+      loading: "Deleting election area...",
+      success: (res) => {
+        refetch();
+        setDeleteModalVisible(false);
+        setCurrentArea(null);
+        return <b>{res.message}</b>;
+      },
+      error: (err) => `Error: ${err?.data?.message || "Something went wrong"}`,
+    });
     setDeleteModalVisible(false);
     setCurrentArea(null);
-    toast.success("Election area deleted successfully");
   };
-
-  const handleFormSubmit = (values: any) => {
-    if (isAddMode) {
-      const newArea = {
-        key: Date.now().toString(),
-        sNo: (electionAreas.length + 1).toString(),
-        votingStaCode: values.postCode,
-        country: "CAMEROUN",
-        region: "NEW REGION",
-        department: "NEW DEPARTMENT",
-        elecCommune: "NEW COMMUNE",
-        electionCity: values.poolingAddress,
-        stationName: values.name,
-      };
-      setElectionAreas([...electionAreas, newArea]);
-      message.success("Election area added successfully");
-      toast.success("Election area added successfully");
-    } else {
-      setElectionAreas(
-        electionAreas.map((area) =>
-          area.key === currentArea.key
-            ? {
-                ...area,
-                votingStaCode: values.postCode,
-                stationName: values.name,
-                electionCity: values.poolingAddress,
-              }
-            : area
-        )
-      );
-      toast.success("Election area updated successfully");
-    }
-    setEditModalVisible(false);
-    setCurrentArea(null);
-    form.resetFields();
-  };
-
-  const isAllSelected =
-    paginatedAreas.length > 0 &&
-    selectedRowKeys.length === paginatedAreas.length;
-  const isIndeterminate =
-    selectedRowKeys.length > 0 &&
-    selectedRowKeys.length < paginatedAreas.length;
 
   const columns = [
+    // {
+    //   title: (
+    //     <input
+    //       type="checkbox"
+    //       checked={isAllSelected}
+    //       ref={(input) => {
+    //         if (input) input.indeterminate = isIndeterminate;
+    //       }}
+    //       onChange={(e) => handleSelectAll(e.target.checked)}
+    //     />
+    //   ),
+    //   dataIndex: "select",
+    //   width: 50,
+    //   render: (_: any, record: any) => (
+    //     <input
+    //       type="checkbox"
+    //       checked={selectedRowKeys.includes(record.key)}
+    //       onChange={(e) => handleSelectRow(record.key, e.target.checked)}
+    //     />
+    //   ),
+    // },
     {
-      title: (
-        <input
-          type="checkbox"
-          checked={isAllSelected}
-          ref={(input) => {
-            if (input) input.indeterminate = isIndeterminate;
-          }}
-          onChange={(e) => handleSelectAll(e.target.checked)}
-        />
+      title: "Id. no.",
+      dataIndex: "_id",
+      key: "_id",
+      render: (text: string) => (
+        <Tooltip title={text}>
+          <span className="text-sm">{text.slice(0, 8)}</span>
+        </Tooltip>
       ),
-      dataIndex: "select",
-      width: 50,
-      render: (_: any, record: any) => (
-        <input
-          type="checkbox"
-          checked={selectedRowKeys.includes(record.key)}
-          onChange={(e) => handleSelectRow(record.key, e.target.checked)}
-        />
-      ),
-    },
-    {
-      title: "S.No",
-      dataIndex: "sNo",
-      key: "sNo",
-      width: 60,
     },
     {
       title: "Voting Sta. Code",
-      dataIndex: "votingStaCode",
-      key: "votingStaCode",
-      width: 70,
+      dataIndex: "stationCode",
+      key: "stationCode",
+
       render: (_: any, record: any) => (
-        <span style={{ fontSize: "10px" }}>{record.votingStaCode}</span>
+        <span style={{}}>{record.stationCode}</span>
       ),
     },
     {
       title: "Country",
       dataIndex: "country",
       key: "country",
-      width: 100,
     },
     {
       title: "Region",
       dataIndex: "region",
       key: "region",
-      width: 100,
     },
     {
       title: "Department",
       dataIndex: "department",
       key: "department",
-      width: 120,
     },
     {
       title: "Elec. Commune",
-      dataIndex: "elecCommune",
-      key: "elecCommune",
-      width: 120,
+      dataIndex: "commune",
+      key: "commune",
     },
     {
       title: "Election City",
-      dataIndex: "electionCity",
-      key: "electionCity",
-      width: 180,
+      dataIndex: "city",
+      key: "city",
     },
     {
       title: "Station Name",
-      dataIndex: "stationName",
-      key: "stationName",
-      width: 180,
+      dataIndex: "name",
+      key: "name",
     },
     {
       title: "Action",
       key: "action",
-      width: 100,
+
       align: "right" as const,
       render: (_: any, record: any) => (
         <div style={{ display: "flex", gap: "8px", justifyContent: "end" }}>
@@ -318,7 +258,7 @@ export default function ElectionAreaPage() {
       >
         <Table
           columns={columns}
-          dataSource={paginatedAreas}
+          dataSource={areasData?.data || []}
           pagination={{}}
           size="middle"
           style={{ backgroundColor: "white" }}
@@ -333,7 +273,8 @@ export default function ElectionAreaPage() {
         setEditModalVisible={setEditModalVisible}
         setCurrentArea={setCurrentArea}
         form={form}
-        handleFormSubmit={handleFormSubmit}
+        currentArea={currentArea}
+        refetch={refetch}
       />
 
       {/* Delete Confirmation Modal */}
