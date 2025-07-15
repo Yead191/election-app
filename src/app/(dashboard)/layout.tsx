@@ -7,6 +7,8 @@ import DashboardSidebar from "@/components/dashboard-sidebar/DashboardSidebar";
 import { usePathname } from "next/navigation";
 import DashboardHeader from "@/components/dashboard-header/DashboardHeader";
 
+export const imgUrl = process.env.NEXT_PUBLIC_IMG_URL;
+
 const layout = ({ children }: { children: ReactNode }) => {
   const [collapsed, setCollapsed] = useState(false);
 

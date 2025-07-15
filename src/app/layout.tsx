@@ -31,7 +31,7 @@ export default function RootLayout({
         <ReduxProvider>
           <AntdRegistry>
             {/* <UserProvider> */}
-            <Toaster position="top-right" richColors duration={2000} />
+            <Toaster position="top-right" duration={2000} />
             {children}
             {/* </UserProvider> */}
           </AntdRegistry>

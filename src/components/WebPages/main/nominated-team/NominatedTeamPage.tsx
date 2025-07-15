@@ -24,6 +24,11 @@ import { toast } from "sonner";
 import { mockTeams } from "@/data/mockTeams";
 import NominatedTeamModal from "./NominatedTeamModal";
 import DeleteTeam from "./DeleteTeam";
+import {
+  useDeleteNominatedTeamMutation,
+  useGetNominatedTeamQuery,
+} from "@/redux/feature/nominated-team-api/nominated-team-api";
+import { imgUrl } from "@/app/(dashboard)/layout";
 
 export default function NominatedTeamPage() {
   const [searchText, setSearchText] = useState("");
@@ -37,13 +42,18 @@ export default function NominatedTeamPage() {
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [form] = Form.useForm();
 
-  const filteredTeams = teams.filter((team) =>
-    team.teamName.toLowerCase().includes(searchText.toLowerCase())
-  );
+  // api calls
+
+  // get teams
+  const { data: teamsData, refetch } = useGetNominatedTeamQuery({
+    searchTerm: searchText,
+  });
+  // delete team
+  const [deleteNominatedTeam] = useDeleteNominatedTeamMutation();
 
   const handleSelectAll = (checked: boolean) => {
     if (checked) {
-      setSelectedRowKeys(filteredTeams.map((team) => team.key));
+      setSelectedRowKeys(teamsData?.data?.map((team: any) => team._id));
     } else {
       setSelectedRowKeys([]);
     }
@@ -60,9 +70,9 @@ export default function NominatedTeamPage() {
   const handleEdit = (record: any) => {
     setCurrentTeam(record);
     setIsAddMode(false);
-    setImageUrl(record.teamLogo);
+    setImageUrl(record.image);
     form.setFieldsValue({
-      teamName: record.teamName,
+      name: record.name,
     });
     setEditModalVisible(true);
   };
@@ -82,47 +92,24 @@ export default function NominatedTeamPage() {
   };
 
   const confirmDelete = () => {
-    setTeams(teams.filter((team) => team.key !== currentTeam.key));
-    setDeleteModalVisible(false);
-    setCurrentTeam(null);
-    toast.success("Team deleted successfully");
-  };
-
-  const handleFormSubmit = (values: any) => {
-    if (isAddMode) {
-      const newTeam = {
-        key: Date.now().toString(),
-        sNo: (teams.length + 1).toString(),
-        teamName: values.teamName,
-        teamLogo: imageUrl || "/placeholder.svg?height=60&width=60",
-      };
-      setTeams([...teams, newTeam]);
-      toast.success("Team added successfully");
-    } else {
-      setTeams(
-        teams.map((team) =>
-          team.key === currentTeam.key
-            ? {
-                ...team,
-                teamName: values.teamName,
-                teamLogo: imageUrl || team.teamLogo,
-              }
-            : team
-        )
-      );
-      toast.success("Team updated successfully");
-    }
-    setEditModalVisible(false);
-    setCurrentTeam(null);
-    setImageUrl(null);
-    setImageFile(null);
-    form.resetFields();
+    toast.promise(deleteNominatedTeam({ id: currentTeam._id }).unwrap(), {
+      loading: "Deleting team...",
+      success: (res) => {
+        refetch();
+        setDeleteModalVisible(false);
+        setCurrentTeam(null);
+        return <b>{res.message}</b>;
+      },
+      error: (err) => `Error: ${err?.data?.message || "Something went wrong"}`,
+    });
   };
 
   const isAllSelected =
-    filteredTeams.length > 0 && selectedRowKeys.length === filteredTeams.length;
+    teamsData?.data?.length > 0 &&
+    selectedRowKeys.length === teamsData?.data?.length;
   const isIndeterminate =
-    selectedRowKeys.length > 0 && selectedRowKeys.length < filteredTeams.length;
+    selectedRowKeys.length > 0 &&
+    selectedRowKeys.length < teamsData?.data?.length;
 
   const columns = [
     {
@@ -141,31 +128,31 @@ export default function NominatedTeamPage() {
       render: (_: any, record: any) => (
         <input
           type="checkbox"
-          checked={selectedRowKeys.includes(record.key)}
-          onChange={(e) => handleSelectRow(record.key, e.target.checked)}
+          checked={selectedRowKeys.includes(record._id)}
+          onChange={(e) => handleSelectRow(record._id, e.target.checked)}
         />
       ),
     },
     {
-      title: "S. no.",
-      dataIndex: "sNo",
-      key: "sNo",
+      title: "Id no.",
+      dataIndex: "_id",
+      key: "_id",
       width: 100,
     },
     {
       title: "Team Name",
-      dataIndex: "teamName",
-      key: "teamName",
+      dataIndex: "name",
+      key: "name",
       width: 200,
     },
     {
       title: "Team Simple",
-      dataIndex: "teamLogo",
-      key: "teamLogo",
+      dataIndex: "image",
+      key: "image",
       width: 150,
       render: (logo: string) => (
         <img
-          src={logo || "/placeholder.svg"}
+          src={imgUrl + logo || "/placeholder.svg?height=60&width=60"}
           alt="Team Logo"
           style={{
             width: "60px",
@@ -222,14 +209,14 @@ export default function NominatedTeamPage() {
       <div
         style={{
           display: "flex",
-          justifyContent: "space-between",
+          justifyContent: "end",
           alignItems: "center",
           marginBottom: "24px",
         }}
       >
-        <div></div>
+        {/* <div></div> */}
         <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-          <Input
+          {/* <Input
             className="shadow-sm"
             placeholder="Search by name, email, or designation"
             allowClear
@@ -252,7 +239,7 @@ export default function NominatedTeamPage() {
             onChange={(e) => {
               setSearchText(e.target.value);
             }}
-          />
+          /> */}
 
           <Button
             onClick={handleAdd}
@@ -283,7 +270,7 @@ export default function NominatedTeamPage() {
       >
         <Table
           columns={columns}
-          dataSource={filteredTeams}
+          dataSource={teamsData?.data}
           pagination={false}
           size="middle"
           style={{ backgroundColor: "white" }}
@@ -299,8 +286,10 @@ export default function NominatedTeamPage() {
         setImageFile={setImageFile}
         setEditModalVisible={setEditModalVisible}
         setCurrentTeam={setCurrentTeam}
-        handleFormSubmit={handleFormSubmit}
+        imageFile={imageFile}
         imageUrl={imageUrl}
+        refetch={refetch}
+        currentTeam={currentTeam}
       />
 
       {/* Delete Confirmation Modal */}

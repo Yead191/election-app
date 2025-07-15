@@ -1,6 +1,12 @@
-import React from "react";
+import React, { use } from "react";
 import { Button, Input, Modal, Form, Upload } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
+import { imgUrl } from "@/app/(dashboard)/layout";
+import {
+  useCreateNominatedTeamMutation,
+  useUpdateNominatedTeamMutation,
+} from "@/redux/feature/nominated-team-api/nominated-team-api";
+import { toast } from "sonner";
 
 interface NominatedTeamModalProps {
   editModalVisible: boolean;
@@ -11,7 +17,9 @@ interface NominatedTeamModalProps {
   setImageFile: (file: File | null) => void;
   setEditModalVisible: (value: boolean) => void;
   setCurrentTeam: (team: any) => void;
-  handleFormSubmit: (values: any) => void;
+  imageFile: File | null;
+  refetch: () => void;
+  currentTeam: any;
 }
 export default function NominatedTeamModal({
   editModalVisible,
@@ -21,9 +29,68 @@ export default function NominatedTeamModal({
   setImageFile,
   setEditModalVisible,
   setCurrentTeam,
-  handleFormSubmit,
+  imageFile,
   imageUrl,
+  refetch,
+  currentTeam,
 }: NominatedTeamModalProps) {
+  // console.log(imageUrl);
+  // add team api
+  const [createNominatedTeam] = useCreateNominatedTeamMutation();
+  // UPDATE TEAM API
+  const [updateNominatedTeam] = useUpdateNominatedTeamMutation();
+
+  const handleFormSubmit = async (values: any) => {
+    try {
+      const formData = new FormData();
+      formData.append("name", values.name);
+      if (imageFile) {
+        formData.append("image", imageFile);
+      } else if (imageUrl) {
+        formData.append("image", imageUrl);
+      }
+      if (isAddMode) {
+        toast.promise(createNominatedTeam(formData).unwrap(), {
+          loading: "Adding team...",
+          success: (res) => {
+            // console.log(res);
+            refetch();
+            setEditModalVisible(false);
+            setCurrentTeam(null);
+            setImageUrl(null);
+            setImageFile(null);
+            form.resetFields();
+            return <b>{res.message}</b>;
+          },
+          error: (err) =>
+            `Error: ${err?.data?.message || "Something went wrong"}`,
+        });
+      }
+      toast.promise(
+        updateNominatedTeam({
+          id: currentTeam?._id,
+          data: formData,
+        }).unwrap(),
+        {
+          loading: "Updating team...",
+          success: (res) => {
+            console.log(res);
+            refetch();
+            setEditModalVisible(false);
+            setCurrentTeam(null);
+            setImageUrl(null);
+            setImageFile(null);
+            form.resetFields();
+            return <b>{res.message}</b>;
+          },
+          error: (err) =>
+            `Error: ${err?.data?.message || "Something went wrong"}`,
+        }
+      );
+    } catch (err) {
+      console.error("Failed to create team:", err);
+    }
+  };
   return (
     <Modal
       title={<span>{isAddMode ? "Add Team" : "Edit Team"}</span>}
@@ -47,7 +114,7 @@ export default function NominatedTeamModal({
       >
         <Form.Item
           label="Team Name"
-          name="teamName"
+          name="name"
           rules={[{ required: true, message: "Please input team name!" }]}
         >
           <Input
@@ -73,7 +140,9 @@ export default function NominatedTeamModal({
             {imageUrl ? (
               <div style={{ textAlign: "center", marginBottom: "24px" }}>
                 <img
-                  src={imageUrl || "/placeholder.svg"}
+                  src={
+                    imageUrl?.startsWith("data:") ? imageUrl : imgUrl + imageUrl
+                  }
                   alt="Team Logo Preview"
                   style={{
                     width: "100%",

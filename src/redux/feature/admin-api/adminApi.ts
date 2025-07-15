@@ -24,7 +24,28 @@ const adminApi = baseApi.injectEndpoints({
         body: data,
       }),
     }),
+    // update status toggle
+    updateStatus: build.mutation({
+      query: ({ id }) => ({
+        url: `/user/${id}`,
+        method: "PATCH",
+        credentials: "include",
+      }),
+    }),
+    // delete admin
+    deleteAdmin: build.mutation({
+      query: ({id}) => ({
+        url: `/user/delete-admin/${id}`,
+        method: "DELETE",
+        credentials: "include",
+      }),
+    }),
   }),
 });
 
-export const { useGetAdminListQuery , useCreateAdminMutation} = adminApi;
+export const {
+  useGetAdminListQuery,
+  useCreateAdminMutation,
+  useUpdateStatusMutation,
+  useDeleteAdminMutation,
+} = adminApi;

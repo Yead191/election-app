@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { use, useState } from "react";
 import {
   Table,
   Button,
@@ -30,7 +30,11 @@ import { mockAdmins } from "@/data/mockAdmins";
 import ManageAdminModal from "./ManageAdminModal";
 import DeleteModal from "./DeleteModal";
 import DeleteAdminModal from "./DeleteModal";
-import { useGetAdminListQuery } from "@/redux/feature/admin-api/adminApi";
+import {
+  useDeleteAdminMutation,
+  useGetAdminListQuery,
+  useUpdateStatusMutation,
+} from "@/redux/feature/admin-api/adminApi";
 
 const { Option } = Select;
 
@@ -51,7 +55,12 @@ export default function ManageAdminPage() {
     status: statusFilter,
   });
 
-  console.log(adminsData);
+  // update status
+  const [updateAdminStatus] = useUpdateStatusMutation();
+
+  // delete admin
+  const [deleteAdmin] = useDeleteAdminMutation();
+  // console.log(adminsData);
 
   const filteredAdmins = admins.filter((admin) => {
     const matchesSearch =
@@ -102,27 +111,36 @@ export default function ManageAdminPage() {
     setEditModalVisible(true);
   };
 
-  const handleStatusToggle = (record: any) => {
-    const newStatus = record.status === "active" ? "inactive" : "active";
-    setAdmins(
-      admins.map((admin) =>
-        admin.key === record.key ? { ...admin, status: newStatus } : admin
-      )
-    );
-    toast.success(`Admin status updated to ${newStatus}`);
+  const handleStatusToggle = (id: any) => {
+    // const newStatus = record.status === "active" ? "delete" : "active";
+
+    toast.promise(updateAdminStatus({ id: id }).unwrap(), {
+      loading: "Updating status...",
+      success: (res) => {
+        refetch();
+        return <b>{res.message}</b>;
+      },
+      error: (err) => `Error: ${err?.data?.message || "Something went wrong"}`,
+    });
   };
 
-  const handleDelete = (record: any) => {
-    setCurrentAdmin(record);
+  const handleDelete = (id: any) => {
+    setCurrentAdmin(id);
     setDeleteModalVisible(true);
   };
 
   const confirmDelete = () => {
-    setAdmins(admins.filter((admin) => admin.key !== currentAdmin.key));
-    setDeleteModalVisible(false);
-    setCurrentAdmin(null);
-    message.success("Admin deleted successfully");
-    toast.success("Admin deleted successfully");
+    console.log(currentAdmin);
+    toast.promise(deleteAdmin({ id: currentAdmin }).unwrap(), {
+      loading: "Deleting admin...",
+      success: (res) => {
+        refetch();
+        setDeleteModalVisible(false);
+        setCurrentAdmin(null);
+        return <b>{res.message}</b>;
+      },
+      error: (err) => `Error: ${err?.data?.message || "Something went wrong"}`,
+    });
   };
 
   const handleCancel = () => {
@@ -235,9 +253,9 @@ export default function ManageAdminPage() {
                   <LockOutlined />
                 )
               }
-              onClick={() => handleStatusToggle(record)}
+              onClick={() => handleStatusToggle(record._id)}
               style={{
-                color: record.status === "inactive" ? "#ff4d4f" : "#52c41a",
+                color: record.status === "delete" ? "#ff4d4f" : "#52c41a",
                 fontSize: 20,
               }}
             />
@@ -246,7 +264,7 @@ export default function ManageAdminPage() {
             <Button
               type="text"
               icon={<FaRegTrashAlt />}
-              onClick={() => handleDelete(record)}
+              onClick={() => handleDelete(record._id)}
               style={{ color: "#999999", fontSize: 20 }}
             />
           </Tooltip>

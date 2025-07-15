@@ -218,14 +218,14 @@ export default function AgentsListPage() {
               onClick={() => handleUpdateStatus(record._id)}
               icon={
                 record.status === "active" ? (
-                  <LockOutlined />
-                ) : (
                   <UnlockOutlined />
+                ) : (
+                  <LockOutlined />
                 )
               }
               size="small"
               style={{
-                color: record.status === "active" ? "#ff4d4f" : "#52c41a",
+                color: record.status === "active" ? "#52c41a" : "#ff4d4f",
                 fontSize: 20,
               }}
             />

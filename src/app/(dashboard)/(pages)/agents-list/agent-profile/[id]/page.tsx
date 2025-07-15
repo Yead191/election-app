@@ -135,15 +135,15 @@ export default function AgentProfilePage() {
                 onClick={() => handleUpdateStatus(mockAgentData._id)}
                 icon={
                   mockAgentData.status === "active" ? (
-                    <LockOutlined />
-                  ) : (
                     <UnlockOutlined />
+                  ) : (
+                    <LockOutlined />
                   )
                 }
                 size="small"
                 style={{
                   color:
-                    mockAgentData.status === "active" ? "#ff4d4f" : "#52c41a",
+                    mockAgentData.status === "active" ? "#52c41a" : "#ff4d4f",
                   fontSize: "20px",
                 }}
               />
