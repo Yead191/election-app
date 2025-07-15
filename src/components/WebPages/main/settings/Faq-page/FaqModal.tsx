@@ -50,7 +50,7 @@ export default function FaqModal({
 
         <Form form={form} layout="vertical">
           <Form.Item
-            name="title"
+            name="question"
             label={
               <span style={{ color: "#666", fontSize: "14px" }}>Question</span>
             }
@@ -69,7 +69,7 @@ export default function FaqModal({
           </Form.Item>
 
           <Form.Item
-            name="content"
+            name="answer"
             label={
               <span style={{ color: "#666", fontSize: "14px" }}>Answer</span>
             }

@@ -20,42 +20,30 @@ import { BsPencilSquare } from "react-icons/bs";
 import { toast } from "sonner";
 import FaqModal from "./FaqModal";
 import DeleteModal from "./DeleteModal";
+import {
+  useAddFaqMutation,
+  useGetFaqPageQuery,
+  useUpdateFaqMutation,
+} from "@/redux/feature/settings-pages/settingsPagesApi";
 
 const { Header, Content } = Layout;
 const { Title, Paragraph } = Typography;
 const { TextArea } = Input;
 
 interface FAQItem {
-  id: string;
-  title: string;
-  content: string;
-  selected: boolean;
+  _id?: string;
+  question: string;
+  answer: string;
+  selected?: boolean;
 }
 
 export default function FAQDashboard() {
-  const [faqItems, setFaqItems] = useState<FAQItem[]>([
-    {
-      id: "1",
-      title: "Our Story",
-      content:
-        "convallis. Praesent felis, placerat Ut ac quis dui volutpat vitae elementum quis adipiscing malesuada tempor non ipsum non, nec vitae amet, Donec tincidunt efficitur. In In ipsum Cras turpis viverra laoreet ullamcorper placerat diam sed leo. faucibus vitae eget vitae vehicula, luctus id Lorem fringilla tempor faucibus ipsum Vestibulum tincidunt ullamcorper elit diam turpis placerat vitae Nunc vehicula, ex faucibus venenatis at, maximus commodo urna. Nam ex quis sit non vehicula, massa urna at",
-      selected: false,
-    },
-    {
-      id: "2",
-      title: "When to use Doctor For You",
-      content:
-        "convallis. Praesent felis, placerat Ut ac quis dui volutpat vitae elementum quis adipiscing malesuada tempor non ipsum non, nec vitae amet, Donec tincidunt efficitur. In In ipsum Cras turpis viverra laoreet ullamcorper placerat diam sed leo. faucibus vitae eget vitae vehicula, luctus id Lorem fringilla tempor faucibus ipsum Vestibulum tincidunt ullamcorper elit diam turpis placerat vitae Nunc vehicula, ex faucibus venenatis at, maximus commodo urna. Nam ex quis sit non vehicula, massa urna at",
-      selected: false,
-    },
-    {
-      id: "3",
-      title: "Our Mission",
-      content:
-        "convallis. Praesent felis, placerat Ut ac quis dui volutpat vitae elementum quis adipiscing malesuada tempor non ipsum non, nec vitae amet, Donec tincidunt efficitur. In In ipsum Cras turpis viverra laoreet ullamcorper placerat diam sed leo. faucibus vitae eget vitae vehicula, luctus id Lorem fringilla tempor faucibus ipsum Vestibulum tincidunt ullamcorper elit diam turpis placerat vitae Nunc vehicula, ex faucibus venenatis at, maximus commodo urna. Nam ex quis sit non vehicula, massa urna at",
-      selected: false,
-    },
-  ]);
+  // GET FAQ
+  const { data: faqData, refetch } = useGetFaqPageQuery(null);
+  // add faq
+  const [addFaq] = useAddFaqMutation();
+  //update faq
+  const [updateFaq] = useUpdateFaqMutation();
 
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
@@ -72,8 +60,8 @@ export default function FAQDashboard() {
   const handleEdit = (item: FAQItem) => {
     setEditingItem(item);
     form.setFieldsValue({
-      title: item.title,
-      content: item.content,
+      question: item.question,
+      answer: item.answer,
     });
     setIsModalVisible(true);
   };
@@ -85,7 +73,6 @@ export default function FAQDashboard() {
 
   const confirmDelete = () => {
     if (deletingItem) {
-      setFaqItems(faqItems.filter((item) => item.id !== deletingItem.id));
       toast.success("FAQ item deleted successfully");
       setIsDeleteModalVisible(false);
       setDeletingItem(null);
@@ -96,27 +83,44 @@ export default function FAQDashboard() {
     form.validateFields().then((values) => {
       if (editingItem) {
         // Edit existing item
-        setFaqItems(
-          faqItems.map((item) =>
-            item.id === editingItem.id
-              ? { ...item, title: values.title, content: values.content }
-              : item
-          )
+        console.log(editingItem);
+        const updateItem = {
+          question: values.question,
+          answer: values.answer,
+        };
+        toast.promise(
+          updateFaq({ id: editingItem._id, data: updateItem }).unwrap(),
+          {
+            loading: "Updating FAQ item...",
+            success: (res) => {
+              refetch();
+              form.resetFields();
+              setIsModalVisible(false);
+              setEditingItem(null);
+              return <b>{res.message}</b>;
+            },
+            error: (err) =>
+              `Error: ${err?.data?.message || "Something went wrong"}`,
+          }
         );
-        toast.success("FAQ item updated successfully");
       } else {
         // Add new item
         const newItem: FAQItem = {
-          id: Date.now().toString(),
-          title: values.title,
-          content: values.content,
-          selected: false,
+          question: values.question,
+          answer: values.answer,
         };
-        setFaqItems([...faqItems, newItem]);
-        toast.success("FAQ item added successfully");
+        toast.promise(addFaq({ data: newItem }).unwrap(), {
+          loading: "Adding FAQ item...",
+          success: (res) => {
+            refetch();
+            form.resetFields();
+            setIsModalVisible(false);
+            return <b>{res.message}</b>;
+          },
+          error: (err) =>
+            `Error: ${err?.data?.message || "Something went wrong"}`,
+        });
       }
-      setIsModalVisible(false);
-      form.resetFields();
     });
   };
 
@@ -127,15 +131,15 @@ export default function FAQDashboard() {
   };
 
   const handleCheckboxChange = (id: string, checked: boolean) => {
-    setFaqItems(
-      faqItems.map((item) =>
-        item.id === id ? { ...item, selected: checked } : item
-      )
-    );
+    // setFaqItems(
+    //   faqItems.map((item) =>
+    //     item.id === id ? { ...item, selected: checked } : item
+    //   )
+    // );
   };
 
-  const renderFAQItem = (item: FAQItem) => (
-    <div key={item.id} style={{ marginBottom: 16 }}>
+  const renderFAQItem = (item: any) => (
+    <div key={item._id} style={{ marginBottom: 16 }}>
       <div
         style={{
           display: "flex",
@@ -147,7 +151,7 @@ export default function FAQDashboard() {
       >
         <Checkbox
           checked={item.selected}
-          onChange={(e) => handleCheckboxChange(item.id, e.target.checked)}
+          onChange={(e) => handleCheckboxChange(item._id, e.target.checked)}
           style={{ marginRight: 12, marginTop: 15 }}
         />
         <div style={{ flex: 1 }}>
@@ -171,7 +175,7 @@ export default function FAQDashboard() {
                   backgroundColor: "#F9F9F9",
                 }}
               >
-                {item.title}
+                {item.question}
               </Title>
               <Paragraph
                 className="w-full shadow-md rounded-xl py-2 px-4"
@@ -183,7 +187,7 @@ export default function FAQDashboard() {
                   backgroundColor: "#F9F9F9",
                 }}
               >
-                {item.content}
+                {item.answer}
               </Paragraph>
             </div>
             <Space direction="vertical" size={4}>
@@ -252,7 +256,7 @@ export default function FAQDashboard() {
             marginTop: 10,
           }}
         >
-          {faqItems?.map(renderFAQItem)}
+          {faqData?.data?.map(renderFAQItem)}
         </div>
 
         {/* Custom Add/Edit Modal */}

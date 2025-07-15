@@ -1,27 +1,23 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button, Typography, Card, ConfigProvider } from "antd";
 import dynamic from "next/dynamic";
+import {
+  useAddSettingsContentMutation,
+  useGetSettingsPageQuery,
+} from "@/redux/feature/settings-pages/settingsPagesApi";
+import { toast } from "sonner";
 // import JoditEditor from "jodit-react";
 
-import { toast } from "sonner";
-import { PlusOutlined } from "@ant-design/icons";
 const JoditEditor = dynamic(() => import("jodit-react"), { ssr: false });
 
-const { Title } = Typography;
-interface StaffMember {
-  key: string;
-  id: string;
-  name: string;
-  email: string;
-  phone: string;
-  designation: string;
-  status: "active" | "inactive";
-}
-
 export default function termsConditions() {
-  const [content, setContent] = useState("");
+  const { data: terms, refetch } = useGetSettingsPageQuery({
+    type: "terms",
+  });
+  const [addSettingsContent] = useAddSettingsContentMutation();
+  const [content, setContent] = useState(terms?.data?.content || "");
   //   console.log(content);
   const handleContentChange = (value: string) => {
     setContent(value);
@@ -36,6 +32,26 @@ export default function termsConditions() {
       height: "58vh",
       background: "white",
     },
+  };
+  useEffect(() => {
+    if (terms?.data?.content) {
+      setContent(terms.data.content);
+    }
+  }, [terms?.data]);
+
+  const handleSaveChanges = () => {
+    const newContent = {
+      content: content,
+      type: "terms",
+    };
+    toast.promise(addSettingsContent({ data: newContent }).unwrap(), {
+      loading: "Saving changes...",
+      success: (res) => {
+        refetch();
+        return <b>{res.message}</b>;
+      },
+      error: (err: any) => `Error: ${err.message || "Something went wrong"}`,
+    });
   };
 
   return (
@@ -68,6 +84,7 @@ export default function termsConditions() {
             }}
           >
             <Button
+              onClick={handleSaveChanges}
               style={{
                 height: 48,
                 width: "543px",

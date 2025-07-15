@@ -1,12 +1,16 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button, Typography, Card, ConfigProvider } from "antd";
 import dynamic from "next/dynamic";
 // import JoditEditor from "jodit-react";
 
 import { toast } from "sonner";
 import { PlusOutlined } from "@ant-design/icons";
+import {
+  useAddSettingsContentMutation,
+  useGetSettingsPageQuery,
+} from "@/redux/feature/settings-pages/settingsPagesApi";
 const JoditEditor = dynamic(() => import("jodit-react"), { ssr: false });
 
 const { Title } = Typography;
@@ -21,8 +25,12 @@ interface StaffMember {
 }
 
 export default function AboutUs() {
-  const [content, setContent] = useState("");
-//   console.log(content);
+  const { data: aboutUsData, refetch } = useGetSettingsPageQuery({
+    type: "about",
+  });
+  const [addSettingsContent] = useAddSettingsContentMutation();
+  const [content, setContent] = useState(aboutUsData?.data?.content || "");
+  //   console.log(content);
   const handleContentChange = (value: string) => {
     setContent(value);
   };
@@ -36,6 +44,26 @@ export default function AboutUs() {
       height: "58vh",
       background: "white",
     },
+  };
+  useEffect(() => {
+    if (aboutUsData?.data?.content) {
+      setContent(aboutUsData.data.content);
+    }
+  }, [aboutUsData?.data]);
+
+  const handleSaveChanges = () => {
+    const newContent = {
+      content: content,
+      type: "about",
+    };
+    toast.promise(addSettingsContent({ data: newContent }).unwrap(), {
+      loading: "Saving changes...",
+      success: (res) => {
+        refetch();
+        return <b>{res.message}</b>;
+      },
+      error: (err: any) => `Error: ${err.message || "Something went wrong"}`,
+    });
   };
 
   return (
@@ -68,6 +96,7 @@ export default function AboutUs() {
             }}
           >
             <Button
+              onClick={handleSaveChanges}
               style={{
                 height: 48,
                 width: "543px",

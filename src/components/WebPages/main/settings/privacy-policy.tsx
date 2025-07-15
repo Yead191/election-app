@@ -1,12 +1,16 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button, Typography, Card, ConfigProvider } from "antd";
 import dynamic from "next/dynamic";
 // import JoditEditor from "jodit-react";
 
 import { toast } from "sonner";
 import { PlusOutlined } from "@ant-design/icons";
+import {
+  useAddSettingsContentMutation,
+  useGetSettingsPageQuery,
+} from "@/redux/feature/settings-pages/settingsPagesApi";
 const JoditEditor = dynamic(() => import("jodit-react"), { ssr: false });
 
 const { Title } = Typography;
@@ -21,7 +25,11 @@ interface StaffMember {
 }
 
 export default function privacyPolicy() {
-  const [content, setContent] = useState("");
+  const { data: privacyPolicy, refetch } = useGetSettingsPageQuery({
+    type: "privacy",
+  });
+  const [addSettingsContent] = useAddSettingsContentMutation();
+  const [content, setContent] = useState(privacyPolicy?.data?.content || "");
   //   console.log(content);
   const handleContentChange = (value: string) => {
     setContent(value);
@@ -37,12 +45,25 @@ export default function privacyPolicy() {
       background: "white",
     },
   };
+  useEffect(() => {
+    if (privacyPolicy?.data?.content) {
+      setContent(privacyPolicy.data.content);
+    }
+  }, [privacyPolicy?.data]);
 
-  // save content
-  const handleSave = () => {
-    // Handle saving the content to the database or API
-    // console.log("Content saved:", content);
-    toast.success("Content saved successfully");
+  const handleSaveChanges = () => {
+    const newContent = {
+      content: content,
+      type: "privacy",
+    };
+    toast.promise(addSettingsContent({ data: newContent }).unwrap(), {
+      loading: "Saving changes...",
+      success: (res) => {
+        refetch();
+        return <b>{res.message}</b>;
+      },
+      error: (err: any) => `Error: ${err.message || "Something went wrong"}`,
+    });
   };
   return (
     <div>
@@ -74,7 +95,7 @@ export default function privacyPolicy() {
             }}
           >
             <Button
-              onClick={handleSave}
+              onClick={handleSaveChanges}
               style={{
                 height: 48,
                 width: "543px",
