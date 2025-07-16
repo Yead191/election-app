@@ -23,7 +23,7 @@ export default function PollingProfile({
             marginBottom: "24px",
           }}
         >
-          <Avatar size={114} src={"/images/asad.jpg"} />
+          <Avatar size={114} src={poolingEntry?.agent?.image} />
           <div>
             <Title
               level={4}
@@ -35,13 +35,13 @@ export default function PollingProfile({
                 lineHeight: "20px",
               }}
             >
-              {poolingEntry.agent}
+              {poolingEntry.agent?.name}
             </Title>
             <Text
               className="text-[12px] font-medium leading-5"
               type="secondary"
             >
-              {poolingEntry.agentEmail}
+              {poolingEntry.agent?.email}
             </Text>
           </div>
         </div>
@@ -58,13 +58,13 @@ export default function PollingProfile({
           <div>
             <strong style={{ color: "#999999", fontSize: "14px" }}>Name</strong>
             <br />
-            Bessie Cooper
+            {poolingEntry.agent?.name}
           </div>
 
           <div style={{ marginTop: "12px" }}>
             <strong style={{ color: "#999999", fontSize: "14px" }}>ID</strong>
             <br />
-            23456
+            {poolingEntry.agent?._id}
           </div>
 
           <div style={{ marginTop: "12px" }}>
@@ -72,7 +72,7 @@ export default function PollingProfile({
               Email
             </strong>
             <br />
-            mahmud@gmail.com
+            {poolingEntry.agent?.email}
           </div>
 
           <div style={{ marginTop: "12px" }}>
@@ -80,15 +80,15 @@ export default function PollingProfile({
               Phone number
             </strong>
             <br />
-            084 572 1953
+            {poolingEntry.agent?.contact}
           </div>
 
           <div style={{ marginTop: "12px" }}>
             <strong style={{ color: "#999999", fontSize: "14px" }}>
-              NID No.
+              Verification Status
             </strong>
             <br />
-            1511924651562612
+            {poolingEntry.agent?.verified ? "Verified" : "Not Verified"}
           </div>
 
           <div style={{ marginTop: "12px" }}>
@@ -96,7 +96,7 @@ export default function PollingProfile({
               Date of birth
             </strong>
             <br />
-            17 dec, 2024
+            {poolingEntry.agent?.dob}
           </div>
 
           <div style={{ marginTop: "12px" }}>
@@ -104,17 +104,15 @@ export default function PollingProfile({
               Gender
             </strong>
             <br />
-            <span style={{ fontWeight: "bold" }}>Male</span>
+            {poolingEntry.agent?.gender}
           </div>
 
           <div style={{ marginTop: "12px" }}>
             <strong style={{ color: "#999999", fontSize: "14px" }}>
-              Address
+              Polling Station
             </strong>
             <br />
-            2007 Station Road, Ladysmith,KwaZulu-Natal
-            <br />
-            -3373 South Africa
+            {poolingEntry?.agent?.pollingStation}
           </div>
         </div>
       </Col>

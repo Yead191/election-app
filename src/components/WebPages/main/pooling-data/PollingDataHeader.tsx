@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import { Input, DatePicker, Button, Space, Select } from "antd";
+import dayjs, { Dayjs } from "dayjs";
 import {
   ArrowLeftOutlined,
   SearchOutlined,
@@ -13,18 +14,18 @@ const { Option } = Select;
 interface PollingDataHeaderProps {
   searchText: string;
   setSearchText: (value: string) => void;
-  selectedArea: string;
-  areas: string[];
-  handleAreaChange: (value: string) => void;
+
+  date: Dayjs | null;
+  setDate: (value: Dayjs | null) => void;
 }
 
 export default function PollingDataHeader({
   searchText,
   setSearchText,
-  selectedArea,
-  areas,
-  handleAreaChange,
+  date,
+  setDate,
 }: PollingDataHeaderProps) {
+  // console.log(date);
   return (
     <div
       style={{
@@ -88,6 +89,8 @@ export default function PollingDataHeader({
 
           <DatePicker
             placeholder="Date"
+            onChange={(date) => setDate(date)}
+            value={date}
             suffixIcon={<CalendarOutlined />}
             style={{
               width: 120,
@@ -97,7 +100,7 @@ export default function PollingDataHeader({
           />
         </div>
 
-        <Select
+        {/* <Select
           value={selectedArea}
           onChange={handleAreaChange}
           style={{
@@ -111,7 +114,7 @@ export default function PollingDataHeader({
               {area}
             </Option>
           ))}
-        </Select>
+        </Select> */}
       </Space>
     </div>
   );

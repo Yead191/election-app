@@ -13,6 +13,10 @@ import {
   Divider,
 } from "antd";
 import { toast } from "sonner";
+import { DownloadOutlined } from "@ant-design/icons";
+import { QrcodeOutlined } from "@ant-design/icons";
+import dayjs from "dayjs";
+import { imgUrl } from "@/app/(dashboard)/layout";
 const { Title, Text } = Typography;
 const { TextArea } = Input;
 export default function PollingReport({ poolingEntry }: { poolingEntry: any }) {
@@ -20,64 +24,99 @@ export default function PollingReport({ poolingEntry }: { poolingEntry: any }) {
   const [shortNote, setShortNote] = useState("");
   return (
     <Card className="col-span-8">
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "end",
-          alignItems: "center",
-          marginBottom: "24px",
-        }}
-      >
-        <Button
-          onClick={() => toast.info("Feature coming soon...")}
-          color="danger"
-          variant="text"
-          style={{ fontWeight: 500 }}
-        >
-          Scan
-        </Button>
-      </div>
       <Descriptions column={1} size="small" style={{ marginBottom: "24px" }}>
-        <Descriptions.Item label="Post Code" labelStyle={{ color: "#929292" }}>
+        <Descriptions.Item
+          label="Postal Code"
+          labelStyle={{ color: "#929292" }}
+        >
           <Text style={{ color: "#188A50" }} strong>
-            {poolingEntry.postCode}
+            {poolingEntry?.agent?.postalCode}
           </Text>
         </Descriptions.Item>
+        {/* <Descriptions.Item
+          label="Station Code"
+          labelStyle={{ color: "#929292" }}
+        >
+          <Text style={{ color: "#188A50" }} strong>
+            {poolingEntry?.station?.stationCode}
+          </Text>
+        </Descriptions.Item> */}
         <Descriptions.Item label="Name">
           <Text style={{ color: "#188A50" }} strong>
-            {poolingEntry.arlaName}
+            {poolingEntry?.station?.name}
           </Text>
         </Descriptions.Item>
-        <Descriptions.Item label="Pooling Address">
-          <Text style={{ color: "#188A50" }}>{poolingEntry.address}</Text>
+        <Descriptions.Item label="Polling Address">
+          <Text style={{ color: "#188A50" }}>
+            {poolingEntry?.station?.pollingStation}
+          </Text>
         </Descriptions.Item>
         <Descriptions.Item label="Sending Time">
-          <Text style={{ color: "#188A50" }}>{poolingEntry.sendingTime}</Text>
+          <Text style={{ color: "#188A50" }}>
+            {dayjs(poolingEntry?.createdAt).format("YYYY-M-D hh:mm A")}
+          </Text>
         </Descriptions.Item>
         <Descriptions.Item label="Title">
-          <Text strong>{poolingEntry.reportStatus}</Text>
+          <Text strong>{poolingEntry?.title}</Text>
         </Descriptions.Item>
       </Descriptions>
       <Divider />
 
       <Col>
+        <div className="flex justify-end gap-6 items-center mb-3">
+          {/* Download button */}
+          <Button
+            type="default"
+            icon={<DownloadOutlined style={{ fontSize: 20 }} />}
+            shape="default"
+            style={{
+              background: "#f8f8f8",
+              border: "none",
+              width: 48,
+              height: 40,
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              boxShadow: "0 0 5px rgba(0,0,0,0.1)",
+            }}
+          />
+
+          {/* Scan button */}
+          <Button
+            type="primary"
+            icon={<QrcodeOutlined style={{ fontSize: 18 }} />}
+            style={{
+              background: "#18953D",
+              border: "none",
+              borderRadius: "12px",
+              padding: "0 20px",
+              height: 40,
+              display: "flex",
+              alignItems: "center",
+            }}
+          >
+            Scan
+          </Button>
+        </div>
         {/* Main Image */}
-        <div style={{ marginBottom: "16px" }}>
+        <div style={{ marginBottom: "8px" }}>
           <Image
-            src={poolingEntry.images[selectedImageIndex] || "/placeholder.svg"}
+            src={
+              poolingEntry?.images[selectedImageIndex]
+                ? `${imgUrl}/${poolingEntry.images[selectedImageIndex]}`
+                : "/placeholder.svg"
+            }
             alt="Vote document"
-            width="100%"
-            height={400}
-            style={{ objectFit: "cover", borderRadius: "8px" }}
+            style={{ objectFit: "cover", height: "60vh", width: "100%" }}
           />
         </div>
 
         {/* Image Thumbnails */}
         <div style={{ display: "flex", gap: "8px", marginBottom: "16px" }}>
-          {poolingEntry.images.map((img: any, index: any) => (
+          {poolingEntry?.images.map((img: any, index: any) => (
             <Image
               key={index}
-              src={img || "/placeholder.svg"}
+              src={img ? `${imgUrl}/${img}` : "/placeholder.svg"}
               alt={`thumbnail-${index}`}
               width={60}
               height={60}

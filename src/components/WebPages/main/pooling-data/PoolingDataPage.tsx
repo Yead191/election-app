@@ -3,64 +3,26 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import {
-  Card,
-  Row,
-  Col,
-  Typography,
-  Input,
-  DatePicker,
-  Button,
-  Space,
-  AutoComplete,
-  Select,
-  Table,
-  Image,
-} from "antd";
-import {
-  ArrowLeftOutlined,
-  SearchOutlined,
-  CalendarOutlined,
-  DownOutlined,
-  FilePdfOutlined,
-  InfoCircleOutlined,
-} from "@ant-design/icons";
-import { poolingData } from "@/data/pooling-data";
-import { toast } from "sonner";
+import { Button, Space, Select, Table, Image, Tooltip } from "antd";
+import { InfoCircleOutlined } from "@ant-design/icons";
 import PollingDataHeader from "./PollingDataHeader";
-
-const { Option } = Select;
+import { useGetPollingDataQuery } from "@/redux/feature/polling-data/PollingDataApi";
+import { imgUrl } from "@/app/(dashboard)/layout";
+import dayjs, { Dayjs } from "dayjs";
 
 export default function PoolingDataPage() {
   const router = useRouter();
   const [searchText, setSearchText] = useState("");
-  const [filteredData, setFilteredData] = useState(poolingData);
-  const [selectedArea, setSelectedArea] = useState("All Area");
+  const [date, setDate] = useState<Dayjs | null>(null);
 
+  const getImageUrl = (path: any) => `${imgUrl}${path}`;
+  // get polling data
+  const { data: pollingData } = useGetPollingDataQuery({
+    searchTerm: searchText,
+    date: date ? date.format("YYYY-M-D") : undefined,
+  });
+  // console.log(pollingData, date);
   // Extract unique areas
-  const areas = [
-    "All Area",
-    ...Array.from(
-      new Set(
-        poolingData.map((station) => {
-          const addressParts = station.address.split(",");
-          return addressParts[addressParts.length - 1]?.trim() || "Unknown";
-        })
-      )
-    ),
-  ];
-
-  const handleSearch = (value: string) => {
-    setSearchText(value);
-  };
-
-  useEffect(() => {
-    handleSearch(searchText);
-  }, [searchText, selectedArea]);
-
-  const handleAreaChange = (value: string) => {
-    setSelectedArea(value);
-  };
 
   // img count
   const renderImageCount = (totalImages: number, images: string[]) => {
@@ -112,50 +74,68 @@ export default function PoolingDataPage() {
 
   const columns = [
     {
-      title: "Postal Code",
-      dataIndex: "postCode",
-      key: "postCode",
-      width: 120,
+      title: "Id. no.",
+      dataIndex: "_id",
+      key: "_id",
+      render: (text: string) => (
+        <Tooltip title={text}>
+          <span className="text-sm">{text.slice(0, 8)}</span>
+        </Tooltip>
+      ),
     },
     {
-      title: "Area Name",
-      dataIndex: "arlaName",
-      key: "arlaName",
-      width: 120,
+      title: "Voting S. Code",
+      dataIndex: "stationCode",
+      key: "stationCode",
+      render: (_: any, record: any) => <p>{record?.station?.stationCode}</p>,
     },
     {
-      title: "Polling Address",
-      dataIndex: "address",
-      key: "address",
-      width: 250,
+      title: "Election City",
+      dataIndex: "city",
+      key: "city",
+      render: (_: any, record: any) => <p>{record?.station?.city}</p>,
+    },
+    {
+      title: "Station Name",
+      dataIndex: "name",
+      key: "name",
+      render: (_: any, record: any) => <p>{record?.station?.name}</p>,
     },
     {
       title: "Polling Agent",
       dataIndex: "agent",
       key: "agent",
-      width: 150,
+      render: (_: any, record: any) => <p>{record?.agent?.name}</p>,
     },
     {
       title: "Total Image",
       key: "totalImages",
-      width: 120,
+
       render: (_: any, record: any) =>
-        renderImageCount(record.totalImages, record.images),
+        renderImageCount(
+          record?.images?.length,
+          Array.isArray(record.images)
+            ? record.images.map((img: string) => getImageUrl(img))
+            : []
+        ),
     },
     {
       title: "Sending Time",
-      dataIndex: "sendingTime",
-      key: "sendingTime",
-      width: 150,
+      dataIndex: "createdAt",
+      key: "createdAt",
+      render: (createdAt: string) => {
+        const time = dayjs(createdAt).format("hh:mma-DD/MM/YY");
+        return <span>{time}</span>;
+      },
     },
     {
       title: "Action",
       key: "action",
       align: "right" as const,
-      width: 100,
+
       render: (_: any, record: any) => (
         <Space>
-          <Button
+          {/* <Button
             type="link"
             style={{ color: "#ff4d4f", padding: 0 }}
             onClick={() => {
@@ -164,13 +144,13 @@ export default function PoolingDataPage() {
             }}
           >
             Scan
-          </Button>
+          </Button> */}
           <Button
             style={{ fontSize: 20 }}
             type="text"
             icon={<InfoCircleOutlined style={{ color: "#1677ff" }} />}
             onClick={() => {
-              router.push(`/polling-data/details-page/${record.key}`);
+              router.push(`/polling-data/details-page/${record._id}`);
             }}
           />
         </Space>
@@ -184,15 +164,14 @@ export default function PoolingDataPage() {
       <PollingDataHeader
         searchText={searchText}
         setSearchText={setSearchText}
-        selectedArea={selectedArea}
-        areas={areas}
-        handleAreaChange={handleAreaChange}
+        date={date}
+        setDate={setDate}
       />
       {/* Data Table */}
       <div className="overflow-hidden max-w-[99%]">
         <Table
           columns={columns}
-          dataSource={filteredData}
+          dataSource={pollingData?.data}
           // scroll={{ y: 510 }}
           pagination={{
             pageSize: 10,
