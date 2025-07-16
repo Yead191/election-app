@@ -1,43 +1,10 @@
-"use client";
+import PoolingDetailsPage from "@/components/WebPages/main/pooling-data/PollingDetailsPage";
+import React from "react";
 
-import { useParams, useRouter } from "next/navigation";
-import { Typography, Input } from "antd";
-import { poolingData } from "@/data/pooling-data";
-import { allPollingStations } from "@/data/polling-stations";
-import PollingProfile from "@/components/WebPages/main/pooling-data/PollingProfile";
-import PollingReport from "@/components/WebPages/main/pooling-data/PollingReport";
-import ScanResult from "@/components/WebPages/main/pooling-data/ScanResult";
-import {
-  useGetPollingDataByIdQuery,
-  useScanResultQuery,
-} from "@/redux/feature/polling-data/PollingDataApi";
-
-const { Title, Text } = Typography;
-
-export default function PoolingDetailsPage() {
-  const params = useParams();
-  const router = useRouter();
-
-  const { data: poolingEntry } = useGetPollingDataByIdQuery(params.id);
-  // console.log(poolingEntry);
-  const { data: scanResult } = useScanResultQuery(params.id);
-
-  console.log(scanResult);
-  if (!poolingEntry) {
-    return <div>Entry not found</div>;
-  }
-
+export default function page() {
   return (
     <div>
-      <div className="grid grid-cols-12 gap-4 mb-6">
-        {/* Left Column */}
-        <PollingProfile poolingEntry={poolingEntry?.data} />
-        {/* right column */}
-        <PollingReport poolingEntry={poolingEntry?.data} />
-      </div>
-
-      {/* Scan Result Section */}
-      <ScanResult allPollingStations={scanResult?.data} />
+      <PoolingDetailsPage />
     </div>
   );
 }

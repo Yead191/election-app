@@ -17,11 +17,48 @@ import { DownloadOutlined } from "@ant-design/icons";
 import { QrcodeOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
 import { imgUrl } from "@/app/(dashboard)/layout";
+import { useScanDocumentMutation } from "@/redux/feature/polling-data/PollingDataApi";
 const { Title, Text } = Typography;
 const { TextArea } = Input;
-export default function PollingReport({ poolingEntry }: { poolingEntry: any }) {
+export default function PollingReport({
+  poolingEntry,
+  isScanned,
+  setIsScanned,
+  setScanId,
+  resultRef,
+}: {
+  poolingEntry: any;
+  isScanned: boolean;
+  setIsScanned: (value: boolean) => void;
+  setScanId: (value: string) => void;
+  resultRef: any;
+}) {
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [shortNote, setShortNote] = useState("");
+  const [scanDocument] = useScanDocumentMutation();
+  const handleSubmitScan = () => {
+    console.log("scan hit", poolingEntry.images[selectedImageIndex]);
+    const scanData = {
+      image: poolingEntry.images[selectedImageIndex],
+      document: poolingEntry._id,
+    };
+    console.log(scanData);
+    toast.promise(scanDocument({ data: scanData }).unwrap(), {
+      loading: "Scanning...",
+      success: (res) => {
+        console.log(res);
+        setIsScanned(true);
+        setScanId(res.data.document);
+        setTimeout(() => {
+          resultRef.current?.scrollIntoView({ behavior: "smooth" });
+        }, 300);
+        return <b>{res.message}</b>;
+      },
+      error: (error) => {
+        return "Scan Failed";
+      },
+    });
+  };
   return (
     <Card className="col-span-8">
       <Descriptions column={1} size="small" style={{ marginBottom: "24px" }}>
@@ -84,6 +121,7 @@ export default function PollingReport({ poolingEntry }: { poolingEntry: any }) {
           {/* Scan button */}
           <Button
             type="primary"
+            onClick={handleSubmitScan}
             icon={<QrcodeOutlined style={{ fontSize: 18 }} />}
             style={{
               background: "#18953D",

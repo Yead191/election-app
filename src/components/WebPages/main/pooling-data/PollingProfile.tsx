@@ -19,7 +19,7 @@ export default function PollingProfile({
           style={{
             display: "flex",
             alignItems: "center",
-            gap: "16px",
+            gap: "14px",
             marginBottom: "24px",
           }}
         >
@@ -49,66 +49,66 @@ export default function PollingProfile({
         {/* Additional Details */}
         <div
           style={{
-            fontSize: "12px",
+            fontSize: "14px",
             color: "#4E4E4E",
             lineHeight: 2,
             fontWeight: 400,
           }}
         >
           <div>
-            <strong style={{ color: "#999999", fontSize: "14px" }}>Name</strong>
+            <strong style={{ color: "#999999", fontSize: "16px" }}>Name</strong>
             <br />
             {poolingEntry.agent?.name}
           </div>
 
-          <div style={{ marginTop: "12px" }}>
-            <strong style={{ color: "#999999", fontSize: "14px" }}>ID</strong>
+          <div style={{ marginTop: "14px" }}>
+            <strong style={{ color: "#999999", fontSize: "16px" }}>ID</strong>
             <br />
             {poolingEntry.agent?._id}
           </div>
 
-          <div style={{ marginTop: "12px" }}>
-            <strong style={{ color: "#999999", fontSize: "14px" }}>
+          <div style={{ marginTop: "14px" }}>
+            <strong style={{ color: "#999999", fontSize: "16px" }}>
               Email
             </strong>
             <br />
             {poolingEntry.agent?.email}
           </div>
 
-          <div style={{ marginTop: "12px" }}>
-            <strong style={{ color: "#999999", fontSize: "14px" }}>
+          <div style={{ marginTop: "14px" }}>
+            <strong style={{ color: "#999999", fontSize: "16px" }}>
               Phone number
             </strong>
             <br />
             {poolingEntry.agent?.contact}
           </div>
 
-          <div style={{ marginTop: "12px" }}>
-            <strong style={{ color: "#999999", fontSize: "14px" }}>
+          <div style={{ marginTop: "14px" }}>
+            <strong style={{ color: "#999999", fontSize: "16px" }}>
               Verification Status
             </strong>
             <br />
             {poolingEntry.agent?.verified ? "Verified" : "Not Verified"}
           </div>
 
-          <div style={{ marginTop: "12px" }}>
-            <strong style={{ color: "#999999", fontSize: "14px" }}>
+          <div style={{ marginTop: "14px" }}>
+            <strong style={{ color: "#999999", fontSize: "16px" }}>
               Date of birth
             </strong>
             <br />
             {poolingEntry.agent?.dob}
           </div>
 
-          <div style={{ marginTop: "12px" }}>
-            <strong style={{ color: "#999999", fontSize: "14px" }}>
+          <div style={{ marginTop: "14px" }}>
+            <strong style={{ color: "#999999", fontSize: "16px" }}>
               Gender
             </strong>
             <br />
             {poolingEntry.agent?.gender}
           </div>
 
-          <div style={{ marginTop: "12px" }}>
-            <strong style={{ color: "#999999", fontSize: "14px" }}>
+          <div style={{ marginTop: "14px" }}>
+            <strong style={{ color: "#999999", fontSize: "16px" }}>
               Polling Station
             </strong>
             <br />

@@ -5,6 +5,9 @@ const { Title, Text } = Typography;
 
 interface ScanResultProps {
   allPollingStations: any[];
+  isScanned: boolean;
+  setIsScanned: (value: boolean) => void;
+  scanId: string;
 }
 
 // Function to generate dynamic columns based on data
@@ -38,10 +41,11 @@ const generateColumns = (data: any) => {
   ];
 
   // Get unique team names from polls
-  const teamNames = data[0]?.polls.map((poll: any) => poll.name) || [];
+  const teamNames =
+    (data && data[0]?.polls?.map((poll: any) => poll.name)) || [];
 
   // Create dynamic columns for each team
-  const teamColumns = teamNames.map((team: any) => ({
+  const teamColumns = teamNames?.map((team: any) => ({
     title: team,
     dataIndex: team,
     key: team,
@@ -67,7 +71,7 @@ const generateColumns = (data: any) => {
 
 // Transform data to match table structure
 const transformData = (data: any) => {
-  return data.map((item: any) => ({
+  return data?.map((item: any) => ({
     key: item._id,
     postCode: item.agent.postalCode,
     name: item.agent.name,
@@ -83,14 +87,22 @@ const transformData = (data: any) => {
   }));
 };
 
-export default function ScanResult({ allPollingStations }: ScanResultProps) {
+export default function ScanResult({
+  allPollingStations,
+  isScanned,
+  scanId,
+}: ScanResultProps) {
   // Generate columns dynamically
   const columns = generateColumns(allPollingStations);
   // Transform data for table
   const dataSource = transformData(allPollingStations);
 
   return (
-    <Row>
+    <Row
+      style={{
+        visibility: isScanned || scanId ? "visible" : "hidden",
+      }}
+    >
       <Col span={24}>
         <Card>
           <div
@@ -118,7 +130,7 @@ export default function ScanResult({ allPollingStations }: ScanResultProps) {
 
           <Table
             columns={columns}
-            dataSource={dataSource.slice(0, 5)}
+            dataSource={dataSource?.slice(0, 5)}
             pagination={false}
             size="small"
           />

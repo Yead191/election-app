@@ -43,8 +43,17 @@ const pollingDataApi = baseApi.injectEndpoints({
     // scan result
     scanResult: build.query({
       query: (id) => ({
-        url: `/polling/68777cf5ebf7ab0e5f727464`,
+        url: `/polling/${id}`,
         method: "GET",
+        credentials: "include",
+      }),
+    }),
+    // scan document
+    scanDocument: build.mutation({
+      query: ({ data }) => ({
+        url: `/document/scan`,
+        method: "POST",
+        body: data,
         credentials: "include",
       }),
     }),
@@ -57,4 +66,5 @@ export const {
   useAddPollingDataMutation,
   useUpdatePollingDataMutation,
   useScanResultQuery,
+  useScanDocumentMutation,
 } = pollingDataApi;
