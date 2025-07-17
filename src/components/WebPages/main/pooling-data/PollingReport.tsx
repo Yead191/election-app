@@ -26,27 +26,28 @@ export default function PollingReport({
   setIsScanned,
   setScanId,
   resultRef,
+  refetch,
 }: {
   poolingEntry: any;
   isScanned: boolean;
   setIsScanned: (value: boolean) => void;
   setScanId: (value: string) => void;
   resultRef: any;
+  refetch: () => void;
 }) {
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
-  const [shortNote, setShortNote] = useState("");
+  const [shortNote, setShortNote] = useState(poolingEntry?.note || "");
   const [scanDocument] = useScanDocumentMutation();
   const handleSubmitScan = () => {
-    console.log("scan hit", poolingEntry.images[selectedImageIndex]);
     const scanData = {
       image: poolingEntry.images[selectedImageIndex],
       document: poolingEntry._id,
     };
-    console.log(scanData);
     toast.promise(scanDocument({ data: scanData }).unwrap(), {
       loading: "Scanning...",
       success: (res) => {
         console.log(res);
+        refetch();
         setIsScanned(true);
         setScanId(res.data.document);
         setTimeout(() => {
@@ -55,10 +56,12 @@ export default function PollingReport({
         return <b>{res.message}</b>;
       },
       error: (error) => {
-        return "Scan Failed";
+        return error.data.message;
       },
     });
   };
+  console.log("polling details", poolingEntry);
+
   return (
     <Card className="col-span-8">
       <Descriptions column={1} size="small" style={{ marginBottom: "24px" }}>
@@ -177,6 +180,7 @@ export default function PollingReport({
         <TextArea
           placeholder="Short Note"
           value={shortNote}
+          readOnly={poolingEntry?.note}
           onChange={(e) => setShortNote(e.target.value)}
           rows={4}
           style={{ marginBottom: "16px" }}

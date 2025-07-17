@@ -1,13 +1,14 @@
 import React from "react";
 import { Card, Row, Col, Button, Table, Typography } from "antd";
 import { toast } from "sonner";
+import { usePublishDocumentMutation } from "@/redux/feature/polling-data/PollingDataApi";
 const { Title, Text } = Typography;
 
 interface ScanResultProps {
-  allPollingStations: any[];
+  allPollingStations: any;
   isScanned: boolean;
   setIsScanned: (value: boolean) => void;
-  scanId: string;
+  scanId: any;
 }
 
 // Function to generate dynamic columns based on data
@@ -97,12 +98,24 @@ export default function ScanResult({
   // Transform data for table
   const dataSource = transformData(allPollingStations);
 
+  console.log("stations", allPollingStations);
+  const [publishDocument] = usePublishDocumentMutation();
+  const handlePublish = () => {
+    console.log(scanId);
+    toast.promise(publishDocument({ id: scanId }).unwrap(), {
+      loading: "Publishing...",
+      success: (res) => {
+        console.log(res);
+        toast.success("Published Successfully");
+        return <b>{res.message}</b>;
+      },
+      error: (error) => {
+        return error.data.message;
+      },
+    });
+  };
   return (
-    <Row
-      style={{
-        visibility: isScanned || scanId ? "visible" : "hidden",
-      }}
-    >
+    <Row>
       <Col span={24}>
         <Card>
           <div
@@ -120,7 +133,7 @@ export default function ScanResult({
               Scan Result
             </Title>
             <Button
-              onClick={() => toast.info("Feature coming soon...")}
+              onClick={handlePublish}
               type="primary"
               style={{ backgroundColor: "#18953D", borderColor: "#52c41a" }}
             >

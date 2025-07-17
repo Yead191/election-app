@@ -57,6 +57,14 @@ const pollingDataApi = baseApi.injectEndpoints({
         credentials: "include",
       }),
     }),
+    // publish document
+    publishDocument: build.mutation({
+      query: ({ id }) => ({
+        url: `/document/${id}`,
+        method: "PATCH",
+        credentials: "include",
+      }),
+    }),
   }),
 });
 
@@ -67,4 +75,5 @@ export const {
   useUpdatePollingDataMutation,
   useScanResultQuery,
   useScanDocumentMutation,
+  usePublishDocumentMutation,
 } = pollingDataApi;

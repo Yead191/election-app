@@ -11,7 +11,9 @@ import {
   useGetPollingDataByIdQuery,
   useScanResultQuery,
 } from "@/redux/feature/polling-data/PollingDataApi";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import NotFoundEntry from "./not-found-entry";
+import Spinner from "@/components/Spinner/Spinner";
 
 const { Title, Text } = Typography;
 
@@ -20,14 +22,19 @@ export default function PoolingDetailsPage() {
   const params = useParams();
   const router = useRouter();
   const [isScanned, setIsScanned] = useState(false);
-  const [scanId, setScanId] = useState("");
-  const { data: poolingEntry } = useGetPollingDataByIdQuery(params.id);
-  // console.log(poolingEntry);
-  const { data: scanResult } = useScanResultQuery(scanId);
+  const [scanId, setScanId] = useState(params.id);
+  const { data: poolingEntry, isLoading } = useGetPollingDataByIdQuery(
+    params.id
+  );
+  //   console.log(poolingEntry);
+  const { data: scanResult, refetch } = useScanResultQuery(scanId);
 
-  console.log(scanResult);
+  console.log("scan", scanResult);
+  if (isLoading) {
+    return <Spinner />;
+  }
   if (!poolingEntry) {
-    return <div>Entry not found</div>;
+    return <NotFoundEntry />;
   }
 
   return (
@@ -42,13 +49,14 @@ export default function PoolingDetailsPage() {
           setIsScanned={setIsScanned}
           setScanId={setScanId}
           resultRef={resultRef}
+          refetch={refetch}
         />
       </div>
 
       {/* Scan Result Section */}
       <div
         ref={resultRef}
-        className={`${isScanned || scanId ? "block" : "hidden"}`}
+        // className={`${scanResult?.data.length ? "block" : "hidden"}`}
       >
         <ScanResult
           isScanned={isScanned}

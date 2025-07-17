@@ -39,6 +39,15 @@ const electionAreaApi = baseApi.injectEndpoints({
         credentials: "include",
       }),
     }),
+    // upload excel
+    uploadExcel: build.mutation({
+      query: ({ data }) => ({
+        url: `/polling-station/excel`,
+        method: "POST",
+        credentials: "include",
+        body: data,
+      }),
+    }),
   }),
 });
 
@@ -47,4 +56,5 @@ export const {
   useCreateElectionAreaMutation,
   useUpdateElectionAreaMutation,
   useDeleteElectionAreaMutation,
+  useUploadExcelMutation,
 } = electionAreaApi;

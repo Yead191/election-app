@@ -50,17 +50,7 @@ export default function PollingDataHeader({
       {/* Right side - Search, Date, Area */}
       <Space size="large">
         <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-          <Button
-            onClick={() => toast.warning("Coming Soon")}
-            icon={<FilePdfOutlined style={{ fontSize: "20px" }} />}
-            style={{
-              color: "#3A99D9",
-              padding: "19px",
-              borderRadius: "8px",
-              background: "linear-gradient(135deg, #E1E3EB, #DDE0EA, #CEE9FF)",
-              marginRight: 16,
-            }}
-          />
+         
 
           <Input
             placeholder="Search by name, email, or designation"

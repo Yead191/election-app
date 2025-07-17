@@ -48,6 +48,7 @@ export default function PollingStationTable({
       fullData: item,
     };
   });
+    console.log(transformedData);
 
   // 🔥 Build poll columns dynamically with per-row highlight logic
   const pollColumns = allPollNames.map((name) => ({

@@ -11,7 +11,11 @@ import {
   Pagination,
   Tooltip,
 } from "antd";
-import { SearchOutlined, PlusOutlined } from "@ant-design/icons";
+import {
+  SearchOutlined,
+  PlusOutlined,
+  FilePdfOutlined,
+} from "@ant-design/icons";
 import { BsPencilSquare } from "react-icons/bs";
 import { FaRegTrashAlt } from "react-icons/fa";
 import { toast } from "sonner";
@@ -23,6 +27,7 @@ import {
   useGetElectionAreaQuery,
 } from "@/redux/feature/election-area api/election-area-api";
 import { count } from "console";
+import FileUploadButton from "./FileUploadComponent";
 
 export default function ElectionAreaPage() {
   const [searchText, setSearchText] = useState("");
@@ -87,27 +92,6 @@ export default function ElectionAreaPage() {
   };
 
   const columns = [
-    // {
-    //   title: (
-    //     <input
-    //       type="checkbox"
-    //       checked={isAllSelected}
-    //       ref={(input) => {
-    //         if (input) input.indeterminate = isIndeterminate;
-    //       }}
-    //       onChange={(e) => handleSelectAll(e.target.checked)}
-    //     />
-    //   ),
-    //   dataIndex: "select",
-    //   width: 50,
-    //   render: (_: any, record: any) => (
-    //     <input
-    //       type="checkbox"
-    //       checked={selectedRowKeys.includes(record.key)}
-    //       onChange={(e) => handleSelectRow(record.key, e.target.checked)}
-    //     />
-    //   ),
-    // },
     {
       title: "Id. no.",
       dataIndex: "_id",
@@ -205,6 +189,7 @@ export default function ElectionAreaPage() {
       >
         <div></div>
         <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+          <FileUploadButton refetch={refetch} />
           <Input
             className="shadow-sm"
             placeholder="Search here"
