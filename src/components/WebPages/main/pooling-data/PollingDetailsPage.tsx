@@ -29,7 +29,6 @@ export default function PoolingDetailsPage() {
   //   console.log(poolingEntry);
   const { data: scanResult, refetch } = useScanResultQuery(scanId);
 
-  console.log("scan", scanResult);
   if (isLoading) {
     return <Spinner />;
   }

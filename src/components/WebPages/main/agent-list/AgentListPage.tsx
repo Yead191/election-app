@@ -186,7 +186,7 @@ export default function AgentsListPage() {
             textTransform: "capitalize",
           }}
         >
-          {status === "active" ? "Active" : "Deactivated"}
+          {status === "active" ? "Active" : "Locked"}
         </span>
       ),
     },
@@ -211,7 +211,7 @@ export default function AgentsListPage() {
             style={{ color: "#52c41a", fontSize: 20 }}
           /> */}
           <Tooltip
-            title={record?.status === "active" ? "Deactivate" : "Activate"}
+            title={record?.status === "active" ? "Lock" : "Activate"}
           >
             <Button
               type="text"

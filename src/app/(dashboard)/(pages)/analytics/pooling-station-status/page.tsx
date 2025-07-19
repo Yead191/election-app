@@ -14,16 +14,18 @@ import PollingStationTable from "@/components/WebPages/main/analytics-page/Polli
 import { allPollingStations } from "@/data/polling-stations";
 import { toast } from "sonner";
 import { usePollingStationStatusQuery } from "@/redux/feature/analytics/analyticsApi";
+import { Dayjs } from "dayjs";
 
-const { Title } = Typography;
 const { Option } = Select;
 
 export default function PoolingStationStatusPage() {
   const [searchText, setSearchText] = useState("");
-  const [filteredData, setFilteredData] = useState(allPollingStations);
   const [selectedArea, setSelectedArea] = useState("All Area");
+  const [date, setDate] = useState<Dayjs | null>(null);
+
   const { data: pollingStationStatus } = usePollingStationStatusQuery({
     searchTerm: searchText,
+    date: date ? date.format("YYYY-M-D") : undefined,
   });
 
   // Extract unique areas from polling station data
@@ -40,20 +42,11 @@ export default function PoolingStationStatusPage() {
     ),
   ];
 
-  const handleSearch = (value: string) => {
-    setSearchText(value);
-    let filtered = allPollingStations;
-  };
-
   const handleAreaChange = (value: string) => {
     setSelectedArea(value);
   };
 
-  const handleSearchSelect = (value: string) => {
-    setSearchText(value);
-    handleSearch(value);
-  };
-
+  console.log(pollingStationStatus?.data);
   return (
     <div
       style={{
@@ -86,7 +79,7 @@ export default function PoolingStationStatusPage() {
 
         {/* Right side - Search, Date, Area */}
         <Space size="large">
-          {/* Date Picker */}
+          {/* File Upload */}
           <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
             <Button
               onClick={() => toast.info("Feature coming soon...")}
@@ -128,6 +121,7 @@ export default function PoolingStationStatusPage() {
             <DatePicker
               placeholder="Date"
               suffixIcon={<CalendarOutlined />}
+              onChange={(date) => setDate(date)}
               style={{
                 width: 120,
                 height: "40px",

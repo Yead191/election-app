@@ -27,7 +27,7 @@ const FileUploadButton = ({ refetch }: { refetch: () => void }) => {
       toast.promise(uploadExcel({ data: formData }).unwrap(), {
         loading: "Uploading...",
         success: (res) => {
-          console.log(res);
+      
           refetch();
           return <b>{res.message}</b>;
         },

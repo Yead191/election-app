@@ -12,13 +12,14 @@ const analyticsApi = baseApi.injectEndpoints({
     }),
     // Polling station status
     pollingStationStatus: build.query({
-      query: ({ searchTerm, limit }) => ({
+      query: ({ searchTerm, limit, date }) => ({
         url: `/polling`,
         method: "GET",
         credentials: "include",
         params: {
           searchTerm,
           limit,
+          date,
         },
       }),
     }),

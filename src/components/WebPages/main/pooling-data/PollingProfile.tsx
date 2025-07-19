@@ -2,6 +2,7 @@ import React from "react";
 import { Card, Col, Button, Avatar, Typography } from "antd";
 import Link from "next/link";
 import { ArrowLeftOutlined, UserOutlined } from "@ant-design/icons";
+import { imgUrl } from "@/app/(dashboard)/layout";
 const { Title, Text } = Typography;
 
 export default function PollingProfile({
@@ -23,7 +24,7 @@ export default function PollingProfile({
             marginBottom: "24px",
           }}
         >
-          <Avatar size={114} src={poolingEntry?.agent?.image} />
+          <Avatar size={114} src={`${imgUrl}${poolingEntry?.agent?.image}`} />
           <div>
             <Title
               level={4}

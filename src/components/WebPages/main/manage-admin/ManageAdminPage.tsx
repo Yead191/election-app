@@ -130,7 +130,7 @@ export default function ManageAdminPage() {
   };
 
   const confirmDelete = () => {
-    console.log(currentAdmin);
+
     toast.promise(deleteAdmin({ id: currentAdmin }).unwrap(), {
       loading: "Deleting admin...",
       success: (res) => {
@@ -225,7 +225,7 @@ export default function ManageAdminPage() {
             textTransform: "capitalize",
           }}
         >
-          {status === "active" ? "Active" : "Deactivated"}
+          {status === "active" ? "Active" : "Locked"}
         </span>
       ),
     },

@@ -50,8 +50,6 @@ export default function PollingDataHeader({
       {/* Right side - Search, Date, Area */}
       <Space size="large">
         <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-         
-
           <Input
             placeholder="Search by name, email, or designation"
             allowClear
@@ -89,22 +87,6 @@ export default function PollingDataHeader({
             }}
           />
         </div>
-
-        {/* <Select
-          value={selectedArea}
-          onChange={handleAreaChange}
-          style={{
-            width: 140,
-            height: "40px",
-          }}
-          suffixIcon={<DownOutlined />}
-        >
-          {areas.map((area) => (
-            <Option key={area} value={area}>
-              {area}
-            </Option>
-          ))}
-        </Select> */}
       </Space>
     </div>
   );

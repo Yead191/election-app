@@ -10,7 +10,7 @@ import { useGetPollingDataQuery } from "@/redux/feature/polling-data/PollingData
 import { imgUrl } from "@/app/(dashboard)/layout";
 import dayjs, { Dayjs } from "dayjs";
 
-export default function PoolingDataPage() {
+export default function PollingDataPage() {
   const router = useRouter();
   const [searchText, setSearchText] = useState("");
   const [date, setDate] = useState<Dayjs | null>(null);

@@ -4,7 +4,6 @@ import React, { ReactNode, useState } from "react";
 import { Typography } from "antd";
 
 import DashboardSidebar from "@/components/dashboard-sidebar/DashboardSidebar";
-import { usePathname } from "next/navigation";
 import DashboardHeader from "@/components/dashboard-header/DashboardHeader";
 
 export const imgUrl = process.env.NEXT_PUBLIC_IMG_URL;

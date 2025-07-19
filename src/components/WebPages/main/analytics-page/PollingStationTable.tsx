@@ -48,7 +48,6 @@ export default function PollingStationTable({
       fullData: item,
     };
   });
-    console.log(transformedData);
 
   // 🔥 Build poll columns dynamically with per-row highlight logic
   const pollColumns = allPollNames.map((name) => ({
@@ -71,7 +70,7 @@ export default function PollingStationTable({
         </Text>
       );
     },
-    width: 80,
+    width:40,
   }));
 
   // 🔥 Build full columns
@@ -80,32 +79,32 @@ export default function PollingStationTable({
       title: "Postal Code",
       dataIndex: "postCode",
       key: "postCode",
-      width: 80,
+      width: 40,
     },
     {
-      title: "Area Name",
-      dataIndex: "name",
-      key: "name",
-      width: 120,
+      title: "City",
+      dataIndex: "city",
+      key: "city",
+      width: 30,
     },
     {
       title: "Pooling Address",
       dataIndex: "address",
       key: "address",
-      width: 150,
+      width: 60,
     },
     {
       title: "Sending Time",
       dataIndex: "sendingTime",
       key: "sendingTime",
-      width: 100,
+      width: 60,
     },
     ...pollColumns,
     {
       title: "Action",
       key: "action",
       align: "right" as const,
-      width: 70,
+      width: 40,
       render: (_: any, record: any) => (
         <Space>
           <Button
@@ -141,7 +140,7 @@ export default function PollingStationTable({
           scroll={
             pathname === "/analytics/pooling-station-status"
               ? undefined
-              : { x: 1200, y: 200 }
+              : { x: 900, y: 200 }
           }
           pagination={
             pathname === "/analytics/pooling-station-status"

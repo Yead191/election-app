@@ -74,7 +74,6 @@ export default function NominatedTeamModal({
         {
           loading: "Updating team...",
           success: (res) => {
-            console.log(res);
             refetch();
             setEditModalVisible(false);
             setCurrentTeam(null);
