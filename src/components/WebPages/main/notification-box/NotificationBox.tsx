@@ -79,6 +79,7 @@ export default function NotificationBox() {
           setMessageText("");
           setIsModalVisible(false);
           refetch();
+          refetchMessage();
           return <b>{res.message}</b>;
         },
         error: "Failed to send notification.",

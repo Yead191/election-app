@@ -286,8 +286,3 @@ export default function NotificationsPage() {
     </div>
   );
 }
-
-export const metadata = {
-  title: "Notifications | Election Mobile App",
-  description: "Notifications",
-};

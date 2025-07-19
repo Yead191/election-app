@@ -1,6 +1,7 @@
 import React from "react";
 import { Modal, Typography } from "antd";
 import { CloseOutlined } from "@ant-design/icons";
+import dayjs from "dayjs";
 const { Text, Title } = Typography;
 
 export default function NotificationDetailsModal({
@@ -38,7 +39,7 @@ export default function NotificationDetailsModal({
             }}
           >
             <Text style={{ color: "#8c8c8c", fontSize: "14px" }}>
-              s.no {selectedMessage.sno}
+              Message id: {selectedMessage._id}
             </Text>
           </div>
 
@@ -52,15 +53,15 @@ export default function NotificationDetailsModal({
             }}
           >
             <Text strong style={{ fontSize: "16px", color: "#262626" }}>
-              {selectedMessage.name}
+              {selectedMessage?.reciver?.name}
             </Text>
             <Text style={{ color: "#8c8c8c", fontSize: "14px" }}>
-              {selectedMessage.time}
+              {dayjs(selectedMessage?.time).format("hh:mma-DD/MM/YY")}
             </Text>
           </div>
 
           {/* Message ID */}
-          {selectedMessage.messageId && (
+          {/* {selectedMessage._id && (
             <Text
               strong
               style={{
@@ -70,24 +71,9 @@ export default function NotificationDetailsModal({
                 color: "#262626",
               }}
             >
-              {selectedMessage.messageId}
+              {selectedMessage._id}
             </Text>
-          )}
-
-          {/* Title */}
-          {selectedMessage.title && (
-            <Title
-              level={5}
-              style={{
-                color: "#1890ff",
-                marginBottom: "16px",
-                fontWeight: 500,
-                fontSize: "16px",
-              }}
-            >
-              {selectedMessage.title}
-            </Title>
-          )}
+          )} */}
 
           {/* Message Content */}
           <Text
