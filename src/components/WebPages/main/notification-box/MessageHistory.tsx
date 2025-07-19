@@ -50,12 +50,7 @@ export default function MessageHistory({
           Message History
         </Title>
         <Space size="large">
-          {/* <Button
-            icon={<FileTextOutlined />}
-            style={{ borderRadius: "6px", height: 40, width: 40 }}
-          />
-          <Button icon={<LockOutlined />} style={{ borderRadius: "6px" }} />
-          <Button icon={<UnlockOutlined />} style={{ borderRadius: "6px" }} /> */}
+          
           <Input
             placeholder="Search here"
             prefix={

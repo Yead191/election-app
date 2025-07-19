@@ -38,15 +38,16 @@ export default function ElectionAreaPage() {
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
   const [currentArea, setCurrentArea] = useState<any>(null);
   const [isAddMode, setIsAddMode] = useState(false);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize] = useState(15);
+  const [page, setPage] = useState(1);
   const [form] = Form.useForm();
   const [uploadExcel] = useUploadExcelMutation();
 
   // handle Apis
   const { data: areasData, refetch } = useGetElectionAreaQuery({
-    searchTerm: searchText,
-  });
+    searchTerm: searchText, page ,limit:10
+  });  
+  const paginationData = areasData?.pagination;
+  console.log(areasData?.data , "dsfds");
   const [deleteElectionArea] = useDeleteElectionAreaMutation();
 
   const handleEdit = (record: any) => {
@@ -246,11 +247,17 @@ export default function ElectionAreaPage() {
         <Table
           columns={columns}
           dataSource={areasData?.data || []}
-          pagination={{}}
+          pagination={{
+            total:paginationData?.total, 
+            pageSize:paginationData?.limit, 
+            current:paginationData?.page, 
+            onChange:(page)=>setPage(page)
+          }}
           size="middle"
           style={{ backgroundColor: "white" }}
           // scroll={{ x: 400 }}
-        />
+        /> 
+        
       </div>
 
       {/* Edit/Add Modal */}
