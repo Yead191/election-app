@@ -36,7 +36,7 @@ export default function NotFoundEntry() {
   return (
     <div
       style={{
-        minHeight: "100vh",
+        minHeight: "85vh",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
@@ -85,7 +85,12 @@ export default function NotFoundEntry() {
 
             <Button
               type="primary"
-              style={{ display: "flex", alignItems: "center", gap: 8 }}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 8,
+                backgroundColor: "#1ba0d9",
+              }}
               onClick={() => window.location.reload()}
             >
               <ReloadOutlined />
@@ -93,7 +98,7 @@ export default function NotFoundEntry() {
             </Button>
           </div>
 
-          <div style={{ marginTop: 24, fontSize: 12, color: "#8c8c8c" }}>
+          {/* <div style={{ marginTop: 24, fontSize: 12, color: "#8c8c8c" }}>
             Need help?{" "}
             <a
               href="#"
@@ -102,7 +107,7 @@ export default function NotFoundEntry() {
             >
               Contact support
             </a>
-          </div>
+          </div> */}
         </div>
       </Card>
     </div>

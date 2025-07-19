@@ -9,3 +9,8 @@ const page = () => {
 };
 
 export default page;
+
+export const metadata = {
+  title: "Privacy Policy | Election Mobile App",
+  description: "Privacy Policy",
+};

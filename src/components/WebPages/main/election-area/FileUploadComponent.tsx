@@ -1,13 +1,18 @@
 import React, { useRef } from "react";
 import { FilePdfOutlined } from "@ant-design/icons";
 import { Button } from "antd";
-import { useUploadExcelMutation } from "@/redux/feature/election-area api/election-area-api";
-import { toast } from "sonner";
-import { error } from "console";
 
-const FileUploadButton = ({ refetch }: { refetch: () => void }) => {
+import { toast } from "sonner";
+
+
+const FileUploadButton = ({
+  refetch,
+  uploadExcel,
+}: {
+  refetch: () => void;
+  uploadExcel: any;
+}) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [uploadExcel] = useUploadExcelMutation();
   const handleFileUpload = async () => {
     // Trigger the file input click
     if (fileInputRef.current) {
@@ -27,9 +32,10 @@ const FileUploadButton = ({ refetch }: { refetch: () => void }) => {
       toast.promise(uploadExcel({ data: formData }).unwrap(), {
         loading: "Uploading...",
         success: (res) => {
-      
           refetch();
-          return <b>{res.message}</b>;
+          const message =
+            (res as { message?: string }).message ?? "Upload successful.";
+          return <b>{message}</b>;
         },
         error: (err) => err.message || "Error uploading file.",
       });

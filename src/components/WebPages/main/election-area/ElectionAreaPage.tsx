@@ -25,6 +25,7 @@ import DeleteElectionModal from "./DeleteElectionModal";
 import {
   useDeleteElectionAreaMutation,
   useGetElectionAreaQuery,
+  useUploadExcelMutation,
 } from "@/redux/feature/election-area api/election-area-api";
 import { count } from "console";
 import FileUploadButton from "./FileUploadComponent";
@@ -40,6 +41,7 @@ export default function ElectionAreaPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize] = useState(15);
   const [form] = Form.useForm();
+  const [uploadExcel] = useUploadExcelMutation();
 
   // handle Apis
   const { data: areasData, refetch } = useGetElectionAreaQuery({
@@ -189,7 +191,7 @@ export default function ElectionAreaPage() {
       >
         <div></div>
         <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-          <FileUploadButton refetch={refetch} />
+          <FileUploadButton uploadExcel={uploadExcel} refetch={refetch} />
           <Input
             className="shadow-sm"
             placeholder="Search here"

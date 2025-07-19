@@ -1,9 +1,10 @@
 import React from "react";
 import { Input, Avatar, Checkbox, ConfigProvider } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
+import { imgUrl } from "@/app/(dashboard)/layout";
 
 interface Contact {
-  selectedContacts: number[];
+  selectedContacts: string[];
   handleContactSelect: (contactId: number, checked: boolean) => void;
   searchText: string;
   setSearchText: (value: string) => void;
@@ -91,7 +92,7 @@ export default function ContactList({
             className="notification-contact-row "
           >
             <Avatar
-              src={contact.avatar}
+              src={imgUrl + contact.image}
               size={40}
               style={{ marginRight: "12px" }}
             />
@@ -109,11 +110,11 @@ export default function ContactList({
               <div
                 style={{
                   fontSize: "12px",
-                  color: "#66BFE6",
+                  color: contact.status === "active" ? "#66BFE6" : "#FF0000",
                   fontWeight: 500,
                 }}
               >
-                {contact.status}
+                {contact.status === "active" ? "Active" : "Locked"}
               </div>
             </div>
             <ConfigProvider
@@ -126,9 +127,9 @@ export default function ContactList({
               }}
             >
               <Checkbox
-                checked={selectedContacts.includes(contact.id)}
+                checked={selectedContacts.includes(contact._id)}
                 onChange={(e) =>
-                  handleContactSelect(contact.id, e.target.checked)
+                  handleContactSelect(contact._id, e.target.checked)
                 }
                 style={{ width: 20, height: 20 }}
               />

@@ -8,3 +8,8 @@ export default function NotificationBoxPage() {
     </div>
   );
 }
+
+export const metadata = {
+  title: "Notification Box | Election Mobile App",
+  description: "Notification Box",
+};

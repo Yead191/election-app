@@ -8,3 +8,8 @@ export default function page() {
     </div>
   );
 }
+
+export const metadata = {
+  title: "Manage Admin | Election Mobile App",
+  description: "Manage Admin",
+};

@@ -1,25 +1,43 @@
 "use client";
 
 import { useState } from "react";
-import { Layout, Input, Button, Typography } from "antd";
+import { Layout, Input, Button, Typography, Tooltip } from "antd";
 import { SendOutlined } from "@ant-design/icons";
 import { toast } from "sonner";
 import { CiShare1 } from "react-icons/ci";
-import { contacts, Message, messageData } from "@/data/NotificationBox";
+import { contacts, Message } from "@/data/NotificationBox";
 import ContactList from "./ContactList";
 import MessageHistory from "./MessageHistory";
 import NotificationDetailsModal from "./NotificationDetailsModal";
+import { useGetAgentListQuery } from "@/redux/feature/agent-list-apis/agentApi";
+import {
+  useGetMessagesQuery,
+  useSendMessageMutation,
+} from "@/redux/feature/Notification-box/NotificationBoxApi";
+import dayjs from "dayjs";
 
 const { TextArea } = Input;
 
 export default function NotificationBox() {
-  const [selectedContacts, setSelectedContacts] = useState<number[]>([]);
+  const [selectedContacts, setSelectedContacts] = useState<string[]>([]);
   const [messageText, setMessageText] = useState("");
   const [selectedMessage, setSelectedMessage] = useState<Message | null>(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [searchText, setSearchText] = useState("");
+  // send msg api
+  const { data: agentList, refetch } = useGetAgentListQuery({
+    searchTerm: searchText,
+  });
 
-  const handleContactSelect = (contactId: number, checked: boolean) => {
+  // get message api
+  const { data: messageData, refetch: refetchMessage } = useGetMessagesQuery({
+    searchTerm: searchText,
+  });
+
+  // const send notification
+  const [sendMessage] = useSendMessageMutation();
+
+  const handleContactSelect = (contactId: any, checked: boolean) => {
     if (checked) {
       setSelectedContacts([...selectedContacts, contactId]);
     } else {
@@ -29,7 +47,9 @@ export default function NotificationBox() {
 
   const handleSelectAll = (checked: boolean) => {
     if (checked) {
-      setSelectedContacts(contacts.map((contact) => contact.id));
+      setSelectedContacts(
+        agentList?.data?.map((agent: any) => agent._id) || []
+      );
     } else {
       setSelectedContacts([]);
     }
@@ -41,29 +61,60 @@ export default function NotificationBox() {
   };
 
   const handleMessageSend = () => {
-    // Handle sending the message
-    setMessageText("");
-    toast.warning("Ekhon Msg pathano jabena!, Backend nai");
-  };
+    const newMessage = {
+      message: messageText,
+      recievers: selectedContacts,
+    };
+    console.log(newMessage);
 
-  const isAllSelected = selectedContacts.length === contacts.length;
-  const isIndeterminate =
-    selectedContacts.length > 0 && selectedContacts.length < contacts.length;
+    toast.promise(
+      sendMessage({
+        data: newMessage,
+      }).unwrap(),
+      {
+        loading: "Sending notification...",
+        success: (res) => {
+          console.log(res);
+          setSelectedContacts([]);
+          setMessageText("");
+          setIsModalVisible(false);
+          refetch();
+          return <b>{res.message}</b>;
+        },
+        error: "Failed to send notification.",
+      }
+    );
+  };
+  console.log(selectedContacts);
+
+  const isAllSelected = agentList?.data?.length
+    ? selectedContacts.length === agentList.data.length
+    : false;
+  const isIndeterminate = agentList?.data?.length
+    ? selectedContacts.length > 0 &&
+      selectedContacts.length < agentList.data.length
+    : false;
 
   const columns = [
     {
-      title: "s. no.",
-      dataIndex: "sno",
-      key: "sno",
-      width: 80,
-      render: (text: number) => <span style={{ color: "#666" }}>{text}</span>,
+      title: "m. id.",
+      dataIndex: "_id",
+      key: "_id",
+      width: 120,
+      render: (text: string) => (
+        <Tooltip title={text}>
+          <span className="text-sm">{text.slice(0, 10)}</span>
+        </Tooltip>
+      ),
     },
     {
       title: "Name",
       dataIndex: "name",
       key: "name",
-      width: 150,
-      render: (text: string) => <span style={{ fontWeight: 500 }}>{text}</span>,
+      width: 250,
+      render: (_: any, record: any) => (
+        <span style={{ color: "#666" }}>{record.reciver?.name || "N/A"}</span>
+      ),
     },
     {
       title: "Message",
@@ -74,10 +125,14 @@ export default function NotificationBox() {
     },
     {
       title: "Time",
-      dataIndex: "time",
-      key: "time",
+      dataIndex: "createdAt",
+      key: "createdAt",
       width: 150,
-      render: (text: string) => <span style={{ color: "#666" }}>{text}</span>,
+      render: (text: string) => (
+        <span style={{ color: "#666" }}>
+          {dayjs(text).format("hh:mma-DD/MM/YY")}
+        </span>
+      ),
     },
     {
       title: "",
@@ -93,10 +148,6 @@ export default function NotificationBox() {
     },
   ];
 
-  const filteredContacts = contacts.filter((contact) =>
-    contact.name.toLowerCase().includes(searchText.toLowerCase())
-  );
-
   return (
     <div>
       <div className="grid grid-cols-12 gap-4 w-full h-full">
@@ -107,7 +158,7 @@ export default function NotificationBox() {
           searchText={searchText}
           setSearchText={setSearchText}
           isIndeterminate={isIndeterminate}
-          filteredContacts={filteredContacts}
+          filteredContacts={agentList?.data || []}
           handleSelectAll={handleSelectAll}
           isAllSelected={isAllSelected}
         />
@@ -159,7 +210,7 @@ export default function NotificationBox() {
       {/* Message history */}
       <MessageHistory
         columns={columns}
-        messageData={messageData}
+        messageData={messageData?.data || []}
         handleMessageClick={handleMessageClick}
       />
       {/* Notification Detail Modal */}

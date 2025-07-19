@@ -9,3 +9,8 @@ export default function page() {
     </div>
   );
 }
+
+export const metadata = {
+  title: "Polling Data | Election Mobile App",
+  description: "Polling Data",
+};

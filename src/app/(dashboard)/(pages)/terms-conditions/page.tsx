@@ -9,3 +9,8 @@ const page = () => {
 };
 
 export default page;
+
+export const metadata = {
+  title: "Terms & Conditions | Election Mobile App",
+  description: "Terms & Conditions",
+};

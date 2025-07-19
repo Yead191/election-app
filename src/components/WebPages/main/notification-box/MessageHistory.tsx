@@ -54,12 +54,12 @@ export default function MessageHistory({
           Message History
         </Title>
         <Space size="large">
-          <Button
+          {/* <Button
             icon={<FileTextOutlined />}
             style={{ borderRadius: "6px", height: 40, width: 40 }}
           />
           <Button icon={<LockOutlined />} style={{ borderRadius: "6px" }} />
-          <Button icon={<UnlockOutlined />} style={{ borderRadius: "6px" }} />
+          <Button icon={<UnlockOutlined />} style={{ borderRadius: "6px" }} /> */}
           <Input
             placeholder="Search here"
             prefix={
@@ -85,7 +85,7 @@ export default function MessageHistory({
             suffixIcon={<CalendarOutlined />}
             style={{ borderRadius: "6px", width: 94, height: 40 }}
           />
-          <Button
+          {/* <Button
             type="primary"
             icon={<PlusOutlined />}
             style={{
@@ -97,7 +97,7 @@ export default function MessageHistory({
             onClick={() => toast.info("Asad Vai add korenai kichu")}
           >
             Add Agent
-          </Button>
+          </Button> */}
         </Space>
       </div>
 
@@ -105,7 +105,11 @@ export default function MessageHistory({
       <Table
         columns={columns}
         dataSource={messageData}
-        pagination={false}
+        pagination={{
+          pageSize: 5,
+          showSizeChanger: false,
+          showTotal: (total) => `Total ${total} items`,
+        }}
         size="middle"
         style={{
           background: "#fff",

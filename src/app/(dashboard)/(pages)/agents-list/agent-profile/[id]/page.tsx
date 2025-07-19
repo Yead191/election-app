@@ -111,6 +111,7 @@ export default function AgentProfilePage() {
                   fontSize: "18px",
                   fontWeight: "600",
                   marginBottom: "4px",
+                  color: "#333333",
                 }}
               >
                 {mockAgentData.name}
@@ -158,7 +159,13 @@ export default function AgentProfilePage() {
             >
               Name
             </div>
-            <div style={{ fontSize: "16px", marginBottom: "16px" }}>
+            <div
+              style={{
+                fontSize: "16px",
+                marginBottom: "16px",
+                color: "#5C5C5C",
+              }}
+            >
               : {mockAgentData.name}
             </div>
 
@@ -167,7 +174,13 @@ export default function AgentProfilePage() {
             >
               Position
             </div>
-            <div style={{ fontSize: "16px", marginBottom: "16px" }}>
+            <div
+              style={{
+                fontSize: "16px",
+                marginBottom: "16px",
+                color: "#5C5C5C",
+              }}
+            >
               : {mockAgentData?.role}
             </div>
 
@@ -176,7 +189,13 @@ export default function AgentProfilePage() {
             >
               Polling Address
             </div>
-            <div style={{ fontSize: "16px", marginBottom: "16px" }}>
+            <div
+              style={{
+                fontSize: "16px",
+                marginBottom: "16px",
+                color: "#5C5C5C",
+              }}
+            >
               : {mockAgentData.pollingStation}
             </div>
 
@@ -185,7 +204,13 @@ export default function AgentProfilePage() {
             >
               Id. no.
             </div>
-            <div style={{ fontSize: "16px", marginBottom: "16px" }}>
+            <div
+              style={{
+                fontSize: "16px",
+                marginBottom: "16px",
+                color: "#5C5C5C",
+              }}
+            >
               : {mockAgentData._id}
             </div>
 
@@ -194,7 +219,13 @@ export default function AgentProfilePage() {
             >
               Email
             </div>
-            <div style={{ fontSize: "16px", marginBottom: "16px" }}>
+            <div
+              style={{
+                fontSize: "16px",
+                marginBottom: "16px",
+                color: "#5C5C5C",
+              }}
+            >
               : {mockAgentData.email}
             </div>
 
@@ -203,7 +234,13 @@ export default function AgentProfilePage() {
             >
               Contact Number
             </div>
-            <div style={{ fontSize: "16px", marginBottom: "16px" }}>
+            <div
+              style={{
+                fontSize: "16px",
+                marginBottom: "16px",
+                color: "#5C5C5C",
+              }}
+            >
               : {mockAgentData.contact}
             </div>
 
@@ -212,7 +249,13 @@ export default function AgentProfilePage() {
             >
               Represent Code
             </div>
-            <div style={{ fontSize: "16px", marginBottom: "16px" }}>
+            <div
+              style={{
+                fontSize: "16px",
+                marginBottom: "16px",
+                color: "#5C5C5C",
+              }}
+            >
               : {mockAgentData.represent_code}
             </div>
             {/* <div

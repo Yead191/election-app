@@ -8,3 +8,8 @@ export default function page() {
     </div>
   );
 }
+
+export const metadata = {
+  title: "Election Area | Election Mobile App",
+  description: "Election Area",
+};

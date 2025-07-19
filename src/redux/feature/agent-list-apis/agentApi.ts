@@ -60,6 +60,15 @@ const agentApi = baseApi.injectEndpoints({
         body: data,
       }),
     }),
+    // add agent by excel
+    addAgentExcel: build.mutation({
+      query: (data) => ({
+        url: `/user/agent-excel`,
+        method: "POST",
+        credentials: "include",
+        body: data,
+      }),
+    }),
   }),
 });
 export const {
@@ -69,4 +78,5 @@ export const {
   useUpdateAgentPasswordMutation,
   useUpdateAgentProfileMutation,
   useAddAgentMutation,
+  useAddAgentExcelMutation,
 } = agentApi;

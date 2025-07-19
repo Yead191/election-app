@@ -29,9 +29,11 @@ import { mockAgents } from "@/data/mockAgents";
 import AgentModal from "./AgentModal";
 import { toast } from "sonner";
 import {
+  useAddAgentExcelMutation,
   useGetAgentListQuery,
   useUpdateAgentStatusMutation,
 } from "@/redux/feature/agent-list-apis/agentApi";
+import FileUploadButton from "../election-area/FileUploadComponent";
 
 export default function AgentsListPage() {
   const [searchText, setSearchText] = useState("");
@@ -43,6 +45,9 @@ export default function AgentsListPage() {
   const [statusFilter, setStatusFilter] = useState<string>(""); // "all", "active", "delete"
   const [form] = Form.useForm();
   const router = useRouter();
+
+  // add agent by excel
+  const [addAgentExcel] = useAddAgentExcelMutation();
 
   console.log(statusFilter);
   const { data: agentsData, refetch } = useGetAgentListQuery({
@@ -210,9 +215,7 @@ export default function AgentsListPage() {
             onClick={() => handleEdit(record)}
             style={{ color: "#52c41a", fontSize: 20 }}
           /> */}
-          <Tooltip
-            title={record?.status === "active" ? "Lock" : "Activate"}
-          >
+          <Tooltip title={record?.status === "active" ? "Lock" : "Activate"}>
             <Button
               type="text"
               onClick={() => handleUpdateStatus(record._id)}
@@ -254,17 +257,8 @@ export default function AgentsListPage() {
           }}
         >
           <div style={{ display: "flex", alignItems: "center", gap: "24px" }}>
-            <Button
-              onClick={() => toast.info("This feature is under development")}
-              icon={<FilePdfOutlined style={{ fontSize: "20px" }} />}
-              style={{
-                color: "#3A99D9",
-                padding: "19px",
-                borderRadius: "8px",
-                background:
-                  "linear-gradient(135deg, #E1E3EB, #DDE0EA, #CEE9FF)",
-              }}
-            />
+            <FileUploadButton uploadExcel={addAgentExcel} refetch={refetch} />
+
             <Button
               icon={<UnlockOutlined style={{ fontSize: "20px" }} />}
               onClick={() =>
