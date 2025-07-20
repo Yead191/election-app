@@ -60,7 +60,29 @@ export default function PollingReport({
       },
     });
   };
-  console.log("polling details", poolingEntry);
+  // console.log("polling details", poolingEntry);
+
+  const handleDownload = () => {
+    const imageUrl = `${imgUrl}/${poolingEntry.images[selectedImageIndex]}`;
+    const fileName = `image-${selectedImageIndex + 1}.jpg`;
+
+    fetch(imageUrl)
+      .then((response) => response.blob())
+      .then((blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = fileName;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+      })
+      .catch((error) => {
+        console.error("Download failed:", error);
+        toast.error("Failed to download the image");
+      });
+  };
 
   return (
     <Card className="col-span-8">
@@ -106,9 +128,16 @@ export default function PollingReport({
         <div className="flex justify-end gap-6 items-center mb-3">
           {/* Download button */}
           <Button
+            disabled={
+              !poolingEntry?.images[selectedImageIndex] ||
+              poolingEntry.images[selectedImageIndex].includes(
+                "placeholder.svg"
+              )
+            }
             type="default"
             icon={<DownloadOutlined style={{ fontSize: 20 }} />}
             shape="default"
+            onClick={handleDownload}
             style={{
               background: "#f8f8f8",
               border: "none",

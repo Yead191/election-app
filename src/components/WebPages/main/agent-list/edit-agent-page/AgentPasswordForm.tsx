@@ -2,19 +2,35 @@
 import { Button, Form, Input } from "antd";
 import { EyeInvisibleOutlined, EyeTwoTone } from "@ant-design/icons";
 import { toast } from "sonner";
-import { useUpdateAgentPasswordMutation } from "@/redux/feature/agent-list-apis/agentApi";
+import {
+  useGetAgentProfileQuery,
+  useUpdateAgentPasswordMutation,
+} from "@/redux/feature/agent-list-apis/agentApi";
+import { useEffect } from "react";
 
 export default function AgentPasswordForm({ agentId }: { agentId: any }) {
   const [form] = Form.useForm();
   const [updateAgentPassword] = useUpdateAgentPasswordMutation();
-
+  const { data: agentData, refetch } = useGetAgentProfileQuery(agentId);
+  // console.log(agentData);
   const onFinish = (values: any) => {
     toast.promise(updateAgentPassword({ id: agentId, data: values }).unwrap(), {
       loading: "Updating settings...",
-      success: (res) => <b>{res.message}</b>,
+      success: (res) => {
+        refetch();
+        return <b>{res.message}</b>;
+      },
       error: (res) => `Error: ${res.message || "Something went wrong"}`,
     });
   };
+
+  useEffect(() => {
+    if (agentData?.data) {
+      form.setFieldsValue({
+        currentPassword: agentData?.data?.passwordShow || "",
+      });
+    }
+  }, [agentData?.data, form]);
 
   return (
     <Form
@@ -34,6 +50,7 @@ export default function AgentPasswordForm({ agentId }: { agentId: any }) {
         ]}
       >
         <Input.Password
+          readOnly
           placeholder="Enter current password"
           iconRender={(visible) =>
             visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />

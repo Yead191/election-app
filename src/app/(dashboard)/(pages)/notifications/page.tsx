@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { Typography, Button, Badge, Avatar, Card } from "antd";
-import { BellOutlined, ShopOutlined, UserAddOutlined } from "@ant-design/icons";
+import { Typography, Button, Badge, Avatar, Card, Pagination } from "antd";
+import { BellOutlined } from "@ant-design/icons";
 import {
   useGetNotificationQuery,
   useReadAllNotificationMutation,
@@ -14,7 +14,6 @@ const { Title, Text } = Typography;
 
 interface Notification {
   _id: string;
-  // type: "order" | "client_update" | "general";
   title: string;
   message: string;
   createdAt: string;
@@ -23,21 +22,25 @@ interface Notification {
 }
 
 export default function NotificationsPage() {
-  // get notification api
-  const { data: notificationData, refetch } =
-    useGetNotificationQuery(undefined);
-  // read all notification
+  const [page, setPage] = useState(1);
+  const limit = 10;
+
+  // Get notification API
+  const { data: notificationData, refetch } = useGetNotificationQuery({
+    page,
+    limit,
+  });
+  // Read all notifications
   const [readAllNotification] = useReadAllNotificationMutation();
 
-  const notifications = notificationData?.data || [];
-  console.log(notifications, "notificationData");
-  const unreadCount = notifications?.unread || 0;
+  const notifications = notificationData?.data?.notifications || [];
+  const totalNotifications = notificationData?.pagination?.total || 0;
+  const unreadCount = notificationData?.data?.unread || 0;
 
   const handleReadAll = () => {
     toast.promise(readAllNotification({}).unwrap(), {
       loading: "Reading all notifications...",
       success: (res) => {
-        console.log(res);
         refetch();
         return <b>{res.message}</b>;
       },
@@ -46,6 +49,11 @@ export default function NotificationsPage() {
   };
 
   const handleNotificationClick = (id: string) => {};
+
+  const handlePageChange = (newPage: number) => {
+    setPage(newPage);
+    refetch();
+  };
 
   const renderNotificationItem = (item: Notification) => (
     <div
@@ -133,6 +141,7 @@ export default function NotificationsPage() {
     </div>
   );
 
+  // console.log(notificationData);
   return (
     <div
       style={{
@@ -180,21 +189,42 @@ export default function NotificationsPage() {
       {/* Notifications List */}
       <div>
         {notifications?.length === 0 ? (
-          <div>
+          <div style={{ textAlign: "center", padding: "24px" }}>
             <BellOutlined style={{ fontSize: 48, marginBottom: 16 }} />
             <div>No notifications yet</div>
           </div>
         ) : (
           <div
             style={{
-              height: "75vh",
+              height: "65vh", // Adjusted to accommodate pagination
               overflowY: "auto",
             }}
           >
-            {notifications?.notifications?.map(renderNotificationItem)}
+            {notifications?.map(renderNotificationItem)}
           </div>
         )}
       </div>
+
+      {/* Pagination */}
+      {totalNotifications > 0 && (
+        <div
+          style={{
+            textAlign: "center",
+            marginTop: 16,
+            display: "flex",
+            justifyContent: "end",
+          }}
+        >
+          <Pagination
+            current={page}
+            pageSize={limit}
+            total={totalNotifications}
+            onChange={handlePageChange}
+            showSizeChanger={false}
+            style={{ marginTop: 16 }}
+          />
+        </div>
+      )}
     </div>
   );
 }

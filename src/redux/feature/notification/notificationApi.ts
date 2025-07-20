@@ -4,10 +4,14 @@ const notificationApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
     // get Notification
     getNotification: build.query({
-      query: () => ({
+      query: ({ page, limit }) => ({
         url: "/notification",
         method: "GET",
         credentials: "include",
+        params: {
+          page,
+          limit,
+        },
       }),
     }),
     // read all notification
@@ -21,4 +25,5 @@ const notificationApi = baseApi.injectEndpoints({
   }),
 });
 
-export const { useGetNotificationQuery , useReadAllNotificationMutation} = notificationApi;
+export const { useGetNotificationQuery, useReadAllNotificationMutation } =
+  notificationApi;

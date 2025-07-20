@@ -9,7 +9,7 @@ import { useGetNotificationQuery } from "@/redux/feature/notification/notificati
 export default function DashboardHeader() {
   const { Title, Text } = Typography;
   const pathname = usePathname();
-  const { data: notificationData } = useGetNotificationQuery(undefined);
+  const { data: notificationData } = useGetNotificationQuery({});
 
   const formatPathName = (slug: string | undefined) => {
     if (!slug) return "";
@@ -31,6 +31,7 @@ export default function DashboardHeader() {
   if (isIdSegment(targetSlug)) {
     targetSlug = pathSegments[pathSegments.length - 2]; // fallback to previous segment
   }
+  // console.log(notificationData);
   return (
     <div
       style={{
