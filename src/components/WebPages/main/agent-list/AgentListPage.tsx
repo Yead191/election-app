@@ -38,24 +38,30 @@ import FileUploadButton from "../election-area/FileUploadComponent";
 export default function AgentsListPage() {
   const [searchText, setSearchText] = useState("");
   const [selectedRowKeys, setSelectedRowKeys] = useState<string[]>([]);
-  const [agents, setAgents] = useState(mockAgents);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [editingAgent, setEditingAgent] = useState<any>(null);
   const [isAddMode, setIsAddMode] = useState(false);
-  const [statusFilter, setStatusFilter] = useState<string>(""); // "all", "active", "delete"
+  const [statusFilter, setStatusFilter] = useState<string>(""); // "all",
+  // "active", "delete"
   const [form] = Form.useForm();
   const router = useRouter();
+  const [page, setPage] = useState(1);
 
   // add agent by excel
   const [addAgentExcel] = useAddAgentExcelMutation();
 
-  console.log(statusFilter);
+  // get agent list api
   const { data: agentsData, refetch } = useGetAgentListQuery({
     searchTerm: searchText,
     status: statusFilter,
+    page,
+    limit: 10,
   });
+  // update agent status
   const [updateAgentStatus] = useUpdateAgentStatusMutation();
   // console.log(agentsData);
+  const paginationData = agentsData?.pagination;
+
   const handleSelectAll = (checked: boolean) => {
     if (checked) {
       setSelectedRowKeys(agentsData?.data?.map((agent: any) => agent._id));
@@ -357,9 +363,10 @@ export default function AgentsListPage() {
             columns={columns}
             dataSource={agentsData?.data || []}
             pagination={{
-              pageSize: 10,
-              showSizeChanger: true,
-              pageSizeOptions: ["10", "20", "50", "100"],
+              total: paginationData?.total,
+              pageSize: paginationData?.limit,
+              current: paginationData?.page,
+              onChange: (page) => setPage(page),
             }}
             size="middle"
             style={{

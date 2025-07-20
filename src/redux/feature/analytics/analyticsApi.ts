@@ -3,7 +3,7 @@ import { baseApi } from "@/redux/base/baseApi";
 const analyticsApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
     // polling summary
-    pollingSummary: build.query({
+    pollingSummaryV2: build.query({
       query: () => ({
         url: "/polling/summury",
         method: "GET",
@@ -12,7 +12,7 @@ const analyticsApi = baseApi.injectEndpoints({
     }),
     // Polling station status
     pollingStationStatus: build.query({
-      query: ({ searchTerm, limit, date }) => ({
+      query: ({ searchTerm, limit, date, page }) => ({
         url: `/polling`,
         method: "GET",
         credentials: "include",
@@ -20,10 +20,11 @@ const analyticsApi = baseApi.injectEndpoints({
           searchTerm,
           limit,
           date,
+          page,
         },
       }),
     }),
   }),
 });
-export const { usePollingSummaryQuery, usePollingStationStatusQuery } =
+export const { usePollingSummaryV2Query, usePollingStationStatusQuery } =
   analyticsApi;

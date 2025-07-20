@@ -5,7 +5,7 @@ const agentApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
     // get agent list
     getAgentList: build.query({
-      query: ({ searchTerm, status }) => ({
+      query: ({ searchTerm, status, page, limit }) => ({
         url: `/user`,
         method: "GET",
         credentials: "include",
@@ -13,6 +13,8 @@ const agentApi = baseApi.injectEndpoints({
           role: "AGENT",
           searchTerm,
           status,
+          page,
+          limit,
         },
       }),
     }),

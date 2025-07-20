@@ -3,128 +3,54 @@
 import { useState } from "react";
 import { Typography, Button, Badge, Avatar, Card } from "antd";
 import { BellOutlined, ShopOutlined, UserAddOutlined } from "@ant-design/icons";
+import {
+  useGetNotificationQuery,
+  useReadAllNotificationMutation,
+} from "@/redux/feature/notification/notificationApi";
+import dayjs from "dayjs";
+import { toast } from "sonner";
 
 const { Title, Text } = Typography;
 
 interface Notification {
-  id: string;
-  type: "order" | "client_update" | "general";
+  _id: string;
+  // type: "order" | "client_update" | "general";
   title: string;
-  subtitle: string;
-  timestamp: string;
+  message: string;
+  createdAt: string;
   isRead: boolean;
   avatar?: string;
 }
 
 export default function NotificationsPage() {
-  const [notifications, setNotifications] = useState<Notification[]>([
-    {
-      id: "1",
-      type: "order",
-      title: "New order Come from Asadujjaman",
-      subtitle: "Asad ux ui salon , 76/A Corona, Michigan, Paris",
-      timestamp: "8:00am, today",
-      isRead: false,
-    },
-    {
-      id: "2",
-      type: "order",
-      title: "New order Come from Mr. Nadir",
-      subtitle: "Asad ux ui salon , 76/A Corona, Michigan, Paris",
-      timestamp: "8:00am, today",
-      isRead: true,
-    },
-    {
-      id: "3",
-      type: "client_update",
-      title: "New Clients Update Come from Asadujjaman",
-      subtitle: "Asad ux ui salon , 76/A Corona, Michigan, Paris",
-      timestamp: "8:00am, today",
-      isRead: false,
-    },
-    {
-      id: "4",
-      type: "client_update",
-      title: "New Clients Update Come from Asadujjaman",
-      subtitle: "Asad ux ui salon , 76/A Corona, Michigan, Paris",
-      timestamp: "8:00am, today",
-      isRead: true,
-    },
-    {
-      id: "5",
-      type: "order",
-      title: "New order Come from Mr. Nadir",
-      subtitle: "Asad ux ui salon , 76/A Corona, Michigan, Paris",
-      timestamp: "8:00am, today",
-      isRead: true,
-    },
-    {
-      id: "6",
-      type: "order",
-      title: "New order Come from Asadujjaman",
-      subtitle: "Asad ux ui salon , 76/A Corona, Michigan, Paris",
-      timestamp: "8:00am, today",
-      isRead: true,
-    },
-    {
-      id: "7",
-      type: "order",
-      title: "New order Come from Mr. Nadir",
-      subtitle: "Asad ux ui salon , 76/A Corona, Michigan, Paris",
-      timestamp: "8:00am, today",
-      isRead: true,
-    },
-    {
-      id: "8",
-      type: "order",
-      title: "New order Come from Yead",
-      subtitle: "Yead frontend dev salon , 76/A Corona, Michigan, Paris",
-      timestamp: "8:00am, today",
-      isRead: true,
-    },
-    {
-      id: "9",
-      type: "order",
-      title: "New order Come from Asadujjaman",
-      subtitle: "Asad ux ui salon , 76/A Corona, Michigan, Paris",
-      timestamp: "8:00am, today",
-      isRead: true,
-    },
-  ]);
+  // get notification api
+  const { data: notificationData, refetch } =
+    useGetNotificationQuery(undefined);
+  // read all notification
+  const [readAllNotification] = useReadAllNotificationMutation();
 
-  const unreadCount = notifications.filter((n) => !n.isRead).length;
+  const notifications = notificationData?.data || [];
+  console.log(notifications, "notificationData");
+  const unreadCount = notifications?.unread || 0;
 
   const handleReadAll = () => {
-    setNotifications(
-      notifications.map((notification) => ({ ...notification, isRead: true }))
-    );
+    toast.promise(readAllNotification({}).unwrap(), {
+      loading: "Reading all notifications...",
+      success: (res) => {
+        console.log(res);
+        refetch();
+        return <b>{res.message}</b>;
+      },
+      error: "Failed to mark all notifications as read.",
+    });
   };
 
-  const handleNotificationClick = (id: string) => {
-    setNotifications(
-      notifications.map((notification) =>
-        notification.id === id
-          ? { ...notification, isRead: true }
-          : notification
-      )
-    );
-  };
-
-  const getNotificationIcon = (type: string) => {
-    switch (type) {
-      case "order":
-        return <ShopOutlined style={{ color: "#52c41a" }} />;
-      case "client_update":
-        return <UserAddOutlined style={{ color: "#1890ff" }} />;
-      default:
-        return <BellOutlined style={{ color: "#faad14" }} />;
-    }
-  };
+  const handleNotificationClick = (id: string) => {};
 
   const renderNotificationItem = (item: Notification) => (
     <div
-      key={item.id}
-      onClick={() => handleNotificationClick(item.id)}
+      key={item._id}
+      onClick={() => handleNotificationClick(item._id)}
       style={{
         padding: "16px 20px",
         backgroundColor: item.isRead ? "#ffffff" : "#E8F6FB",
@@ -155,7 +81,7 @@ export default function NotificationsPage() {
           <div style={{ marginRight: 12, marginTop: 2 }}>
             <Avatar
               size={32}
-              icon={getNotificationIcon(item.type)}
+              icon={<BellOutlined style={{ color: "#faad14" }} />}
               style={{ backgroundColor: "#f0f0f0" }}
             />
           </div>
@@ -189,7 +115,7 @@ export default function NotificationsPage() {
                 lineHeight: 1.4,
               }}
             >
-              {item.subtitle}
+              {item?.message}
             </Text>
           </div>
         </div>
@@ -201,7 +127,7 @@ export default function NotificationsPage() {
             marginLeft: 16,
           }}
         >
-          {item.timestamp}
+          {dayjs(item.createdAt).format("MMM D, YYYY h:mm A")}
         </Text>
       </div>
     </div>
@@ -253,7 +179,7 @@ export default function NotificationsPage() {
 
       {/* Notifications List */}
       <div>
-        {notifications.length === 0 ? (
+        {notifications?.length === 0 ? (
           <div>
             <BellOutlined style={{ fontSize: 48, marginBottom: 16 }} />
             <div>No notifications yet</div>
@@ -265,24 +191,10 @@ export default function NotificationsPage() {
               overflowY: "auto",
             }}
           >
-            {notifications.map(renderNotificationItem)}
+            {notifications?.notifications?.map(renderNotificationItem)}
           </div>
         )}
       </div>
-
-      {/* Footer Stats */}
-      {/* {notifications.length > 0 && (
-        <div>
-          <Text style={{ color: "#666", fontSize: 12 }}>
-            Total: {notifications.length} notifications
-          </Text>
-          <Text style={{ color: "#666", fontSize: 12 }}>
-            {unreadCount > 0
-              ? `${unreadCount} unread`
-              : "All notifications read"}
-          </Text>
-        </div>
-      )} */}
     </div>
   );
 }

@@ -10,7 +10,7 @@ import BarChartComponent from "./BarChart";
 import PieChartComponent from "./PieChartComponent";
 import {
   usePollingStationStatusQuery,
-  usePollingSummaryQuery,
+  usePollingSummaryV2Query,
 } from "@/redux/feature/analytics/analyticsApi";
 import { use, useEffect, useState } from "react";
 
@@ -78,7 +78,7 @@ const CustomLogoLabel = (props: any) => {
 
 export default function ElectionAnalytics() {
   const [votingData, setVotingData] = useState([]);
-  const { data: pollingSummary, isSuccess } = usePollingSummaryQuery(null);
+  const { data: pollingSummary, isSuccess } = usePollingSummaryV2Query(null);
 
   const summary = pollingSummary?.data || [];
   const totalVotes = summary.reduce(
@@ -158,7 +158,9 @@ export default function ElectionAnalytics() {
             </div>
             <PollingStationTable
               dataSource={pollingStationStatus?.data || []}
-              // pagination={false}
+              paginationData={{}}
+              page={1}
+              setPage={() => {}}
               // scroll={{ x: 700, y: 200 }}
             />
           </Card>

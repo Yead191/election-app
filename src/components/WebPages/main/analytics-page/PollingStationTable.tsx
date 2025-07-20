@@ -11,10 +11,16 @@ const { Text } = Typography;
 
 interface PollingStationTableProps {
   dataSource: any[];
+  page: number;
+  setPage: (page: number) => void;
+  paginationData: any;
 }
 
 export default function PollingStationTable({
   dataSource,
+  page,
+  setPage,
+  paginationData,
 }: PollingStationTableProps) {
   const pathname = usePathname();
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -70,10 +76,10 @@ export default function PollingStationTable({
         </Text>
       );
     },
-    width:40,
+    width: 40,
   }));
 
-  // 🔥 Build full columns
+  //  Build full columns
   const columns = [
     {
       title: "Postal Code",
@@ -119,7 +125,7 @@ export default function PollingStationTable({
     },
   ];
 
-  // 🔥 Modal functions
+  //  Modal functions
   const showModal = (station: any) => {
     setSelectedStation(station);
     setIsModalVisible(true);
@@ -145,9 +151,10 @@ export default function PollingStationTable({
           pagination={
             pathname === "/analytics/pooling-station-status"
               ? {
-                  pageSize: 20,
-                  showSizeChanger: true,
-                  pageSizeOptions: ["10", "20", "50", "100"],
+                  pageSize: paginationData?.limit,
+                  total: paginationData?.total,
+                  current: paginationData?.page,
+                  onChange: (page) => setPage(page),
                 }
               : false
           }

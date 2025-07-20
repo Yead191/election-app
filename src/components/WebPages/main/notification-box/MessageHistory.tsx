@@ -8,13 +8,10 @@ import {
   Layout,
   Typography,
 } from "antd";
-import {
-  SearchOutlined,
-  CalendarOutlined,
-} from "@ant-design/icons";
+import { SearchOutlined, CalendarOutlined } from "@ant-design/icons";
 import { toast } from "sonner";
 const { Content } = Layout;
-const { Text, Title } = Typography;
+const { Title } = Typography;
 
 interface MessageHistoryProps {
   columns: any[];
@@ -50,7 +47,6 @@ export default function MessageHistory({
           Message History
         </Title>
         <Space size="large">
-          
           <Input
             placeholder="Search here"
             prefix={
@@ -76,19 +72,6 @@ export default function MessageHistory({
             suffixIcon={<CalendarOutlined />}
             style={{ borderRadius: "6px", width: 94, height: 40 }}
           />
-          {/* <Button
-            type="primary"
-            icon={<PlusOutlined />}
-            style={{
-              borderRadius: "6px",
-              background: "#18953D",
-              borderColor: "#18953D",
-              height: 40,
-            }}
-            onClick={() => toast.info("Asad Vai add korenai kichu")}
-          >
-            Add Agent
-          </Button> */}
         </Space>
       </div>
 

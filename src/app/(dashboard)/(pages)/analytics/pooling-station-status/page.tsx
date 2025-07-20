@@ -22,12 +22,15 @@ export default function PoolingStationStatusPage() {
   const [searchText, setSearchText] = useState("");
   const [selectedArea, setSelectedArea] = useState("All Area");
   const [date, setDate] = useState<Dayjs | null>(null);
-
+  const [page, setPage] = useState(1);
   const { data: pollingStationStatus } = usePollingStationStatusQuery({
     searchTerm: searchText,
     date: date ? date.format("YYYY-M-D") : undefined,
+    page,
+    limit: 10,
   });
 
+  const paginationData = pollingStationStatus?.pagination || [];
   // Extract unique areas from polling station data
   const areas = [
     "All Area",
@@ -152,10 +155,9 @@ export default function PoolingStationStatusPage() {
       {/* Full Table */}
       <PollingStationTable
         dataSource={pollingStationStatus?.data || []}
-        // pagination={{
-        //   pageSize: 20,
-        // }}
-        // scroll={{ x: 700, y: 510 }}
+        setPage={setPage}
+        page={page}
+        paginationData={paginationData}
       />
     </div>
   );

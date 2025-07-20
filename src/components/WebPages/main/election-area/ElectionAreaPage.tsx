@@ -47,7 +47,7 @@ export default function ElectionAreaPage() {
     searchTerm: searchText, page ,limit:10
   });  
   const paginationData = areasData?.pagination;
-  console.log(areasData?.data , "dsfds");
+  // console.log(areasData?.data , "dsfds");
   const [deleteElectionArea] = useDeleteElectionAreaMutation();
 
   const handleEdit = (record: any) => {
