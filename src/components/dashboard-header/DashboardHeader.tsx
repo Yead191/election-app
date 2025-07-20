@@ -5,9 +5,11 @@ import Link from "next/link";
 import DashboardSidebar from "@/components/dashboard-sidebar/DashboardSidebar";
 import { usePathname } from "next/navigation";
 import { useGetProfileQuery } from "@/redux/feature/auth/authApi";
+import { useGetNotificationQuery } from "@/redux/feature/notification/notificationApi";
 export default function DashboardHeader() {
   const { Title, Text } = Typography;
   const pathname = usePathname();
+  const { data: notificationData } = useGetNotificationQuery(undefined);
 
   const formatPathName = (slug: string | undefined) => {
     if (!slug) return "";
@@ -50,7 +52,14 @@ export default function DashboardHeader() {
       </Title>
       <Space style={{ gap: "30px" }} size="middle">
         <Link href={"/notifications"}>
-          <Badge dot>
+          <Badge
+            size="small"
+            style={{
+              top: "6px",
+              right: "6px",
+            }}
+            count={notificationData?.data?.unread || 0}
+          >
             <BellOutlined
               style={{
                 fontSize: "18px",
@@ -69,9 +78,15 @@ export default function DashboardHeader() {
           ) : (
             <>
               <Avatar src={user?.data?.image} size={40} />
-              <span className="leading-6 font-semibold text-black">
-                {user?.data?.name}
-              </span>
+              <div>
+                <span className="leading-6 font-semibold text-black">
+                  {user?.data?.name}
+                </span>
+
+                <p className="text-[10px] text-gray-400 -mt-1">
+                  {user?.data?.role}
+                </p>
+              </div>
             </>
           )}
         </Link>
