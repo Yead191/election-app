@@ -82,7 +82,7 @@ export default function ContactList({
       >
         {filteredContacts?.map((contact) => (
           <div
-            key={contact.id}
+            key={contact._id}
             style={{
               display: "flex",
               alignItems: "center",

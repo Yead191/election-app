@@ -14,13 +14,16 @@ export default function PollingDataPage() {
   const router = useRouter();
   const [searchText, setSearchText] = useState("");
   const [date, setDate] = useState<Dayjs | null>(null);
-
+  const [page, setPage] = useState(1);
   const getImageUrl = (path: any) => `${imgUrl}${path}`;
   // get polling data
   const { data: pollingData } = useGetPollingDataQuery({
     searchTerm: searchText,
     date: date ? date.format("YYYY-M-D") : undefined,
+    page,
+    limit: 10,
   });
+  const pagination = pollingData?.pagination;
   // console.log(pollingData, date);
   // Extract unique areas
 
@@ -174,11 +177,10 @@ export default function PollingDataPage() {
           dataSource={pollingData?.data}
           // scroll={{ y: 510 }}
           pagination={{
-            pageSize: 10,
-            // showSizeChanger: true,
-            // showQuickJumper: true,
-            // showTotal: (total, range) =>
-            //   `${range[0]}-${range[1]} of ${total} submissions`,
+            pageSize: pagination?.limit,
+            current: pagination?.page,
+            total: pagination?.total,
+            onChange: (page) => setPage(page),
           }}
           size="middle"
         />

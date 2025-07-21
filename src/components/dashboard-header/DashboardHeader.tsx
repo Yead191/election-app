@@ -1,4 +1,4 @@
-import React, { ReactNode, useState } from "react";
+import React, { ReactNode, useEffect, useMemo, useState } from "react";
 import { Card, Row, Col, Typography, Select, Space, Badge, Avatar } from "antd";
 import { BellOutlined } from "@ant-design/icons";
 import Link from "next/link";
@@ -6,10 +6,25 @@ import DashboardSidebar from "@/components/dashboard-sidebar/DashboardSidebar";
 import { usePathname } from "next/navigation";
 import { useGetProfileQuery } from "@/redux/feature/auth/authApi";
 import { useGetNotificationQuery } from "@/redux/feature/notification/notificationApi";
+import { imgUrl } from "@/app/(dashboard)/layout";
+import { io } from "socket.io-client";
 export default function DashboardHeader() {
   const { Title, Text } = Typography;
   const pathname = usePathname();
-  const { data: notificationData } = useGetNotificationQuery({});
+  const socket = useMemo(() => io(imgUrl), []);
+
+  // notification api
+  const { data: notificationData, refetch } = useGetNotificationQuery({});
+  // user api
+  const { data: user, isLoading } = useGetProfileQuery(null);
+
+  // socket implementation
+  useEffect(() => {
+    socket.on(`sendNotification::${user?.data?._id}`, (data) => {
+      console.log(data);
+      refetch();
+    });
+  }, [socket, user?.data?._id]);
 
   const formatPathName = (slug: string | undefined) => {
     if (!slug) return "";
@@ -18,7 +33,6 @@ export default function DashboardHeader() {
       .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
       .join(" ");
   };
-  const { data: user, isLoading } = useGetProfileQuery(null);
   // console.log(user);
   // Check if the string looks like an ID (Mongo _id or numeric)
   const isIdSegment = (str: string) =>
@@ -29,7 +43,7 @@ export default function DashboardHeader() {
   let targetSlug = pathSegments[pathSegments.length - 1];
 
   if (isIdSegment(targetSlug)) {
-    targetSlug = pathSegments[pathSegments.length - 2]; // fallback to previous segment
+    targetSlug = pathSegments[pathSegments.length - 2];
   }
   // console.log(notificationData);
   return (

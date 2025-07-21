@@ -4,15 +4,18 @@ const pollingDataApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
     // get polling data
     getPollingData: build.query({
-      query: ({ searchTerm, date }) => ({
+      query: ({ searchTerm, date, page, limit }) => ({
         url: `/document`,
         method: "GET",
         credentials: "include",
         params: {
           searchTerm,
           date,
+          page,
+          limit,
         },
       }),
+      
     }),
     // get polling data by id
     getPollingDataById: build.query({

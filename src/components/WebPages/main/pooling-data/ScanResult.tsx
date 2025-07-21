@@ -9,6 +9,7 @@ interface ScanResultProps {
   isScanned: boolean;
   setIsScanned: (value: boolean) => void;
   scanId: any;
+  refetch: () => void;
 }
 
 // Function to generate dynamic columns based on data
@@ -92,6 +93,7 @@ export default function ScanResult({
   allPollingStations,
   isScanned,
   scanId,
+  refetch,
 }: ScanResultProps) {
   // Generate columns dynamically
   const columns = generateColumns(allPollingStations);
@@ -105,6 +107,7 @@ export default function ScanResult({
     toast.promise(publishDocument({ id: scanId }).unwrap(), {
       loading: "Publishing...",
       success: (res) => {
+        refetch();
         console.log(res);
         toast.success("Published Successfully");
         return <b>{res.message}</b>;

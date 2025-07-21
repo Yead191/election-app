@@ -60,6 +60,7 @@ export default function PoolingDetailsPage() {
         <ScanResult
           isScanned={isScanned}
           scanId={scanId}
+          refetch={refetch}
           setIsScanned={setIsScanned}
           allPollingStations={scanResult?.data || []}
         />

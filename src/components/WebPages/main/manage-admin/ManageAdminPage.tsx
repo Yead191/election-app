@@ -130,7 +130,6 @@ export default function ManageAdminPage() {
   };
 
   const confirmDelete = () => {
-
     toast.promise(deleteAdmin({ id: currentAdmin }).unwrap(), {
       loading: "Deleting admin...",
       success: (res) => {
@@ -157,27 +156,27 @@ export default function ManageAdminPage() {
     selectedRowKeys.length < filteredAdmins.length;
 
   const columns = [
-    {
-      title: (
-        <input
-          type="checkbox"
-          checked={isAllSelected}
-          ref={(input) => {
-            if (input) input.indeterminate = isIndeterminate;
-          }}
-          onChange={(e) => handleSelectAll(e.target.checked)}
-        />
-      ),
-      dataIndex: "select",
-      width: 50,
-      render: (_: any, record: any) => (
-        <input
-          type="checkbox"
-          checked={selectedRowKeys.includes(record._id)}
-          onChange={(e) => handleSelectRow(record._id, e.target.checked)}
-        />
-      ),
-    },
+    // {
+    //   title: (
+    //     <input
+    //       type="checkbox"
+    //       checked={isAllSelected}
+    //       ref={(input) => {
+    //         if (input) input.indeterminate = isIndeterminate;
+    //       }}
+    //       onChange={(e) => handleSelectAll(e.target.checked)}
+    //     />
+    //   ),
+    //   dataIndex: "select",
+    //   width: 50,
+    //   render: (_: any, record: any) => (
+    //     <input
+    //       type="checkbox"
+    //       checked={selectedRowKeys.includes(record._id)}
+    //       onChange={(e) => handleSelectRow(record._id, e.target.checked)}
+    //     />
+    //   ),
+    // },
     {
       title: "Id. no.",
       dataIndex: "_id",

@@ -107,30 +107,30 @@ export default function AgentsListPage() {
     selectedRowKeys.length < agentsData?.data?.length;
 
   const columns = [
+    // {
+    //   title: (
+    //     <input
+    //       type="checkbox"
+    //       checked={isAllSelected}
+    //       ref={(input) => {
+    //         if (input) input.indeterminate = isIndeterminate;
+    //       }}
+    //       onChange={(e) => handleSelectAll(e.target.checked)}
+    //     />
+    //   ),
+    //   dataIndex: "select",
+    //   render: (_: any, record: any) => (
+    //     <input
+    //       type="checkbox"
+    //       checked={selectedRowKeys.includes(record._id)}
+    //       onChange={(e) => handleSelectRow(record._id, e.target.checked)}
+    //     />
+    //   ),
+    // },
     {
-      title: (
-        <input
-          type="checkbox"
-          checked={isAllSelected}
-          ref={(input) => {
-            if (input) input.indeterminate = isIndeterminate;
-          }}
-          onChange={(e) => handleSelectAll(e.target.checked)}
-        />
-      ),
-      dataIndex: "select",
-      render: (_: any, record: any) => (
-        <input
-          type="checkbox"
-          checked={selectedRowKeys.includes(record._id)}
-          onChange={(e) => handleSelectRow(record._id, e.target.checked)}
-        />
-      ),
-    },
-    {
-      title: "Id. no.",
-      dataIndex: "_id",
-      key: "_id",
+      title: "Represent Code",
+      dataIndex: "represent_code",
+      key: "represent_code",
       render: (text: string) => (
         <Tooltip title={text}>
           <span className="text-sm">{text.slice(0, 8)}</span>

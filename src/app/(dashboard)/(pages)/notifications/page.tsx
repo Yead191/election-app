@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Typography, Button, Badge, Avatar, Card, Pagination } from "antd";
 import { BellOutlined } from "@ant-design/icons";
 import {
@@ -9,6 +9,9 @@ import {
 } from "@/redux/feature/notification/notificationApi";
 import dayjs from "dayjs";
 import { toast } from "sonner";
+import io from "socket.io-client";
+import { imgUrl } from "../../layout";
+import { useGetProfileQuery } from "@/redux/feature/auth/authApi";
 
 const { Title, Text } = Typography;
 
@@ -24,12 +27,16 @@ interface Notification {
 export default function NotificationsPage() {
   const [page, setPage] = useState(1);
   const limit = 10;
+  const socket = useMemo(() => io(imgUrl), []);
 
   // Get notification API
   const { data: notificationData, refetch } = useGetNotificationQuery({
     page,
     limit,
   });
+  // get profile api
+  const { data: user, isLoading } = useGetProfileQuery(null);
+  console.log(user);
   // Read all notifications
   const [readAllNotification] = useReadAllNotificationMutation();
 
@@ -37,6 +44,13 @@ export default function NotificationsPage() {
   const totalNotifications = notificationData?.pagination?.total || 0;
   const unreadCount = notificationData?.data?.unread || 0;
 
+  useEffect(() => {
+    socket.on(`sendNotification::${user?.data?._id}`, (data) => {
+      console.log(data);
+
+      refetch();
+    });
+  }, [socket, user?.data?._id]);
   const handleReadAll = () => {
     toast.promise(readAllNotification({}).unwrap(), {
       loading: "Reading all notifications...",
