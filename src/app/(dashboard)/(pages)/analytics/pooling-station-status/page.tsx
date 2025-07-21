@@ -12,11 +12,8 @@ import {
 } from "@ant-design/icons";
 import PollingStationTable from "@/components/WebPages/main/analytics-page/PollingStationTable";
 import { allPollingStations } from "@/data/polling-stations";
-import { toast } from "sonner";
 import { usePollingStationStatusQuery } from "@/redux/feature/analytics/analyticsApi";
 import { Dayjs } from "dayjs";
-
-const { Option } = Select;
 
 export default function PoolingStationStatusPage() {
   const [searchText, setSearchText] = useState("");
@@ -84,7 +81,7 @@ export default function PoolingStationStatusPage() {
         <Space size="large">
           {/* File Upload */}
           <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-            <Button
+            {/* <Button
               onClick={() => toast.info("Feature coming soon...")}
               className="bg-blue-500"
               icon={<FilePdfOutlined style={{ fontSize: "20px" }} />}
@@ -96,7 +93,7 @@ export default function PoolingStationStatusPage() {
                   "linear-gradient(135deg, #E1E3EB, #DDE0EA, #CEE9FF)",
                 marginRight: 16,
               }}
-            />
+            /> */}
             <Input
               placeholder="Search by name, email, or designation"
               allowClear
@@ -134,7 +131,7 @@ export default function PoolingStationStatusPage() {
           </div>
 
           {/* Area Dropdown */}
-          <Select
+          {/* <Select
             value={selectedArea}
             onChange={handleAreaChange}
             style={{
@@ -148,7 +145,7 @@ export default function PoolingStationStatusPage() {
                 {area}
               </Option>
             ))}
-          </Select>
+          </Select> */}
         </Space>
       </div>
 

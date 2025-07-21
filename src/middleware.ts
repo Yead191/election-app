@@ -18,7 +18,7 @@ export const middleware = async (request: NextRequest) => {
     "/notifications",
   ];
   const notProtectedRoutes = ["/auth/login"];
-  const additionalCondintions = [
+  const additionalConditions = [
     request.nextUrl.pathname.startsWith("/polling-data"),
     request.nextUrl.pathname.startsWith("/agents-list"),
     request.nextUrl.pathname.startsWith("/manage-admin"),
@@ -28,7 +28,7 @@ export const middleware = async (request: NextRequest) => {
 
   if (
     (!token && protectedRoutes.includes(pathname)) ||
-    (additionalCondintions.includes(true) && !token)
+    (additionalConditions.includes(true) && !token)
   ) {
     return NextResponse.redirect(new URL("/auth/login", request.url));
   }
