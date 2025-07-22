@@ -15,7 +15,6 @@ const pollingDataApi = baseApi.injectEndpoints({
           limit,
         },
       }),
-      
     }),
     // get polling data by id
     getPollingDataById: build.query({
@@ -67,6 +66,7 @@ const pollingDataApi = baseApi.injectEndpoints({
         method: "PATCH",
         credentials: "include",
       }),
+      invalidatesTags: ["polling"],
     }),
   }),
 });

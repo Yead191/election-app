@@ -23,6 +23,7 @@ const analyticsApi = baseApi.injectEndpoints({
           page,
         },
       }),
+      providesTags: ["polling"],
     }),
   }),
 });
