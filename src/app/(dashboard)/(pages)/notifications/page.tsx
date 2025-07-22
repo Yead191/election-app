@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { Typography, Button, Badge, Avatar, Card, Pagination } from "antd";
+import { Typography, Button, Badge, Avatar, Pagination } from "antd";
 import { BellOutlined } from "@ant-design/icons";
 import {
   useGetNotificationQuery,
@@ -34,30 +34,26 @@ export default function NotificationsPage() {
     page,
     limit,
   });
-  // get profile api
+  // Get profile API
   const { data: user, isLoading } = useGetProfileQuery(null);
-  console.log(user);
+
   // Read all notifications
   const [readAllNotification] = useReadAllNotificationMutation();
 
-  const notifications = notificationData?.data?.notifications || [];
   const totalNotifications = notificationData?.pagination?.total || 0;
   const unreadCount = notificationData?.data?.unread || 0;
 
   useEffect(() => {
     socket.on(`sendNotification::${user?.data?._id}`, (data) => {
       console.log(data);
-
       refetch();
     });
   }, [socket, user?.data?._id]);
+
   const handleReadAll = () => {
     toast.promise(readAllNotification({}).unwrap(), {
       loading: "Reading all notifications...",
-      success: (res) => {
-        refetch();
-        return <b>{res.message}</b>;
-      },
+      success: (res) => <b>{res.message}</b>,
       error: "Failed to mark all notifications as read.",
     });
   };
@@ -155,7 +151,6 @@ export default function NotificationsPage() {
     </div>
   );
 
-  // console.log(notificationData);
   return (
     <div
       style={{
@@ -202,7 +197,7 @@ export default function NotificationsPage() {
 
       {/* Notifications List */}
       <div>
-        {notifications?.length === 0 ? (
+        {notificationData?.data?.notifications?.length === 0 ? (
           <div style={{ textAlign: "center", padding: "24px" }}>
             <BellOutlined style={{ fontSize: 48, marginBottom: 16 }} />
             <div>No notifications yet</div>
@@ -210,11 +205,11 @@ export default function NotificationsPage() {
         ) : (
           <div
             style={{
-              height: "65vh", // Adjusted to accommodate pagination
+              height: "65vh",
               overflowY: "auto",
             }}
           >
-            {notifications?.map(renderNotificationItem)}
+            {notificationData?.data?.notifications?.map(renderNotificationItem)}
           </div>
         )}
       </div>

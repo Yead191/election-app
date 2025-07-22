@@ -26,14 +26,14 @@ export default function PollingStationTable({
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedStation, setSelectedStation] = useState(null);
 
-  // 🔥 Build all unique poll names dynamically
+  // Build all unique poll names dynamically
   const allPollNames = Array.from(
     new Set(
       dataSource.flatMap((item) => item.polls.map((poll: any) => poll.name))
     )
   );
 
-  // 🔥 Transform data and store the max vote for each row
+  // Transform data and store the max vote for each row
   const transformedData = dataSource.map((item, index) => {
     const voteMap: Record<string, number> = {};
     item.polls.forEach((poll: any) => {
@@ -45,9 +45,9 @@ export default function PollingStationTable({
 
     return {
       key: item._id || index,
-      postCode: item.agent?.postalCode || "N/A",
+      postalCode: item.agent?.postalCode || "N/A",
       name: item.station?.name || "N/A",
-      address: item.station?.city || "N/A",
+      city: item.station?.city || "N/A",
       sendingTime: new Date(item.createdAt).toLocaleTimeString(),
       ...voteMap,
       highestVote,
@@ -55,8 +55,8 @@ export default function PollingStationTable({
     };
   });
 
-  // 🔥 Build poll columns dynamically with per-row highlight logic
-  const pollColumns = allPollNames.map((name) => ({
+  //  Build poll columns dynamically with per-row highlight logic
+  const pollColumns = allPollNames?.map((name) => ({
     title: name,
     dataIndex: name,
     key: name,
@@ -83,15 +83,16 @@ export default function PollingStationTable({
   const columns = [
     {
       title: "Postal Code",
-      dataIndex: "postCode",
-      key: "postCode",
+      dataIndex: "postalCode",
+      key: "postalCode",
       width: 40,
     },
     {
       title: "City",
       dataIndex: "city",
       key: "city",
-      width: 30,
+      width: 60,
+      render: (_: any, record: any) => <p>{record?.city || "N/A"}</p>,
     },
     {
       title: "Pooling Address",
@@ -103,7 +104,7 @@ export default function PollingStationTable({
       title: "Sending Time",
       dataIndex: "sendingTime",
       key: "sendingTime",
-      width: 60,
+      width: 40,
     },
     ...pollColumns,
     {

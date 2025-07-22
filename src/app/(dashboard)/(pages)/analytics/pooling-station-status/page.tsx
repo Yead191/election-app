@@ -28,6 +28,7 @@ export default function PoolingStationStatusPage() {
   });
 
   const paginationData = pollingStationStatus?.pagination || [];
+  // console.log(paginationData);
   // Extract unique areas from polling station data
   const areas = [
     "All Area",
@@ -46,7 +47,7 @@ export default function PoolingStationStatusPage() {
     setSelectedArea(value);
   };
 
-  console.log(pollingStationStatus?.data);
+  // console.log(pollingStationStatus?.data);
   return (
     <div
       style={{

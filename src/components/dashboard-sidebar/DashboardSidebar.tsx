@@ -24,6 +24,7 @@ import { toast } from "sonner";
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 import Cookies from "js-cookie";
+import { useGetNotificationQuery } from "@/redux/feature/notification/notificationApi";
 
 const { Sider, Header, Content } = Layout;
 const { Title, Text } = Typography;
@@ -40,6 +41,7 @@ export default function DashboardSidebar({
   const [selectedKey, setSelectedKey] = useState("analytics");
   const router = useRouter();
   const pathname = usePathname();
+  const { data: notificationData, refetch } = useGetNotificationQuery({});
 
   // console.log(pathname);
   useEffect(() => {
@@ -66,7 +68,11 @@ export default function DashboardSidebar({
       key: "polling-data",
       icon: <FileTextOutlined />,
       label: (
-        // <Badge count={4} offset={[15, 0]} size="small">
+        // <Badge
+        //   count={notificationData?.data?.unread || 0}
+        //   offset={[15, 0]}
+        //   size="small"
+        // >
         //   Polling Data
         // </Badge>
         <Badge offset={[15, 0]} size="small">

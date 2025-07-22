@@ -13,6 +13,8 @@ const notificationApi = baseApi.injectEndpoints({
           limit,
         },
       }),
+      providesTags: ["Notifications"],
+      keepUnusedDataFor: 0, 
     }),
     // read all notification
     readAllNotification: build.mutation({
@@ -21,6 +23,7 @@ const notificationApi = baseApi.injectEndpoints({
         method: "PATCH",
         credentials: "include",
       }),
+      invalidatesTags: ["Notifications"],
     }),
   }),
 });

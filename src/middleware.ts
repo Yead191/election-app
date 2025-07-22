@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 export const middleware = async (request: NextRequest) => {
   const protectedRoutes = [
+    "/",
     "/analytics",
     "/analytics/pooling-station-status",
     "/polling-data",
