@@ -14,7 +14,7 @@ const notificationApi = baseApi.injectEndpoints({
         },
       }),
       providesTags: ["Notifications"],
-      keepUnusedDataFor: 0, 
+      keepUnusedDataFor: 0,
     }),
     // read all notification
     readAllNotification: build.mutation({
@@ -25,8 +25,20 @@ const notificationApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["Notifications"],
     }),
+    // read one notification
+    readOneNotification: build.mutation({
+      query: (id) => ({
+        url: `/notification/read/${id}`,
+        method: "PATCH",
+        credentials: "include",
+      }),
+      invalidatesTags: ["Notifications"],
+    }),
   }),
 });
 
-export const { useGetNotificationQuery, useReadAllNotificationMutation } =
-  notificationApi;
+export const {
+  useGetNotificationQuery,
+  useReadAllNotificationMutation,
+  useReadOneNotificationMutation,
+} = notificationApi;

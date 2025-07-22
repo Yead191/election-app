@@ -6,12 +6,14 @@ import { BellOutlined } from "@ant-design/icons";
 import {
   useGetNotificationQuery,
   useReadAllNotificationMutation,
+  useReadOneNotificationMutation,
 } from "@/redux/feature/notification/notificationApi";
 import dayjs from "dayjs";
 import { toast } from "sonner";
 import io from "socket.io-client";
 import { imgUrl } from "../../layout";
 import { useGetProfileQuery } from "@/redux/feature/auth/authApi";
+import { useRouter } from "next/navigation";
 
 const { Title, Text } = Typography;
 
@@ -22,12 +24,15 @@ interface Notification {
   createdAt: string;
   isRead: boolean;
   avatar?: string;
+  path: string;
+  refernceId: string;
 }
 
 export default function NotificationsPage() {
   const [page, setPage] = useState(1);
   const limit = 10;
   const socket = useMemo(() => io(imgUrl), []);
+  const router = useRouter();
 
   // Get notification API
   const { data: notificationData, refetch } = useGetNotificationQuery({
@@ -37,8 +42,10 @@ export default function NotificationsPage() {
   // Get profile API
   const { data: user, isLoading } = useGetProfileQuery(null);
 
+  console.log(notificationData);
   // Read all notifications
   const [readAllNotification] = useReadAllNotificationMutation();
+  const [readOneNotification] = useReadOneNotificationMutation();
 
   const totalNotifications = notificationData?.pagination?.total || 0;
   const unreadCount = notificationData?.data?.unread || 0;
@@ -58,7 +65,18 @@ export default function NotificationsPage() {
     });
   };
 
-  const handleNotificationClick = (id: string) => {};
+  const handleNotificationClick = (id: string, path: string) => {
+    if (!path) {
+      return;
+    }
+
+    if (path === "polling") {
+      return router.push(`/polling-data/details-page/${id}`);
+    }
+    if (path === "agent") {
+      return router.push(`/agent-profile/${id}`);
+    }
+  };
 
   const handlePageChange = (newPage: number) => {
     setPage(newPage);
@@ -68,7 +86,7 @@ export default function NotificationsPage() {
   const renderNotificationItem = (item: Notification) => (
     <div
       key={item._id}
-      onClick={() => handleNotificationClick(item._id)}
+      onClick={() => handleNotificationClick(item.refernceId, item.path)}
       style={{
         padding: "16px 20px",
         backgroundColor: item.isRead ? "#ffffff" : "#E8F6FB",

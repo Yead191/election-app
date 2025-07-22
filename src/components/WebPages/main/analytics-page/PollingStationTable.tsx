@@ -48,6 +48,7 @@ export default function PollingStationTable({
       postalCode: item.agent?.postalCode || "N/A",
       name: item.station?.name || "N/A",
       city: item.station?.city || "N/A",
+      pollingAddress: item.station?.name || "N/A",
       sendingTime: new Date(item.createdAt).toLocaleTimeString(),
       ...voteMap,
       highestVote,
@@ -96,8 +97,9 @@ export default function PollingStationTable({
     },
     {
       title: "Pooling Address",
-      dataIndex: "address",
-      key: "address",
+      dataIndex: "pollingAddress",
+      key: "pollingAddress",
+      render: (_: any, record: any) => <p>{record?.pollingAddress || "N/A"}</p>,
       width: 60,
     },
     {

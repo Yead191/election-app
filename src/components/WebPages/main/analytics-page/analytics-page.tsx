@@ -13,72 +13,93 @@ import {
   usePollingSummaryV2Query,
 } from "@/redux/feature/analytics/analyticsApi";
 import { use, useEffect, useState } from "react";
+import { imgUrl } from "@/app/(dashboard)/layout";
 
 const { Title, Text } = Typography;
 
 // Calculate total votes and percentages
 // Custom label component for party logos
-const CustomLogoLabel = (props: any) => {
-  const { x, y, width, height, payload, index } = props;
-
-  // Get the data item from the original votingData array using the index
-  const dataItem = votingData[index];
-
-  // If we can't find the data item, don't render anything
-  if (!dataItem || !dataItem.partyLogo) {
-    return null;
-  }
-
-  const logoSize = 48;
-  const logoX = x + width / 2 - logoSize / 2;
-  const logoY = y - logoSize + 60;
-
-  return (
-    <g>
-      {/* White circle background for logo */}
-      <circle
-        cx={x + width / 2}
-        cy={y - logoSize / 2 + 60}
-        r={logoSize / 2 + 2}
-        fill="white"
-        stroke="#e5e7eb"
-        strokeWidth={1}
-      />
-      {/* Party logo image */}
-      <image
-        x={logoX}
-        y={logoY}
-        width={logoSize}
-        height={logoSize}
-        href={dataItem.partyLogo}
-        style={{
-          clipPath: `circle(${logoSize / 2}px at center)`,
-        }}
-        onError={(e) => {
-          // Fallback: Hide the image if it fails to load
-          e.currentTarget.style.display = "none";
-        }}
-      />
-      {/* Fallback text if image fails to load */}
-      <text
-        x={x + width / 2}
-        y={y - logoSize / 2 - 10}
-        textAnchor="middle"
-        fontSize="10"
-        fill="#666"
-        fontWeight="bold"
-      >
-        {dataItem.party}
-      </text>
-    </g>
-  );
-};
+interface CustomLogoLabelProps {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  payload: any;
+  index: number;
+  votingData: any;
+}
 
 // pie
 
 export default function ElectionAnalytics() {
-  const [votingData, setVotingData] = useState([]);
+  interface VotingDataItem {
+    party: string;
+    votes: number;
+    color: string;
+    partyLogo: string;
+    fullName: string;
+  }
+
+  const [votingData, setVotingData] = useState<VotingDataItem[]>([]);
   const { data: pollingSummary, isSuccess } = usePollingSummaryV2Query(null);
+  console.log(votingData);
+
+  const CustomLogoLabel = ({
+    x,
+    y,
+    width,
+    height,
+    payload,
+    index,
+  }: CustomLogoLabelProps) => {
+    // Use votingData passed as a prop instead of static import
+
+    if (!votingData || !Array.isArray(votingData) || !votingData[index]) {
+      return null;
+    }
+    const dataItem = votingData[index];
+    // console.log("analytics", dataItem);
+
+    const logoSize = 48;
+    const logoX = x + width / 2 - logoSize / 2;
+    const logoY = y - logoSize + 60;
+
+    return (
+      <g>
+        <circle
+          cx={x + width / 2}
+          cy={y - logoSize / 2 + 60}
+          r={logoSize / 2 + 2}
+          fill="white"
+          stroke="#e5e7eb"
+          strokeWidth={1}
+        />
+        <image
+          x={logoX}
+          y={logoY}
+          width={logoSize}
+          height={logoSize}
+          href={imgUrl + dataItem.partyLogo}
+          style={{
+            clipPath: `circle(${logoSize / 2}px at center)`,
+          }}
+          onError={(e) => {
+            e.currentTarget.style.display = "none";
+          }}
+        />
+        <text
+          x={x + width / 2}
+          y={y - logoSize / 2 - 10}
+          textAnchor="middle"
+          fontSize="10"
+          fill="#666"
+          fontWeight="bold"
+        >
+          {dataItem.party}
+        </text>
+      </g>
+    );
+  };
 
   const summary = pollingSummary?.data || [];
   const totalVotes = summary.reduce(
