@@ -21,7 +21,7 @@ export default function DashboardHeader() {
   // socket implementation
   useEffect(() => {
     socket.on(`sendNotification::${user?.data?._id}`, (data) => {
-      console.log(data);
+      // console.log(data);
       refetch();
     });
   }, [socket, user?.data?._id]);

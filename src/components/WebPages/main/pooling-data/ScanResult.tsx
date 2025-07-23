@@ -164,12 +164,12 @@ export default function ScanResult({
   const [updatePollingData] = useUpdatePollingDataMutation();
 
   const handlePublish = () => {
-    console.log(scanId);
+    // console.log(scanId);
     toast.promise(publishDocument({ id: scanId }).unwrap(), {
       loading: "Publishing...",
       success: (res) => {
         refetch();
-        console.log(res);
+        // console.log(res);
         toast.success("Published Successfully");
         return <b>{res.message}</b>;
       },
@@ -229,7 +229,7 @@ export default function ScanResult({
     }));
 
     // Log the formatted data
-    console.log({ polls: formattedPolls });
+    // console.log({ polls: formattedPolls });
 
     toast.promise(
       updatePollingData({
@@ -239,7 +239,7 @@ export default function ScanResult({
       {
         loading: "Saving votes...",
         success: (res: any) => {
-          console.log(res, "result");
+          // console.log(res, "result");
           setIsEditing(false);
           refetch();
           setIsModalOpen(false);
@@ -274,7 +274,7 @@ export default function ScanResult({
   // Transform data for table
   const dataSource = transformData(allPollingStations);
 
-  console.log(selectedStation, "selectedStation");
+  // console.log(selectedStation, "selectedStation");
 
   return (
     <>

@@ -83,7 +83,7 @@ export default function FAQDashboard() {
     form.validateFields().then((values) => {
       if (editingItem) {
         // Edit existing item
-        console.log(editingItem);
+        // console.log(editingItem);
         const updateItem = {
           question: values.question,
           answer: values.answer,

@@ -46,7 +46,7 @@ export default function PollingReport({
     toast.promise(scanDocument({ data: scanData }).unwrap(), {
       loading: "Scanning...",
       success: (res) => {
-        console.log(res);
+        // console.log(res);
         refetch();
         setIsScanned(true);
         setScanId(res.data.document);

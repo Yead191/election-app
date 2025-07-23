@@ -58,7 +58,7 @@ export default function NotificationsPage() {
 
   useEffect(() => {
     socket.on(`sendNotification::${user?.data?._id}`, (data) => {
-      console.log(data);
+      // console.log(data);
       refetch();
     });
   }, [socket, user?.data?._id]);
@@ -76,7 +76,7 @@ export default function NotificationsPage() {
     path: string,
     refernceId: string
   ) => {
-    console.log(id);
+    // console.log(id);
     if (!path) {
       return;
     }
@@ -87,7 +87,7 @@ export default function NotificationsPage() {
       // console.log(isSuccess, "check");
       if (isSuccess) {
         // refetch();
-        console.log("clickd");
+        // console.log("clickd");
         return router.push(`/polling-data/details-page/${refernceId}`);
       }
       isError && toast.error("Failed to mark as read.");

@@ -5,7 +5,7 @@ const notificationBoxApi = baseApi.injectEndpoints({
     // send notification
     sendMessage: build.mutation({
       query: ({ data }) => {
-        console.log(data);
+        // console.log(data);
         return {
           url: `/message`,
           method: "POST",

@@ -65,7 +65,7 @@ export default function NotificationBox() {
       message: messageText,
       recievers: selectedContacts,
     };
-    console.log(newMessage);
+    // console.log(newMessage);
 
     toast.promise(
       sendMessage({
@@ -74,7 +74,7 @@ export default function NotificationBox() {
       {
         loading: "Sending notification...",
         success: (res) => {
-          console.log(res);
+          // console.log(res);
           setSelectedContacts([]);
           setMessageText("");
           setIsModalVisible(false);
@@ -86,7 +86,7 @@ export default function NotificationBox() {
       }
     );
   };
-  console.log(selectedContacts);
+  // console.log(selectedContacts);
 
   const isAllSelected = agentList?.data?.length
     ? selectedContacts.length === agentList.data.length
