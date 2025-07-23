@@ -36,7 +36,7 @@ const pollingDataApi = baseApi.injectEndpoints({
     // update polling data
     updatePollingData: build.mutation({
       query: ({ id, data }) => ({
-        url: `/document/${id}`,
+        url: `/polling/${id}`,
         method: "PATCH",
         body: data,
         credentials: "include",

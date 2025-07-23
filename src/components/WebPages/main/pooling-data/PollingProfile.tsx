@@ -3,6 +3,7 @@ import { Card, Col, Button, Avatar, Typography } from "antd";
 import Link from "next/link";
 import { ArrowLeftOutlined, UserOutlined } from "@ant-design/icons";
 import { imgUrl } from "@/app/(dashboard)/layout";
+import dayjs from "dayjs";
 const { Title, Text } = Typography;
 
 export default function PollingProfile({
@@ -81,7 +82,7 @@ export default function PollingProfile({
               Phone number
             </strong>
             <br />
-            {poolingEntry.agent?.contact}
+            {poolingEntry?.agent?.contact}
           </div>
 
           <div style={{ marginTop: "14px" }}>
@@ -97,7 +98,7 @@ export default function PollingProfile({
               Date of birth
             </strong>
             <br />
-            {poolingEntry.agent?.dob}
+            {dayjs(poolingEntry.agent?.dob).format("DD/MM/YYYY")}
           </div>
 
           <div style={{ marginTop: "14px" }}>

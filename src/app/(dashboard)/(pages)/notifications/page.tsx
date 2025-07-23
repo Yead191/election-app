@@ -35,17 +35,23 @@ export default function NotificationsPage() {
   const router = useRouter();
 
   // Get notification API
-  const { data: notificationData, refetch } = useGetNotificationQuery({
+  const {
+    data: notificationData,
+    refetch,
+    isSuccess,
+  } = useGetNotificationQuery({
     page,
     limit,
   });
   // Get profile API
   const { data: user, isLoading } = useGetProfileQuery(null);
 
-  console.log(notificationData);
-  // Read all notifications
+  // console.log(notificationData);
+  // Read all notifications api
   const [readAllNotification] = useReadAllNotificationMutation();
-  const [readOneNotification] = useReadOneNotificationMutation();
+
+  // Read one notifications api
+  const [readOneNotification, { isError }] = useReadOneNotificationMutation();
 
   const totalNotifications = notificationData?.pagination?.total || 0;
   const unreadCount = notificationData?.data?.unread || 0;
@@ -65,16 +71,33 @@ export default function NotificationsPage() {
     });
   };
 
-  const handleNotificationClick = (id: string, path: string) => {
+  const handleNotificationClick = (
+    id: string,
+    path: string,
+    refernceId: string
+  ) => {
+    console.log(id);
     if (!path) {
       return;
     }
 
     if (path === "polling") {
-      return router.push(`/polling-data/details-page/${id}`);
+      readOneNotification(id);
+      refetch();
+      // console.log(isSuccess, "check");
+      if (isSuccess) {
+        // refetch();
+        console.log("clickd");
+        return router.push(`/polling-data/details-page/${refernceId}`);
+      }
+      isError && toast.error("Failed to mark as read.");
     }
     if (path === "agent") {
-      return router.push(`/agent-profile/${id}`);
+      readOneNotification(id);
+      refetch();
+      if (isSuccess) {
+        return router.push(`/agents-list/agent-profile/${refernceId}`);
+      }
     }
   };
 
@@ -86,7 +109,9 @@ export default function NotificationsPage() {
   const renderNotificationItem = (item: Notification) => (
     <div
       key={item._id}
-      onClick={() => handleNotificationClick(item.refernceId, item.path)}
+      onClick={() =>
+        handleNotificationClick(item._id, item.path, item.refernceId)
+      }
       style={{
         padding: "16px 20px",
         backgroundColor: item.isRead ? "#ffffff" : "#E8F6FB",
