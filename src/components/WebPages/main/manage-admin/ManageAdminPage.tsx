@@ -1,6 +1,6 @@
 "use client";
 
-import { use, useState } from "react";
+import { useState } from "react";
 import {
   Table,
   Button,
@@ -26,28 +26,24 @@ import {
 import { toast } from "sonner";
 import { BsPencilSquare } from "react-icons/bs";
 import { FaRegTrashAlt } from "react-icons/fa";
-import { mockAdmins } from "@/data/mockAdmins";
 import ManageAdminModal from "./ManageAdminModal";
-import DeleteModal from "./DeleteModal";
 import DeleteAdminModal from "./DeleteModal";
 import {
   useDeleteAdminMutation,
   useGetAdminListQuery,
   useUpdateStatusMutation,
 } from "@/redux/feature/admin-api/adminApi";
-
-const { Option } = Select;
+import ViewAdminDetailsModal from "./ViewAdminDetailsModal";
 
 export default function ManageAdminPage() {
   const [searchText, setSearchText] = useState("");
-  const [selectedRowKeys, setSelectedRowKeys] = useState<string[]>([]);
-  const [admins, setAdmins] = useState(mockAdmins);
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
   const [currentAdmin, setCurrentAdmin] = useState<any>(null);
   const [isAddMode, setIsAddMode] = useState(false);
   const [form] = Form.useForm();
   const [statusFilter, setStatusFilter] = useState<string>(""); // "all", "active", "delete"
+  const [viewDetailsVisible, setViewDetailsVisible] = useState(false);
 
   // getting data from api
   const { data: adminsData, refetch } = useGetAdminListQuery({
@@ -55,43 +51,18 @@ export default function ManageAdminPage() {
     status: statusFilter,
   });
 
+  // console.log(adminsData);
+
   // update status
   const [updateAdminStatus] = useUpdateStatusMutation();
 
+  const handleViewDetails = (record: any) => {
+    setCurrentAdmin(record);
+    setViewDetailsVisible(true);
+  };
+
   // delete admin
   const [deleteAdmin] = useDeleteAdminMutation();
-  // console.log(adminsData);
-
-  const filteredAdmins = admins.filter((admin) => {
-    const matchesSearch =
-      admin.adminName.toLowerCase().includes(searchText.toLowerCase()) ||
-      admin.email.toLowerCase().includes(searchText.toLowerCase()) ||
-      admin.adminType.toLowerCase().includes(searchText.toLowerCase());
-
-    const matchesStatus =
-      statusFilter === "all" ||
-      (statusFilter === "active" && admin.status === "active") ||
-      (statusFilter === "inactive" && admin.status === "inactive");
-
-    return matchesSearch && matchesStatus;
-  });
-
-  const handleSelectAll = (checked: boolean) => {
-    if (checked) {
-      setSelectedRowKeys(filteredAdmins.map((admin) => admin.key));
-    } else {
-      setSelectedRowKeys([]);
-    }
-  };
-
-  const handleSelectRow = (key: string, checked: boolean) => {
-    if (checked) {
-      setSelectedRowKeys([...selectedRowKeys, key]);
-    } else {
-      setSelectedRowKeys(selectedRowKeys.filter((k) => k !== key));
-    }
-  };
-
   const handleEdit = (record: any) => {
     setCurrentAdmin(record);
     setIsAddMode(false);
@@ -148,35 +119,7 @@ export default function ManageAdminPage() {
     form.resetFields();
   };
 
-  const isAllSelected =
-    filteredAdmins.length > 0 &&
-    selectedRowKeys.length === filteredAdmins.length;
-  const isIndeterminate =
-    selectedRowKeys.length > 0 &&
-    selectedRowKeys.length < filteredAdmins.length;
-
   const columns = [
-    // {
-    //   title: (
-    //     <input
-    //       type="checkbox"
-    //       checked={isAllSelected}
-    //       ref={(input) => {
-    //         if (input) input.indeterminate = isIndeterminate;
-    //       }}
-    //       onChange={(e) => handleSelectAll(e.target.checked)}
-    //     />
-    //   ),
-    //   dataIndex: "select",
-    //   width: 50,
-    //   render: (_: any, record: any) => (
-    //     <input
-    //       type="checkbox"
-    //       checked={selectedRowKeys.includes(record._id)}
-    //       onChange={(e) => handleSelectRow(record._id, e.target.checked)}
-    //     />
-    //   ),
-    // },
     {
       title: "Id. no.",
       dataIndex: "_id",
@@ -234,6 +177,14 @@ export default function ManageAdminPage() {
       align: "right" as const,
       render: (_: any, record: any) => (
         <Space className="flex justify-end ">
+          <Tooltip title="View Details">
+            <Button
+              type="text"
+              icon={<EyeOutlined />}
+              onClick={() => handleViewDetails(record)}
+              style={{ color: "#999999", fontSize: 20 }}
+            />
+          </Tooltip>
           <Tooltip title="Edit">
             <Button
               type="text"
@@ -423,6 +374,16 @@ export default function ManageAdminPage() {
         setDeleteModalVisible={setDeleteModalVisible}
         setCurrentAdmin={setCurrentAdmin}
         confirmDelete={confirmDelete}
+      />
+      {/* View Details Modal */}
+      <ViewAdminDetailsModal
+        visible={viewDetailsVisible}
+        refetch={refetch}
+        onClose={() => {
+          setViewDetailsVisible(false);
+          setCurrentAdmin(null);
+        }}
+        adminData={currentAdmin}
       />
     </div>
   );

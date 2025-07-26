@@ -1,9 +1,6 @@
 "use client";
 
-import { useParams, useRouter } from "next/navigation";
-import { Typography, Input } from "antd";
-import { poolingData } from "@/data/pooling-data";
-import { allPollingStations } from "@/data/polling-stations";
+import { useParams } from "next/navigation";
 import PollingProfile from "@/components/WebPages/main/pooling-data/PollingProfile";
 import PollingReport from "@/components/WebPages/main/pooling-data/PollingReport";
 import ScanResult from "@/components/WebPages/main/pooling-data/ScanResult";
@@ -11,16 +8,13 @@ import {
   useGetPollingDataByIdQuery,
   useScanResultQuery,
 } from "@/redux/feature/polling-data/PollingDataApi";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import NotFoundEntry from "./not-found-entry";
 import Spinner from "@/components/Spinner/Spinner";
-
-const { Title, Text } = Typography;
 
 export default function PoolingDetailsPage() {
   const resultRef = useRef(null);
   const params = useParams();
-  const router = useRouter();
   const [isScanned, setIsScanned] = useState(false);
   const [scanId, setScanId] = useState(params.id);
   const { data: poolingEntry, isLoading } = useGetPollingDataByIdQuery(
@@ -53,10 +47,7 @@ export default function PoolingDetailsPage() {
       </div>
 
       {/* Scan Result Section */}
-      <div
-        ref={resultRef}
-        // className={`${scanResult?.data.length ? "block" : "hidden"}`}
-      >
+      <div ref={resultRef}>
         <ScanResult
           isScanned={isScanned}
           scanId={scanId}

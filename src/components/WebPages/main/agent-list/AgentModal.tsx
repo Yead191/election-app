@@ -43,7 +43,7 @@ export default function AgentModal({
   const [file, setFile] = useState<File | null>(null);
   // const { data: agentList, refetch } = useGetAgentListQuery(null);
 
-  console.log(file);
+  // console.log(file);
   const handleFormSubmit = async (values: any) => {
     const hide = message.loading("Processing...", 0);
     try {

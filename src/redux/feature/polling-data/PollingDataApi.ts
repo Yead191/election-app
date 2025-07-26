@@ -68,6 +68,7 @@ const pollingDataApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["polling"],
     }),
+   
   }),
 });
 
@@ -79,4 +80,6 @@ export const {
   useScanResultQuery,
   useScanDocumentMutation,
   usePublishDocumentMutation,
+
+
 } = pollingDataApi;

@@ -4,15 +4,13 @@ import Link from "next/link";
 import { Card, Row, Col, Typography } from "antd";
 import { ExportOutlined } from "@ant-design/icons";
 import PollingStationTable from "./PollingStationTable";
-import { limitedPollingStations } from "@/data/polling-stations";
-import { votingData } from "@/data/votingData";
 import BarChartComponent from "./BarChart";
 import PieChartComponent from "./PieChartComponent";
 import {
   usePollingStationStatusQuery,
   usePollingSummaryV2Query,
 } from "@/redux/feature/analytics/analyticsApi";
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { imgUrl } from "@/app/(dashboard)/layout";
 
 const { Title, Text } = Typography;

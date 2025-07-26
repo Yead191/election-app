@@ -1,7 +1,5 @@
 "use client";
-
-import { useEffect, useState } from "react";
-import Link from "next/link";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button, Space, Select, Table, Image, Tooltip } from "antd";
 import { InfoCircleOutlined } from "@ant-design/icons";
@@ -24,8 +22,8 @@ export default function PollingDataPage() {
     limit: 10,
   });
   const pagination = pollingData?.pagination;
-  // console.log(pollingData, date);
-  // Extract unique areas
+
+
 
   // img count
   const renderImageCount = (totalImages: number, images: string[]) => {

@@ -62,22 +62,6 @@ export default function AgentsListPage() {
   // console.log(agentsData);
   const paginationData = agentsData?.pagination;
 
-  const handleSelectAll = (checked: boolean) => {
-    if (checked) {
-      setSelectedRowKeys(agentsData?.data?.map((agent: any) => agent._id));
-    } else {
-      setSelectedRowKeys([]);
-    }
-  };
-
-  const handleSelectRow = (_id: string, checked: boolean) => {
-    if (checked) {
-      setSelectedRowKeys([...selectedRowKeys, _id]);
-    } else {
-      setSelectedRowKeys(selectedRowKeys.filter((k) => k !== _id));
-    }
-  };
-
   const handleAdd = () => {
     setEditingAgent(null);
     setIsAddMode(true);
@@ -99,34 +83,14 @@ export default function AgentsListPage() {
     });
   };
 
-  const isAllSelected =
-    agentsData?.data?.length > 0 &&
-    selectedRowKeys.length === agentsData?.data?.length;
-  const isIndeterminate =
-    selectedRowKeys.length > 0 &&
-    selectedRowKeys.length < agentsData?.data?.length;
+  // const isAllSelected =
+  //   agentsData?.data?.length > 0 &&
+  //   selectedRowKeys.length === agentsData?.data?.length;
+  // const isIndeterminate =
+  //   selectedRowKeys.length > 0 &&
+  //   selectedRowKeys.length < agentsData?.data?.length;
 
   const columns = [
-    // {
-    //   title: (
-    //     <input
-    //       type="checkbox"
-    //       checked={isAllSelected}
-    //       ref={(input) => {
-    //         if (input) input.indeterminate = isIndeterminate;
-    //       }}
-    //       onChange={(e) => handleSelectAll(e.target.checked)}
-    //     />
-    //   ),
-    //   dataIndex: "select",
-    //   render: (_: any, record: any) => (
-    //     <input
-    //       type="checkbox"
-    //       checked={selectedRowKeys.includes(record._id)}
-    //       onChange={(e) => handleSelectRow(record._id, e.target.checked)}
-    //     />
-    //   ),
-    // },
     {
       title: "Represent Code",
       dataIndex: "represent_code",
@@ -215,12 +179,6 @@ export default function AgentsListPage() {
             }
             style={{ color: "#1890ff", fontSize: 20 }}
           />
-          {/* <Button
-            type="text"
-            icon={<EditOutlined />}
-            onClick={() => handleEdit(record)}
-            style={{ color: "#52c41a", fontSize: 20 }}
-          /> */}
           <Tooltip title={record?.status === "active" ? "Lock" : "Activate"}>
             <Button
               type="text"

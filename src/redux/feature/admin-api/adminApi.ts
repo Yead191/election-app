@@ -14,6 +14,7 @@ const adminApi = baseApi.injectEndpoints({
           status,
         },
       }),
+      providesTags: ["Stations"],
     }),
     // create admin
     createAdmin: build.mutation({
@@ -34,11 +35,32 @@ const adminApi = baseApi.injectEndpoints({
     }),
     // delete admin
     deleteAdmin: build.mutation({
-      query: ({id}) => ({
+      query: ({ id }) => ({
         url: `/user/delete-admin/${id}`,
         method: "DELETE",
         credentials: "include",
       }),
+    }),
+    // get station for admin
+    getStationForAdmin: build.query({
+      query: ({ searchTerm }) => ({
+        url: `/polling-station/for-admin`,
+        method: "GET",
+        credentials: "include",
+        params: {
+          searchTerm,
+        },
+      }),
+    }),
+    // assign station
+    assignStation: build.mutation({
+      query: ({ id, data }) => ({
+        url: `/user/add-stations/${id}`,
+        method: "PATCH",
+        credentials: "include",
+        body: data,
+      }),
+      invalidatesTags: ["Stations"],
     }),
   }),
 });
@@ -48,4 +70,6 @@ export const {
   useCreateAdminMutation,
   useUpdateStatusMutation,
   useDeleteAdminMutation,
+  useGetStationForAdminQuery,
+  useAssignStationMutation,
 } = adminApi;
