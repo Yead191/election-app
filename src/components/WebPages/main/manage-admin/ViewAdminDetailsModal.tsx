@@ -26,7 +26,7 @@ export default function ViewAdminDetailsModal({
 }: ViewAdminDetailsModalProps) {
   const [assignStationVisible, setAssignStationVisible] = useState(false);
 
-//   console.log(adminData?.stations);
+  //   console.log(adminData?.stations);
   if (!adminData) return null;
 
   // TODO: Replace this mock with actual stations data fetching logic
@@ -184,6 +184,7 @@ export default function ViewAdminDetailsModal({
       <AssignStationModal
         refetch={refetch}
         visible={assignStationVisible}
+        detailsModalClose={onClose}
         onClose={() => setAssignStationVisible(false)}
         adminData={adminData}
       />

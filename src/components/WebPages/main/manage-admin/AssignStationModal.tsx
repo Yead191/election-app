@@ -1,6 +1,6 @@
 "use client";
 
-import { Modal, Input, Button, List, Checkbox, Space, Tag } from "antd";
+import { Modal, Input, Button, List, Checkbox, Tag } from "antd";
 import { SearchOutlined, EnvironmentOutlined } from "@ant-design/icons";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
@@ -22,6 +22,7 @@ interface AdminData {
 
 interface AssignStationModalProps {
   visible: boolean;
+  detailsModalClose: () => void;
   onClose: () => void;
   adminData: AdminData;
   refetch: () => void;
@@ -32,6 +33,7 @@ export default function AssignStationModal({
   onClose,
   adminData,
   refetch,
+  detailsModalClose,
 }: AssignStationModalProps) {
   const [searchText, setSearchText] = useState("");
   const [selectedStations, setSelectedStations] = useState<string[]>([]);
@@ -52,12 +54,12 @@ export default function AssignStationModal({
   // Load assigned stations when modal opens
   useEffect(() => {
     if (visible && adminData?.stations) {
-      // Initialize selectedStations with the IDs of stations already assigned to the admin
       setSelectedStations(adminData.stations.map((station) => station.id));
     }
   }, [visible, adminData]);
 
   const handleStationToggle = (stationId: string) => {
+    console.log(stationId);
     setSelectedStations((prev) =>
       prev.includes(stationId)
         ? prev.filter((id) => id !== stationId)
@@ -73,16 +75,18 @@ export default function AssignStationModal({
     try {
       await toast.promise(
         async () => {
-          // Perform the mutation
-          await assignStation({ id: adminData._id, data: assignedStations }).unwrap();
-          // Refetch both stations and admin data
+          await assignStation({
+            id: adminData._id,
+            data: assignedStations,
+          }).unwrap();
           await Promise.all([stationRefetch(), refetch()]);
         },
         {
           loading: "Assigning Stations...",
           success: () => {
             setLoading(false);
-            onClose(); // Close modal after refetch completes
+            detailsModalClose();
+            onClose();
             return `Successfully assigned ${selectedStations.length} stations to ${adminData.name}`;
           },
           error: (err) => {
@@ -99,7 +103,9 @@ export default function AssignStationModal({
 
   const handleCancel = () => {
     // Reset selectedStations to the IDs of currently assigned stations
-    setSelectedStations(adminData?.stations?.map((station: Station) => station.id) || []);
+    setSelectedStations(
+      adminData?.stations?.map((station: Station) => station.id) || []
+    );
     setSearchText("");
     onClose();
   };
@@ -162,7 +168,10 @@ export default function AssignStationModal({
                 onClick={() => handleStationToggle(station._id)}
               >
                 <div className="flex items-center justify-between w-full">
-                  <div className="flex items-center gap-3">
+                  <label
+                    className="flex items-center gap-3 cursor-pointer"
+                    onClick={(e) => e.stopPropagation()}
+                  >
                     <Checkbox
                       checked={selectedStations.includes(station._id)}
                       onChange={() => handleStationToggle(station._id)}
@@ -170,10 +179,10 @@ export default function AssignStationModal({
                     <div>
                       <div className="font-medium">{station.name}</div>
                     </div>
-                  </div>
-                  {adminData?.stations?.some((s: Station) => s.id === station._id) && (
-                    <Tag color="green">Currently Assigned</Tag>
-                  )}
+                  </label>
+                  {adminData?.stations?.some(
+                    (s: Station) => s.id === station._id
+                  ) && <Tag color="green">Currently Assigned</Tag>}
                 </div>
               </List.Item>
             )}

@@ -62,8 +62,8 @@ export default function ProfilePage() {
   // console.log(user);
   const handleEdit = () => {
     form.setFieldsValue({
-      ...profileData,
-      dateOfBirth: dayjs(profileData.dateOfBirth, "DD MMM, YYYY"),
+      ...user?.data,
+      dateOfBirth: dayjs(user?.data?.dob, "DD MMM, YYYY"),
     });
     setIsEditModalVisible(true);
   };

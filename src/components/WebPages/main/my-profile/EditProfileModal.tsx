@@ -51,7 +51,7 @@ export default function EditProfileModal({
   // Initialize dob as a dayjs object if user.dob exists and is valid
   const [formData, setFormData] = useState<FormData>({
     name: user?.name || "",
-    dob: user?.dob ? dayjs(user.dob) : null, // Convert user.dob to dayjs object
+    dob: user?.dob ? dayjs(user.dob) : null, 
     contact: user?.contact || "",
     gender: user?.gender || "",
     squareNumber: user?.squareNumber || "",

@@ -25,6 +25,7 @@ import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 import Cookies from "js-cookie";
 import { useGetNotificationQuery } from "@/redux/feature/notification/notificationApi";
+import { useGetProfileQuery } from "@/redux/feature/auth/authApi";
 
 const { Sider, Header, Content } = Layout;
 const { Title, Text } = Typography;
@@ -42,6 +43,8 @@ export default function DashboardSidebar({
   const router = useRouter();
   const pathname = usePathname();
   const { data: notificationData, refetch } = useGetNotificationQuery({});
+  const { data: user, isLoading } = useGetProfileQuery(null);
+  // console.log(user);
 
   // console.log(pathname);
   useEffect(() => {
@@ -85,11 +88,15 @@ export default function DashboardSidebar({
       icon: <TeamOutlined />,
       label: "Agents list",
     },
-    {
-      key: "manage-admin",
-      icon: <UserSwitchOutlined />,
-      label: "Manage Admin",
-    },
+    ...(user?.data?.role === "SUPER_ADMIN"
+      ? [
+          {
+            key: "manage-admin",
+            icon: <UserSwitchOutlined />,
+            label: "Manage Admin",
+          },
+        ]
+      : []),
     {
       key: "settings",
       icon: <SettingOutlined />,
