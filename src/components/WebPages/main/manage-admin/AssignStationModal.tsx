@@ -59,7 +59,7 @@ export default function AssignStationModal({
   }, [visible, adminData]);
 
   const handleStationToggle = (stationId: string) => {
-    console.log(stationId);
+    // console.log(stationId);
     setSelectedStations((prev) =>
       prev.includes(stationId)
         ? prev.filter((id) => id !== stationId)

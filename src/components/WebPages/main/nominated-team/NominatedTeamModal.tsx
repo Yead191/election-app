@@ -66,26 +66,28 @@ export default function NominatedTeamModal({
             `Error: ${err?.data?.message || "Something went wrong"}`,
         });
       }
-      toast.promise(
-        updateNominatedTeam({
-          id: currentTeam?._id,
-          data: formData,
-        }).unwrap(),
-        {
-          loading: "Updating team...",
-          success: (res) => {
-            refetch();
-            setEditModalVisible(false);
-            setCurrentTeam(null);
-            setImageUrl(null);
-            setImageFile(null);
-            form.resetFields();
-            return <b>{res.message}</b>;
-          },
-          error: (err) =>
-            `Error: ${err?.data?.message || "Something went wrong"}`,
-        }
-      );
+      if (!isAddMode) {
+        toast.promise(
+          updateNominatedTeam({
+            id: currentTeam?._id,
+            data: formData,
+          }).unwrap(),
+          {
+            loading: "Updating team...",
+            success: (res) => {
+              refetch();
+              setEditModalVisible(false);
+              setCurrentTeam(null);
+              setImageUrl(null);
+              setImageFile(null);
+              form.resetFields();
+              return <b>{res.message}</b>;
+            },
+            error: (err) =>
+              `Error: ${err?.data?.message || "Something went wrong"}`,
+          }
+        );
+      }
     } catch (err) {
       console.error("Failed to create team:", err);
     }
