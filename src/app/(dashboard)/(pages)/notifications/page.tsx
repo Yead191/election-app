@@ -61,7 +61,7 @@ export default function NotificationsPage() {
       // console.log(data);
       refetch();
     });
-  }, [socket, user?.data?._id]);
+  }, [user?.data?._id]);
 
   const handleReadAll = () => {
     toast.promise(readAllNotification({}).unwrap(), {

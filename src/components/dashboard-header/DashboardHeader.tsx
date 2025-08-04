@@ -24,7 +24,7 @@ export default function DashboardHeader() {
       // console.log(data);
       refetch();
     });
-  }, [socket, user?.data?._id]);
+  }, [user?.data?._id]);
 
   const formatPathName = (slug: string | undefined) => {
     if (!slug) return "";

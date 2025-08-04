@@ -8,6 +8,7 @@ import Link from "next/link";
 import Logo from "./logo";
 import { useLoginMutation } from "@/redux/feature/auth/authApi";
 import Cookies from "js-cookie";
+import { error } from "console";
 
 const SignInForm = () => {
   const router = useRouter();
@@ -28,7 +29,13 @@ const SignInForm = () => {
         localStorage.removeItem("resetToken");
         return <b>{res.message}</b>;
       },
-      error: "Login Failed",
+      error: (error) => {
+        return error?.data?.message ? (
+          <b>{error.data.message}</b>
+        ) : (
+          "Login Failed"
+        );
+      },
     });
   };
 
