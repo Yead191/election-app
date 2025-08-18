@@ -8,7 +8,6 @@ import {
   TeamOutlined,
   UserSwitchOutlined,
   SettingOutlined,
-  PlusSquareOutlined,
   UsergroupAddOutlined,
   ApartmentOutlined,
   InfoCircleOutlined,
@@ -51,16 +50,6 @@ export default function DashboardSidebar({
     setSelectedKey(pathname.split("/")[1] || "analytics");
   }, [pathname]);
 
-  // useEffect(() => {
-  //   // Example: Check for new data every 5 seconds
-  //   const interval = setInterval(() => {
-  //     // Simulate new data (e.g., random condition)
-  //     setHasNewPollingData(Math.random() > 0.5);
-  //   }, 5000);
-
-  //   return () => clearInterval(interval);
-  // }, []);
-
   const menuItems = [
     {
       key: "analytics",
@@ -71,22 +60,15 @@ export default function DashboardSidebar({
       key: "polling-data",
       icon: <FileTextOutlined />,
       label: (
-        // <Badge
-        //   count={notificationData?.data?.unread || 0}
-        //   offset={[15, 0]}
-        //   size="small"
-        // >
-        //   Polling Data
-        // </Badge>
         <Badge offset={[15, 0]} size="small">
           Polling Data
         </Badge>
       ),
     },
     {
-      key: "agents-list",
+      key: "representative-list",
       icon: <TeamOutlined />,
-      label: "Agents list",
+      label: "Representative list",
     },
     ...(user?.data?.role === "SUPER_ADMIN"
       ? [
@@ -102,11 +84,11 @@ export default function DashboardSidebar({
       icon: <SettingOutlined />,
       label: "Settings",
       children: [
-        {
-          key: "vote-information",
-          icon: <PlusSquareOutlined />,
-          label: "Vote Information",
-        },
+        // {
+        //   key: "vote-information",
+        //   icon: <PlusSquareOutlined />,
+        //   label: "Vote Information",
+        // },
         {
           key: "nominated-team",
           icon: <UsergroupAddOutlined />,

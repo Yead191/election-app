@@ -23,8 +23,6 @@ export default function PollingDataPage() {
   });
   const pagination = pollingData?.pagination;
 
-
-
   // img count
   const renderImageCount = (totalImages: number, images: string[]) => {
     if (totalImages <= 3) {
@@ -91,19 +89,19 @@ export default function PollingDataPage() {
       render: (_: any, record: any) => <p>{record?.station?.stationCode}</p>,
     },
     {
-      title: "Election City",
+      title: "Pooling Center",
       dataIndex: "city",
       key: "city",
       render: (_: any, record: any) => <p>{record?.station?.city}</p>,
     },
     {
-      title: "Station Name",
+      title: "Pooling Station",
       dataIndex: "name",
       key: "name",
       render: (_: any, record: any) => <p>{record?.station?.name}</p>,
     },
     {
-      title: "Polling Agent",
+      title: "Representative",
       dataIndex: "agent",
       key: "agent",
       render: (_: any, record: any) => <p>{record?.agent?.name}</p>,

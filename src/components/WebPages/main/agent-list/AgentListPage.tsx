@@ -83,12 +83,7 @@ export default function AgentsListPage() {
     });
   };
 
-  // const isAllSelected =
-  //   agentsData?.data?.length > 0 &&
-  //   selectedRowKeys.length === agentsData?.data?.length;
-  // const isIndeterminate =
-  //   selectedRowKeys.length > 0 &&
-  //   selectedRowKeys.length < agentsData?.data?.length;
+
 
   const columns = [
     {
@@ -175,7 +170,7 @@ export default function AgentsListPage() {
             type="text"
             icon={<InfoCircleOutlined />}
             onClick={() =>
-              router.push(`/agents-list/agent-profile/${record._id}`)
+              router.push(`/representative-list/agent-profile/${record._id}`)
             }
             style={{ color: "#1890ff", fontSize: 20 }}
           />

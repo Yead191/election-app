@@ -63,7 +63,7 @@ export default function AgentProfilePage() {
         <Button
           type="text"
           icon={<ArrowLeftOutlined />}
-          onClick={() => router.push("/agents-list")}
+          onClick={() => router.push("/representative-list")}
           style={{ fontSize: "16px" }}
         />
         <Space>
@@ -72,7 +72,7 @@ export default function AgentProfilePage() {
               icon={<SettingOutlined />}
               onClick={() =>
                 router.push(
-                  `/agents-list/edit-agent-details/${params.id}?mode=settings`
+                  `/representative-list/edit-agent-details/${params.id}?mode=settings`
                 )
               }
               style={{ borderRadius: "6px", fontSize: 20, padding: 6 }}
@@ -83,7 +83,7 @@ export default function AgentProfilePage() {
               icon={<BsPencilSquare />}
               onClick={() =>
                 router.push(
-                  `/agents-list/edit-agent-details/${params.id}?mode=edit`
+                  `/representative-list/edit-agent-details/${params.id}?mode=edit`
                 )
               }
               style={{ borderRadius: "6px", fontSize: 20, padding: 6 }}

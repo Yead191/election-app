@@ -82,21 +82,21 @@ export default function PollingStationTable({
 
   //  Build full columns
   const columns = [
+    // {
+    //   title: "Postal Code",
+    //   dataIndex: "postalCode",
+    //   key: "postalCode",
+    //   width: 40,
+    // },
     {
-      title: "Postal Code",
-      dataIndex: "postalCode",
-      key: "postalCode",
-      width: 40,
-    },
-    {
-      title: "City",
+      title: "Pooling Center",
       dataIndex: "city",
       key: "city",
       width: 60,
       render: (_: any, record: any) => <p>{record?.city || "N/A"}</p>,
     },
     {
-      title: "Pooling Address",
+      title: "Pooling Station",
       dataIndex: "pollingAddress",
       key: "pollingAddress",
       render: (_: any, record: any) => <p>{record?.pollingAddress || "N/A"}</p>,

@@ -36,7 +36,7 @@ export default function EditAgentPage() {
             type="text"
             icon={<ArrowLeftOutlined />}
             onClick={() =>
-              router.push(`/agents-list/agent-profile/${params.id}`)
+              router.push(`/representative-list/agent-profile/${params.id}`)
             }
             style={{ fontSize: "16px" }}
           />
@@ -46,7 +46,7 @@ export default function EditAgentPage() {
                 icon={<SettingOutlined />}
                 onClick={() =>
                   router.push(
-                    `/agents-list/edit-agent-details/${params.id}?mode=settings`
+                    `/representative-list/edit-agent-details/${params.id}?mode=settings`
                   )
                 }
                 style={{
@@ -62,7 +62,7 @@ export default function EditAgentPage() {
                 icon={<BsPencilSquare />}
                 onClick={() =>
                   router.push(
-                    `/agents-list/edit-agent-details/${params.id}?mode=edit`
+                    `/representative-list/edit-agent-details/${params.id}?mode=edit`
                   )
                 }
                 style={{
