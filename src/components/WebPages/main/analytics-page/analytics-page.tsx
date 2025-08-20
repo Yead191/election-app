@@ -120,11 +120,11 @@ export default function ElectionAnalytics() {
     ];
 
     return votingData.map((item: any, index: any) => ({
-      party: item.team.name,
-      votes: item.total,
-      color: colors[index % colors.length], // Cycle through colors if more teams than colors
-      partyLogo: item.team.image,
-      fullName: item.team.name, // Use team.name as fallback for fullName
+      party: item.team?.name,
+      votes: item?.total,
+      color: colors[index % colors?.length], // Cycle through colors if more teams than colors
+      partyLogo: item?.team?.image,
+      fullName: item?.team?.name, // Use team.name as fallback for fullName
     }));
   };
   useEffect(() => {
