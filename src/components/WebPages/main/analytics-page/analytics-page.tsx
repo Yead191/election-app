@@ -9,6 +9,7 @@ import PieChartComponent from "./PieChartComponent";
 import {
   usePollingStationStatusQuery,
   usePollingSummaryV2Query,
+  useReportedStationsQuery,
 } from "@/redux/feature/analytics/analyticsApi";
 import { useEffect, useState } from "react";
 import { imgUrl } from "@/app/(dashboard)/layout";
@@ -40,7 +41,7 @@ export default function ElectionAnalytics() {
 
   const [votingData, setVotingData] = useState<VotingDataItem[]>([]);
   const { data: pollingSummary, isSuccess } = usePollingSummaryV2Query(null);
-  // console.log(votingData);
+  const { data: reportedStations } = useReportedStationsQuery(null);
 
   const CustomLogoLabel = ({
     x,
@@ -148,6 +149,7 @@ export default function ElectionAnalytics() {
           totalVotes={totalVotes}
           votingData={votingData}
           CustomLogoLabel={CustomLogoLabel}
+          reportedStations={reportedStations?.data}
         />
         {/* Pie Chart */}
         <PieChartComponent totalVotes={totalVotes} votingData={votingData} />

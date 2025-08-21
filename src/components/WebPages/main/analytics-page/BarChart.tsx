@@ -15,13 +15,20 @@ interface BarChartComponentProps {
   totalVotes: number;
   votingData: any[];
   CustomLogoLabel: any;
+  reportedStations: {
+    reportedStations: number;
+    totalStations: number;
+  };
 }
 export default function BarChartComponent({
   totalVotes,
   votingData,
   CustomLogoLabel,
+  reportedStations,
 }: BarChartComponentProps) {
   const { Title, Text } = Typography;
+  // console.log(reportedStations);
+
 
   return (
     <Col xs={24} lg={16}>
@@ -37,18 +44,32 @@ export default function BarChartComponent({
           <Title level={4} style={{ margin: 0 }}>
             Voting Result
           </Title>
-          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-            <div
-              style={{
-                width: "8px",
-                height: "8px",
-                backgroundColor: "#1890ff",
-                borderRadius: "50%",
-              }}
-            ></div>
-            <Text style={{ color: "#1890ff" }}>
-              Total Voter {totalVotes?.toLocaleString()}
-            </Text>
+          <div className="flex flex-row gap-6">
+            {/* Total Voter */}
+            <div className="flex items-center gap-2">
+              <div className="w-2 h-2 rounded-full bg-blue-500"></div>
+              <span className="text-blue-500">
+                Total Voter {totalVotes?.toLocaleString()}
+              </span>
+            </div>
+
+            {/* Total Stations */}
+            <div className="flex items-center gap-2">
+              <div className="w-2 h-2 rounded-full bg-green-500"></div>
+              <span className="text-green-500">
+                Total Stations{" "}
+                {reportedStations?.totalStations?.toLocaleString()}
+              </span>
+            </div>
+
+            {/* Reported Stations */}
+            <div className="flex items-center gap-2">
+              <div className="w-2 h-2 rounded-full bg-orange-500"></div>
+              <span className="text-orange-500">
+                Reported Stations{" "}
+                {reportedStations?.reportedStations?.toLocaleString()}
+              </span>
+            </div>
           </div>
         </div>
         <ResponsiveContainer width="100%" height={320}>

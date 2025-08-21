@@ -25,7 +25,17 @@ const analyticsApi = baseApi.injectEndpoints({
       }),
       providesTags: ["polling"],
     }),
+    reportedStations: build.query({
+      query: () => ({
+        url: `/document/reported-stations`,
+        method: "GET",
+        credentials: "include",
+      }),
+    }),
   }),
 });
-export const { usePollingSummaryV2Query, usePollingStationStatusQuery } =
-  analyticsApi;
+export const {
+  usePollingSummaryV2Query,
+  usePollingStationStatusQuery,
+  useReportedStationsQuery,
+} = analyticsApi;
