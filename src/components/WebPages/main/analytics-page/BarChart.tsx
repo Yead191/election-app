@@ -29,7 +29,6 @@ export default function BarChartComponent({
   const { Title, Text } = Typography;
   // console.log(reportedStations);
 
-
   return (
     <Col xs={24} lg={16}>
       <Card style={{ height: "400px" }}>

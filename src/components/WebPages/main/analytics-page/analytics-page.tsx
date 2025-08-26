@@ -41,7 +41,9 @@ export default function ElectionAnalytics() {
 
   const [votingData, setVotingData] = useState<VotingDataItem[]>([]);
   const { data: pollingSummary, isSuccess } = usePollingSummaryV2Query(null);
-  const { data: reportedStations } = useReportedStationsQuery(null);
+  const { data: reportedStations } = useReportedStationsQuery(null, {
+    refetchOnMountOrArgChange: true,
+  });
 
   const CustomLogoLabel = ({
     x,
