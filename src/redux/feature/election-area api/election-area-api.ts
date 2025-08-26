@@ -4,14 +4,14 @@ const electionAreaApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
     // get election area
     getElectionArea: build.query({
-      query: ({ searchTerm , page , limit }) => ({
+      query: ({ searchTerm, page, limit }) => ({
         url: `/polling-station`,
         method: "GET",
         credentials: "include",
         params: {
-          searchTerm, 
-          page ,
-          limit
+          searchTerm,
+          page,
+          limit,
         },
       }),
     }),

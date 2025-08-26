@@ -74,7 +74,7 @@ export default function ElectionModal({
         );
       }
     } catch (error) {
-      console.error("Form submission error:", error);
+      // console.error("Form submission error:", error);
       message.error("Failed to save election area");
     }
   };
