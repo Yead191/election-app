@@ -4,7 +4,6 @@ import { Button } from "antd";
 
 import { toast } from "sonner";
 
-
 const FileUploadButton = ({
   refetch,
   uploadExcel,
@@ -27,6 +26,7 @@ const FileUploadButton = ({
     // Create FormData object
     const formData = new FormData();
     formData.append("doc", file);
+    console.log(file);
 
     try {
       toast.promise(uploadExcel({ data: formData }).unwrap(), {
@@ -52,7 +52,7 @@ const FileUploadButton = ({
         ref={fileInputRef}
         style={{ display: "none" }}
         onChange={handleFileChange}
-        accept=".xlsx,.xls"
+        accept=".xlsx,.xls,.csv"
       />
       {/* Your styled button */}
       <Button

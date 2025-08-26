@@ -83,8 +83,6 @@ export default function AgentsListPage() {
     });
   };
 
-
-
   const columns = [
     {
       title: "Represent Code",
@@ -124,25 +122,40 @@ export default function AgentsListPage() {
       dataIndex: "contact",
       key: "contact",
     },
-    {
-      title: "Position",
-      dataIndex: "role",
-      key: "role",
-    },
+    // {
+    //   title: "Position",
+    //   dataIndex: "role",
+    //   key: "role",
+    // },
     // {
     //   title: "Department",
     //   dataIndex: "department",
     //   key: "department",
     // },
-    {
-      title: "Postal Code",
-      dataIndex: "postalCode",
-      key: "postalCode",
-    },
+    // {
+    //   title: "Postal Code",
+    //   dataIndex: "postalCode",
+    //   key: "postalCode",
+    // },
+    // {
+    //   title: "Pooling Station",
+    //   dataIndex: "stationCode",
+    //   key: "stationCode",
+    //   render: (text: string) => (
+    //     <Tooltip title={text.length > 10 ? text : ""}>
+    //       <span className="text-[14px]">
+    //         {text.length > 10 ? text.slice(0, 10) + "..." : text}
+    //       </span>
+    //     </Tooltip>
+    //   ),
+    // },
     {
       title: "Pooling Station",
-      dataIndex: "pollingStation",
-      key: "pollingStation",
+      dataIndex: "stationCode",
+      key: "stationCode",
+      render: (stationCode: string) => (
+        <span className="text-[14px]">{stationCode}</span>
+      ),
     },
     {
       title: "Status",
