@@ -87,14 +87,14 @@ export default function PollingReport({
   return (
     <Card className="col-span-8">
       <Descriptions column={1} size="small" style={{ marginBottom: "24px" }}>
-        <Descriptions.Item
+        {/* <Descriptions.Item
           label="Postal Code"
           labelStyle={{ color: "#929292" }}
         >
           <Text style={{ color: "#188A50" }} strong>
             {poolingEntry?.agent?.postalCode}
           </Text>
-        </Descriptions.Item>
+        </Descriptions.Item> */}
         {/* <Descriptions.Item
           label="Station Code"
           labelStyle={{ color: "#929292" }}
@@ -110,7 +110,8 @@ export default function PollingReport({
         </Descriptions.Item>
         <Descriptions.Item label="Polling Address">
           <Text style={{ color: "#188A50" }}>
-            {poolingEntry?.station?.pollingStation}
+            {poolingEntry?.station?.name}, {poolingEntry?.station?.city},{" "}
+            {poolingEntry?.station?.commune}, {poolingEntry?.station?.region}
           </Text>
         </Descriptions.Item>
         <Descriptions.Item label="Sending Time">
@@ -120,6 +121,9 @@ export default function PollingReport({
         </Descriptions.Item>
         <Descriptions.Item label="Title">
           <Text strong>{poolingEntry?.title}</Text>
+        </Descriptions.Item>
+        <Descriptions.Item label="Distance From Station">
+          <Text strong>{poolingEntry?.distance.toFixed(2)} Km</Text>
         </Descriptions.Item>
       </Descriptions>
       <Divider />

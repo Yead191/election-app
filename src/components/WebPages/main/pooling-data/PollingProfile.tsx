@@ -66,7 +66,7 @@ export default function PollingProfile({
           <div style={{ marginTop: "14px" }}>
             <strong style={{ color: "#999999", fontSize: "16px" }}>ID</strong>
             <br />
-            {poolingEntry.agent?._id}
+            {poolingEntry.agent?.agent_code}
           </div>
 
           <div style={{ marginTop: "14px" }}>
@@ -114,7 +114,7 @@ export default function PollingProfile({
               Polling Station
             </strong>
             <br />
-            {poolingEntry?.agent?.pollingStation}
+            {poolingEntry?.station?.stationCode}
           </div>
         </div>
       </Col>
